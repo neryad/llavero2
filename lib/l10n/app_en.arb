@@ -164,5 +164,160 @@
   "biometricReason": "Use your fingerprint or face to unlock Llavero.",
   "@biometricReason": {
     "description": "Reason shown by the system biometric prompt when unlocking the vault."
+  },
+
+  "searchHint": "Search",
+  "@searchHint": {
+    "description": "Hint of the search field on the home screen."
+  },
+
+  "allEntriesLabel": "All",
+  "@allEntriesLabel": {
+    "description": "Filter option that shows all entries."
+  },
+
+  "favoritesFilterLabel": "Favorites",
+  "@favoritesFilterLabel": {
+    "description": "Filter option that shows only favorite entries."
+  },
+
+  "addEntryLabel": "Add entry",
+  "@addEntryLabel": {
+    "description": "Label of the button that creates a new entry."
+  },
+
+  "emptyVaultMessage": "Your vault is empty. Add your first entry.",
+  "@emptyVaultMessage": {
+    "description": "Message shown when the vault has no entries."
+  },
+
+  "trashLabel": "Trash",
+  "@trashLabel": {
+    "description": "Title of the trash screen and its button on home."
+  },
+
+  "newEntryLabel": "New entry",
+  "@newEntryLabel": {
+    "description": "Title of the form when creating an entry."
+  },
+
+  "editEntryLabel": "Edit entry",
+  "@editEntryLabel": {
+    "description": "Title of the form when editing an entry."
+  },
+
+  "titleFieldLabel": "Title",
+  "@titleFieldLabel": {
+    "description": "Label of the entry title field."
+  },
+
+  "categoryFieldLabel": "Category",
+  "@categoryFieldLabel": {
+    "description": "Label of the entry category field."
+  },
+
+  "personFieldLabel": "Person",
+  "@personFieldLabel": {
+    "description": "Label of the entry person field."
+  },
+
+  "notesFieldLabel": "Notes",
+  "@notesFieldLabel": {
+    "description": "Label of the entry notes field."
+  },
+
+  "fieldsLabel": "Fields",
+  "@fieldsLabel": {
+    "description": "Section title of the entry fields."
+  },
+
+  "addFieldLabel": "Add field",
+  "@addFieldLabel": {
+    "description": "Button that adds a field to an entry."
+  },
+
+  "labelFieldLabel": "Label",
+  "@labelFieldLabel": {
+    "description": "Label of a field's label."
+  },
+
+  "valueFieldLabel": "Value",
+  "@valueFieldLabel": {
+    "description": "Label of a field's value."
+  },
+
+  "secretFieldLabel": "Secret",
+  "@secretFieldLabel": {
+    "description": "Checkbox label that hides a field value."
+  },
+
+  "templateFieldLabel": "Template",
+  "@templateFieldLabel": {
+    "description": "Label of the template selector."
+  },
+
+  "generateLabel": "Generate",
+  "@generateLabel": {
+    "description": "Button that generates a random password or PIN."
+  },
+
+  "saveLabel": "Save",
+  "@saveLabel": {
+    "description": "Button that saves an entry."
+  },
+
+  "favoriteLabel": "Favorite",
+  "@favoriteLabel": {
+    "description": "Checkbox label that marks an entry as favorite."
+  },
+
+  "revealLabel": "Show",
+  "@revealLabel": {
+    "description": "Button that temporarily reveals a secret value."
+  },
+
+  "hideLabel": "Hide",
+  "@hideLabel": {
+    "description": "Button that hides a revealed secret value."
+  },
+
+  "copyLabel": "Copy",
+  "@copyLabel": {
+    "description": "Button that copies a value to the clipboard."
+  },
+
+  "moveToTrashLabel": "Move to trash",
+  "@moveToTrashLabel": {
+    "description": "Button that moves an entry to the trash."
+  },
+
+  "duplicateLabel": "Duplicate",
+  "@duplicateLabel": {
+    "description": "Button that duplicates an entry."
+  },
+
+  "entryNotFound": "Entry not found",
+  "@entryNotFound": {
+    "description": "Message shown when an entry cannot be found."
+  },
+
+  "emptyTrashMessage": "The trash is empty.",
+  "@emptyTrashMessage": {
+    "description": "Message shown when the trash has no entries."
+  },
+
+  "restoreLabel": "Restore",
+  "@restoreLabel": {
+    "description": "Button that restores an entry from the trash."
+  },
+
+  "deleteForeverLabel": "Delete forever",
+  "@deleteForeverLabel": {
+    "description": "Button that permanently deletes an entry."
+  },
+
+  "purgeTrashLabel": "Empty trash",
+  "@purgeTrashLabel": {
+    "description": "Button that empties the trash."
   }
 }

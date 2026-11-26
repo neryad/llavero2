@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../../features/home/home_screen.dart';
+import '../../features/entries/entry_detail_screen.dart';
+import '../../features/entries/entry_form_screen.dart';
 import '../../features/lock/lock_screen.dart';
 import '../../features/onboarding/onboarding_screen.dart';
 import '../../features/shared/coming_soon_screen.dart';
 import '../../features/splash/splash_screen.dart';
+import '../../features/trash/trash_screen.dart';
 
 /// Rutas con nombre de la app.
 ///
@@ -53,8 +56,20 @@ abstract final class AppRoutes {
       case lock:
         return _build(const LockScreen(), routeSettings);
       case entryDetail:
+        return _build(
+          EntryDetailScreen(entryId: routeSettings.arguments as String),
+          routeSettings,
+        );
       case entryForm:
+        return _build(
+          EntryFormScreen(
+            args: routeSettings.arguments as EntryFormArgs? ??
+                const EntryFormArgs(),
+          ),
+          routeSettings,
+        );
       case trash:
+        return _build(const TrashScreen(), routeSettings);
       case exportImport:
       case settings:
       case securityHealth:

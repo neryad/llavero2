@@ -112,4 +112,97 @@ class L10nEn extends L10n {
   @override
   String get biometricReason =>
       'Use your fingerprint or face to unlock Llavero.';
+
+  @override
+  String get searchHint => 'Search';
+
+  @override
+  String get allEntriesLabel => 'All';
+
+  @override
+  String get favoritesFilterLabel => 'Favorites';
+
+  @override
+  String get addEntryLabel => 'Add entry';
+
+  @override
+  String get emptyVaultMessage => 'Your vault is empty. Add your first entry.';
+
+  @override
+  String get trashLabel => 'Trash';
+
+  @override
+  String get newEntryLabel => 'New entry';
+
+  @override
+  String get editEntryLabel => 'Edit entry';
+
+  @override
+  String get titleFieldLabel => 'Title';
+
+  @override
+  String get categoryFieldLabel => 'Category';
+
+  @override
+  String get personFieldLabel => 'Person';
+
+  @override
+  String get notesFieldLabel => 'Notes';
+
+  @override
+  String get fieldsLabel => 'Fields';
+
+  @override
+  String get addFieldLabel => 'Add field';
+
+  @override
+  String get labelFieldLabel => 'Label';
+
+  @override
+  String get valueFieldLabel => 'Value';
+
+  @override
+  String get secretFieldLabel => 'Secret';
+
+  @override
+  String get templateFieldLabel => 'Template';
+
+  @override
+  String get generateLabel => 'Generate';
+
+  @override
+  String get saveLabel => 'Save';
+
+  @override
+  String get favoriteLabel => 'Favorite';
+
+  @override
+  String get revealLabel => 'Show';
+
+  @override
+  String get hideLabel => 'Hide';
+
+  @override
+  String get copyLabel => 'Copy';
+
+  @override
+  String get moveToTrashLabel => 'Move to trash';
+
+  @override
+  String get duplicateLabel => 'Duplicate';
+
+  @override
+  String get entryNotFound => 'Entry not found';
+
+  @override
+  String get emptyTrashMessage => 'The trash is empty.';
+
+  @override
+  String get restoreLabel => 'Restore';
+
+  @override
+  String get deleteForeverLabel => 'Delete forever';
+
+  @override
+  String get purgeTrashLabel => 'Empty trash';
 }

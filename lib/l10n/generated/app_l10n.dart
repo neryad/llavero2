@@ -294,6 +294,192 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Use your fingerprint or face to unlock Llavero.'**
   String get biometricReason;
+
+  /// Hint of the search field on the home screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get searchHint;
+
+  /// Filter option that shows all entries.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get allEntriesLabel;
+
+  /// Filter option that shows only favorite entries.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorites'**
+  String get favoritesFilterLabel;
+
+  /// Label of the button that creates a new entry.
+  ///
+  /// In en, this message translates to:
+  /// **'Add entry'**
+  String get addEntryLabel;
+
+  /// Message shown when the vault has no entries.
+  ///
+  /// In en, this message translates to:
+  /// **'Your vault is empty. Add your first entry.'**
+  String get emptyVaultMessage;
+
+  /// Title of the trash screen and its button on home.
+  ///
+  /// In en, this message translates to:
+  /// **'Trash'**
+  String get trashLabel;
+
+  /// Title of the form when creating an entry.
+  ///
+  /// In en, this message translates to:
+  /// **'New entry'**
+  String get newEntryLabel;
+
+  /// Title of the form when editing an entry.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit entry'**
+  String get editEntryLabel;
+
+  /// Label of the entry title field.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get titleFieldLabel;
+
+  /// Label of the entry category field.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get categoryFieldLabel;
+
+  /// Label of the entry person field.
+  ///
+  /// In en, this message translates to:
+  /// **'Person'**
+  String get personFieldLabel;
+
+  /// Label of the entry notes field.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get notesFieldLabel;
+
+  /// Section title of the entry fields.
+  ///
+  /// In en, this message translates to:
+  /// **'Fields'**
+  String get fieldsLabel;
+
+  /// Button that adds a field to an entry.
+  ///
+  /// In en, this message translates to:
+  /// **'Add field'**
+  String get addFieldLabel;
+
+  /// Label of a field's label.
+  ///
+  /// In en, this message translates to:
+  /// **'Label'**
+  String get labelFieldLabel;
+
+  /// Label of a field's value.
+  ///
+  /// In en, this message translates to:
+  /// **'Value'**
+  String get valueFieldLabel;
+
+  /// Checkbox label that hides a field value.
+  ///
+  /// In en, this message translates to:
+  /// **'Secret'**
+  String get secretFieldLabel;
+
+  /// Label of the template selector.
+  ///
+  /// In en, this message translates to:
+  /// **'Template'**
+  String get templateFieldLabel;
+
+  /// Button that generates a random password or PIN.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate'**
+  String get generateLabel;
+
+  /// Button that saves an entry.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get saveLabel;
+
+  /// Checkbox label that marks an entry as favorite.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorite'**
+  String get favoriteLabel;
+
+  /// Button that temporarily reveals a secret value.
+  ///
+  /// In en, this message translates to:
+  /// **'Show'**
+  String get revealLabel;
+
+  /// Button that hides a revealed secret value.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide'**
+  String get hideLabel;
+
+  /// Button that copies a value to the clipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get copyLabel;
+
+  /// Button that moves an entry to the trash.
+  ///
+  /// In en, this message translates to:
+  /// **'Move to trash'**
+  String get moveToTrashLabel;
+
+  /// Button that duplicates an entry.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate'**
+  String get duplicateLabel;
+
+  /// Message shown when an entry cannot be found.
+  ///
+  /// In en, this message translates to:
+  /// **'Entry not found'**
+  String get entryNotFound;
+
+  /// Message shown when the trash has no entries.
+  ///
+  /// In en, this message translates to:
+  /// **'The trash is empty.'**
+  String get emptyTrashMessage;
+
+  /// Button that restores an entry from the trash.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get restoreLabel;
+
+  /// Button that permanently deletes an entry.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete forever'**
+  String get deleteForeverLabel;
+
+  /// Button that empties the trash.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty trash'**
+  String get purgeTrashLabel;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

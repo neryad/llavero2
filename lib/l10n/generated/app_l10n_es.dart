@@ -112,4 +112,98 @@ class L10nEs extends L10n {
 
   @override
   String get biometricReason => 'Usa tu huella o rostro para abrir Llavero.';
+
+  @override
+  String get searchHint => 'Buscar';
+
+  @override
+  String get allEntriesLabel => 'Todas';
+
+  @override
+  String get favoritesFilterLabel => 'Favoritas';
+
+  @override
+  String get addEntryLabel => 'Añadir entrada';
+
+  @override
+  String get emptyVaultMessage =>
+      'Tu bóveda está vacía. Añade tu primera entrada.';
+
+  @override
+  String get trashLabel => 'Papelera';
+
+  @override
+  String get newEntryLabel => 'Nueva entrada';
+
+  @override
+  String get editEntryLabel => 'Editar entrada';
+
+  @override
+  String get titleFieldLabel => 'Título';
+
+  @override
+  String get categoryFieldLabel => 'Categoría';
+
+  @override
+  String get personFieldLabel => 'Persona';
+
+  @override
+  String get notesFieldLabel => 'Notas';
+
+  @override
+  String get fieldsLabel => 'Campos';
+
+  @override
+  String get addFieldLabel => 'Añadir campo';
+
+  @override
+  String get labelFieldLabel => 'Etiqueta';
+
+  @override
+  String get valueFieldLabel => 'Valor';
+
+  @override
+  String get secretFieldLabel => 'Secreto';
+
+  @override
+  String get templateFieldLabel => 'Plantilla';
+
+  @override
+  String get generateLabel => 'Generar';
+
+  @override
+  String get saveLabel => 'Guardar';
+
+  @override
+  String get favoriteLabel => 'Favorita';
+
+  @override
+  String get revealLabel => 'Mostrar';
+
+  @override
+  String get hideLabel => 'Ocultar';
+
+  @override
+  String get copyLabel => 'Copiar';
+
+  @override
+  String get moveToTrashLabel => 'Mover a papelera';
+
+  @override
+  String get duplicateLabel => 'Duplicar';
+
+  @override
+  String get entryNotFound => 'Entrada no encontrada';
+
+  @override
+  String get emptyTrashMessage => 'La papelera está vacía.';
+
+  @override
+  String get restoreLabel => 'Restaurar';
+
+  @override
+  String get deleteForeverLabel => 'Borrar para siempre';
+
+  @override
+  String get purgeTrashLabel => 'Vaciar papelera';
 }

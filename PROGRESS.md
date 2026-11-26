@@ -303,7 +303,7 @@ flutter test test/entries_controller_test.dart test/vault_storage_test.dart test
 | 2 | Criptografía, almacén seguro, bloqueo por intentos | ✅ Hecho |
 | 3 | Archivo cifrado, modelos, `EntriesController` con CRUD | ✅ Hecho |
 | 4 | Onboarding, PIN, biometría, pantalla de bloqueo | ✅ Hecho |
-| 5 | Inicio, CRUD de entradas, plantillas, generador de contraseñas, papelera | Pendiente |
+| 5 | Inicio, CRUD de entradas, plantillas, generador de contraseñas, papelera | ✅ Hecho |
 | 6 | Exportar/importar (backup cifrado, CSV/JSON, PDF) | Pendiente |
 | 7 | Ajustes, estado de seguridad, bloqueo automático, capturas bloqueadas | Pendiente |
 | 8 | Animaciones, accesibilidad, iconos, revisión ES/EN, tablets | Pendiente |
@@ -338,6 +338,39 @@ test/lock_screen_test.dart                 ← 7 tests de bloqueo/biometría/wir
 ### Pruebas
 
 `flutter analyze` → sin problemas. `flutter test` → **99 pruebas, todas correctas**.
+
+---
+
+## Fase 5 — Completada ✅
+
+### Qué se construyó
+
+| Área | Detalle |
+|---|---|
+| **Home** | Listado de entradas con búsqueda (título/persona/etiqueta) y filtro de favoritas; acceso a papelera y alta de entradas. |
+| **Formulario** | Alta y edición de entradas: título, persona, categoría, notas, favorita y campos dinámicos (etiqueta/valor/tipo/secreto). |
+| **Generador** | `PasswordGenerator`: contraseñas aleatorias (4 conjuntos, garantiza uno de cada) y PIN numérico. |
+| **Plantillas** | Wi-Fi, cuenta web, PIN, tarjeta y nota. |
+| **Detalle** | Campos con secretos ocultos, revelado temporal y copia al portapapeles; editar, duplicar, favorita, papelera. |
+| **Papelera** | Restaurar, borrar para siempre y purga de entradas caducadas (30 días). |
+
+### Archivos creados
+
+```
+lib/core/security/password_generator.dart   ← generador de contraseñas y PINs
+lib/data/entry_templates.dart               ← plantillas de entradas
+lib/features/home/home_screen.dart          ← listado real (antes placeholder)
+lib/features/entries/entry_form_screen.dart ← alta/edición
+lib/features/entries/entry_detail_screen.dart ← detalle con secretos ocultos
+lib/features/trash/trash_screen.dart        ← papelera
+test/password_generator_test.dart           ← 6 tests
+test/entry_templates_test.dart              ← 5 tests
+test/fase5_flow_test.dart                   ← test de integración del flujo
+```
+
+### Pruebas
+
+`flutter analyze` → sin problemas. `flutter test` → **111 pruebas, todas correctas**.
 
 ---
 

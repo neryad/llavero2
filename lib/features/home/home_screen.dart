@@ -1,40 +1,103 @@
 import 'package:flutter/material.dart';
 
 import '../../core/app_scope.dart';
+import '../../core/routes/app_routes.dart';
 import '../../core/theme/category_colors.dart';
 import '../../core/widgets/app_scaffold.dart';
-import '../../controllers/settings_controller.dart';
+import '../../data/models/vault_entry.dart';
 import '../../l10n/generated/app_l10n.dart';
 
-/// Pantalla principal (temporal en la fase 1).
-///
-/// Por ahora muestra el estado de la fase 1 y dos ajustes muy visibles
-/// (tema e idioma) para poder probarlos en el móvil.
-class HomeScreen extends StatelessWidget {
+/// Pantalla principal: listado de entradas con búsqueda y filtros.
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  bool _onlyFavorites = false;
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = L10n.of(context);
-    final settings = AppScope.of(context).settings;
+    final entries = AppScope.of(context).entries;
 
     return AppScaffold(
-      appBar: AppBar(title: Text(l10n.homeLabel)),
+      appBar: AppBar(
+        title: Text(l10n.homeLabel),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.delete_sweep_outlined),
+            tooltip: l10n.trashLabel,
+            onPressed: () => Navigator.of(context).pushNamed(AppRoutes.trash),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.of(context).pushNamed(AppRoutes.entryForm),
+        child: const Icon(Icons.add),
+      ),
       body: ListenableBuilder(
-        listenable: settings,
+        listenable: entries,
         builder: (context, _) {
+          var visible = entries.search(_searchController.text);
+          if (_onlyFavorites) {
+            visible = visible.where((e) => e.isFavorite).toList();
+          }
+
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(l10n.phase1Title, style: Theme.of(context).textTheme.headlineMedium),
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: l10n.searchHint,
+                    prefixIcon: const Icon(Icons.search),
+                    filled: true,
+                  ),
+                  onChanged: (_) => setState(() {}),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: SegmentedButton<bool>(
+                  segments: <ButtonSegment<bool>>[
+                    ButtonSegment<bool>(
+                      value: false,
+                      label: Text(l10n.allEntriesLabel),
+                    ),
+                    ButtonSegment<bool>(
+                      value: true,
+                      label: Text(l10n.favoritesFilterLabel),
+                    ),
+                  ],
+                  selected: <bool>{_onlyFavorites},
+                  onSelectionChanged: (selection) {
+                    setState(() => _onlyFavorites = selection.first);
+                  },
+                ),
+              ),
               const SizedBox(height: 8),
-              Text(l10n.phase1Message, style: Theme.of(context).textTheme.bodyMedium),
-              const SizedBox(height: 24),
-              _ThemePicker(settings: settings),
-              const SizedBox(height: 16),
-              _LanguagePicker(settings: settings),
-              const SizedBox(height: 24),
-              _CategoryPalettePreview(),
+              Expanded(
+                child: visible.isEmpty
+                    ? Center(child: Text(l10n.emptyVaultMessage))
+                    : ListView.builder(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 88),
+                        itemCount: visible.length,
+                        itemBuilder: (context, index) =>
+                            _EntryTile(entry: visible[index]),
+                      ),
+              ),
             ],
           );
         },
@@ -43,119 +106,31 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-/// Selector de tema (sistema / claro / oscuro).
-class _ThemePicker extends StatelessWidget {
-  const _ThemePicker({required this.settings});
+class _EntryTile extends StatelessWidget {
+  const _EntryTile({required this.entry});
 
-  final SettingsController settings;
+  final VaultEntry entry;
 
-  @override
-  Widget build(BuildContext context) {
-    final l10n = L10n.of(context);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(l10n.themeLabel, style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 8),
-        SegmentedButton<AppThemeMode>(
-          segments: <ButtonSegment<AppThemeMode>>[
-            ButtonSegment<AppThemeMode>(
-              value: AppThemeMode.system,
-              label: Text(l10n.themeSystem),
-            ),
-            ButtonSegment<AppThemeMode>(
-              value: AppThemeMode.light,
-              label: Text(l10n.themeLight),
-            ),
-            ButtonSegment<AppThemeMode>(
-              value: AppThemeMode.dark,
-              label: Text(l10n.themeDark),
-            ),
-          ],
-          selected: <AppThemeMode>{settings.themeMode},
-          onSelectionChanged: (selection) {
-            settings.setThemeMode(selection.first);
-          },
-        ),
-      ],
-    );
-  }
-}
-
-/// Selector de idioma (sistema / español / inglés).
-class _LanguagePicker extends StatelessWidget {
-  const _LanguagePicker({required this.settings});
-
-  final SettingsController settings;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = L10n.of(context);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(l10n.languageLabel, style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 8),
-        SegmentedButton<AppLanguage>(
-          segments: <ButtonSegment<AppLanguage>>[
-            ButtonSegment<AppLanguage>(
-              value: AppLanguage.system,
-              label: Text(l10n.languageSystem),
-            ),
-            ButtonSegment<AppLanguage>(
-              value: AppLanguage.spanish,
-              label: Text(l10n.languageSpanish),
-            ),
-            ButtonSegment<AppLanguage>(
-              value: AppLanguage.english,
-              label: Text(l10n.languageEnglish),
-            ),
-          ],
-          selected: <AppLanguage>{settings.language},
-          onSelectionChanged: (selection) {
-            settings.setLanguage(selection.first);
-          },
-        ),
-      ],
-    );
-  }
-}
-
-/// Muestra los colores de las categorías leídos del tema.
-class _CategoryPalettePreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final categories = Theme.of(context).extension<CategoryColors>();
-    if (categories == null) return const SizedBox.shrink();
 
-    const ids = <String>[
-      CategoryIds.wifi,
-      CategoryIds.email,
-      CategoryIds.streaming,
-      CategoryIds.banking,
-      CategoryIds.pinCode,
-      CategoryIds.social,
-      CategoryIds.devices,
-      CategoryIds.documents,
-      CategoryIds.other,
-    ];
-
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: [
-        for (final id in ids)
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: categories.colorOf(id),
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-      ],
+    return Card(
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: categories?.colorOf(entry.categoryId),
+          child: const Icon(Icons.key_rounded, size: 20),
+        ),
+        title: Text(entry.title),
+        subtitle: Text(entry.person ?? entry.categoryId),
+        trailing: entry.isFavorite
+            ? const Icon(Icons.star, color: Colors.amber)
+            : null,
+        onTap: () => Navigator.of(context).pushNamed(
+          AppRoutes.entryDetail,
+          arguments: entry.id,
+        ),
+      ),
     );
   }
 }
