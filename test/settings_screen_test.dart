@@ -66,6 +66,8 @@ void main() {
     testWidgets('cambiar el idioma actualiza el controlador', (tester) async {
       final controllers = await pumpSettings(tester);
 
+      await tester.drag(find.byType(ListView), const Offset(0, -400));
+      await tester.pump();
       await tester.tap(find.text('Inglés'));
       await tester.pumpAndSettle();
 

@@ -21,9 +21,10 @@ este archivo y se hace commit.
   en ES/EN, indicando que solo un respaldo cifrado permite recuperar los datos.
   3 tests nuevos.
 
-- [ ] **3. Switch de biometría honesto.** Deshabilitarlo (o avisar) cuando la
-  bóveda esté cerrada: hoy `setBiometricsEnabled(true)` no hace nada y el
-  usuario cree que lo activó.
+- [x] **3. Switch de biometría honesto.** ✅ Completada 2026-11-26 — el switch
+  se deshabilita cuando la bóveda está cerrada (sin DEK) y muestra el texto
+  «Disponible solo con la bóveda abierta.» en ES/EN. La pantalla ahora escucha
+  también los cambios del `LockController`. 2 tests nuevos.
 
 - [ ] **4. Tests en dispositivo real.** `local_auth`, `file_picker`,
   `share_plus`, `printing` y escritura en almacenamiento; los bugs reales
@@ -90,10 +91,10 @@ este archivo y se hace commit.
 
 | Prioridad | Completadas | Totales |
 |---|---|---|
-| 1 | 2 | 4 |
+| 1 | 3 | 4 |
 | 2 | 0 | 5 |
 | 3 | 0 | 8 |
 | 4 | 0 | 3 |
-| **Total** | **2** | **20** |
+| **Total** | **3** | **20** |
 
-Última actualización: 2026-11-26 (mejoras #1 y #2 completadas).
+Última actualización: 2026-11-26 (mejoras #1, #2 y #3 completadas).

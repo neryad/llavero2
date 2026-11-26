@@ -309,4 +309,7 @@ class L10nEs extends L10n {
   @override
   String get pinLossWarning =>
       'Si olvidas el PIN, no hay forma de recuperarlo. Solo podrás restaurar tus datos desde un respaldo cifrado.';
+
+  @override
+  String get biometricsNeedsUnlock => 'Disponible solo con la bóveda abierta.';
 }

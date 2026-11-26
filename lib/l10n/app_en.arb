@@ -489,5 +489,10 @@
   "pinLossWarning": "If you forget your PIN, it cannot be recovered. You will only be able to restore your data from an encrypted backup.",
   "@pinLossWarning": {
     "description": "Warning shown before creating a PIN so the user knows there is no recovery without a backup."
+  },
+
+  "biometricsNeedsUnlock": "Only available while the vault is unlocked.",
+  "@biometricsNeedsUnlock": {
+    "description": "Explanation shown when the biometrics switch is disabled because the vault is locked."
   }
 }

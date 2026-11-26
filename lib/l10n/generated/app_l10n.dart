@@ -684,6 +684,12 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'If you forget your PIN, it cannot be recovered. You will only be able to restore your data from an encrypted backup.'**
   String get pinLossWarning;
+
+  /// Explanation shown when the biometrics switch is disabled because the vault is locked.
+  ///
+  /// In en, this message translates to:
+  /// **'Only available while the vault is unlocked.'**
+  String get biometricsNeedsUnlock;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

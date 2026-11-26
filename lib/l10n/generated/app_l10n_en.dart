@@ -308,4 +308,8 @@ class L10nEn extends L10n {
   @override
   String get pinLossWarning =>
       'If you forget your PIN, it cannot be recovered. You will only be able to restore your data from an encrypted backup.';
+
+  @override
+  String get biometricsNeedsUnlock =>
+      'Only available while the vault is unlocked.';
 }

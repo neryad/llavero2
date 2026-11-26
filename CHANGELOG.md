@@ -8,6 +8,9 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- **Mejora #3 del plan de mejoras: switch de biometría honesto.** Se
+  deshabilita cuando la bóveda está cerrada y muestra una explicación en ES/EN;
+  Ajustes escucha ahora los cambios del `LockController`. 2 tests nuevos.
 - **Mejora #2 del plan de mejoras: aviso de PIN olvidado.** Banner visible en
   el onboarding y en la creación del PIN (ES/EN) indicando que solo un respaldo
   cifrado permite recuperar los datos. 3 tests nuevos.

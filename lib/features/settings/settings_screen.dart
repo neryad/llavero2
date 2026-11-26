@@ -36,13 +36,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final controllers = AppScope.of(context);
     final settings = controllers.settings;
     final lock = controllers.lock;
+    // Solo se puede guardar la copia de la DEK si está desenvolta.
+    final canToggleBiometrics = !lock.isLocked && lock.unlockedDek != null;
 
     return AppScaffold(
       appBar: AppBar(title: Text(l10n.settingsLabel)),
       body: ListenableBuilder(
-        listenable: settings,
-        builder: (context, _) => ListView(
-          padding: const EdgeInsets.all(16),
+        listenable: lock,
+        builder: (context, _) => ListenableBuilder(
+          listenable: settings,
+          builder: (context, _) => ListView(
+            padding: const EdgeInsets.all(16),
           children: <Widget>[
             // --- Estado de seguridad ---
             Text(
@@ -68,9 +72,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ? l10n.biometricsStatusOn
                     : l10n.biometricsStatusOff,
               ),
+              subtitle: canToggleBiometrics
+                  ? null
+                  : Text(l10n.biometricsNeedsUnlock),
               trailing: Switch(
                 value: lock.biometricsEnabled,
-                onChanged: (value) => lock.setBiometricsEnabled(value),
+                onChanged: canToggleBiometrics
+                    ? (value) => lock.setBiometricsEnabled(value)
+                    : null,
               ),
             ),
             ListTile(
@@ -171,6 +180,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ],
         ),
+      ),
       ),
     );
   }
