@@ -1,9 +1,8 @@
 import 'dart:io';
 
+import 'package:path_provider/path_provider.dart';
+
 /// Sistema de archivo virtual para la bóveda.
-///
-/// En Android, el archivo vive en `/data/data/<paquete>/files/llavero/vault.dat`.
-/// En iOS, en `Documents/llavero/vault.dat`.
 abstract class VaultFileSystem {
   /// Ruta privada donde se guarda la bóveda (ruta completa al archivo).
   String get vaultPath;
@@ -31,27 +30,38 @@ abstract class VaultFileSystem {
 }
 
 /// Implementación real: usa el sistema de archivo del dispositivo.
+///
+/// La ruta se resuelve con `path_provider` (directorio privado de la app) y
+/// se guarda en `llavero/vault.dat`. Antes de escribir se crea el directorio
+/// con `create(recursive: true)`: sin esto, la primera escritura falla con
+/// `PathNotFoundException` porque `llavero/` todavía no existe.
 class PlatformVaultFileSystem implements VaultFileSystem {
-  PlatformVaultFileSystem({required this._packageName});
+  PlatformVaultFileSystem({
+    required this.packageName,
+    Directory? baseDirectory,
+  }) : _baseDir = baseDirectory;
 
-  final String _packageName;
-  Directory? _documentsDir;
+  /// Identificador del paquete (informativo; la ruta real viene de
+  /// `path_provider`).
+  final String packageName;
+
+  Directory? _baseDir;
+
+  /// Resuelve la ruta privada. Debe llamarse antes de usar [vaultPath].
+  Future<void> initialize() async {
+    _baseDir ??= await getApplicationSupportDirectory();
+  }
 
   @override
   String get vaultPath {
-    if (Platform.isAndroid) {
-      // Android: /data/data/<paquete>/files/llavero/vault.dat
-      return '/data/data/$_packageName/files/llavero/vault.dat';
-    }
-    // iOS: Documents de la app.
-    if (_documentsDir != null) {
-      return '${_documentsDir!.path}/llavero/vault.dat';
-    }
-    return 'Documents/llavero/vault.dat';
+    final base = _baseDir?.path ?? 'PrivateSupportDirectory';
+    return '$base/llavero/vault.dat';
   }
 
   @override
   Future<void> write(String path, List<int> bytes) async {
+    // Crear el directorio padre (puede no existir en la primera escritura).
+    await File(path).parent.create(recursive: true);
     await File(path).writeAsBytes(bytes);
   }
 
@@ -64,29 +74,24 @@ class PlatformVaultFileSystem implements VaultFileSystem {
 
   @override
   Future<void> writeAtomic(String path, List<int> bytes) async {
+    // Crear el directorio padre antes de abrir el .tmp.
+    await File(path).parent.create(recursive: true);
     final tmpFile = File('$path.tmp');
     await tmpFile.writeAsBytes(bytes);
-    // Renombrar de .tmp a el nombre final (operación atómica en el SO).
+    // Renombrar de .tmp al nombre final (operación atómica del SO).
     await tmpFile.rename(path);
   }
 
   @override
-  Future<List<int>?> readVault() async {
-    return await read(vaultPath);
-  }
+  Future<List<int>?> readVault() async => read(vaultPath);
 
   @override
-  Future<bool> vaultExists() async {
-    final bytes = await read(vaultPath);
-    return bytes != null;
-  }
+  Future<bool> vaultExists() async => (await read(vaultPath)) != null;
 
   @override
   Future<void> deleteVault() async {
     final file = File(vaultPath);
-    if (await file.exists()) {
-      await file.delete();
-    }
+    if (await file.exists()) await file.delete();
   }
 
   @override
@@ -106,31 +111,21 @@ class MemoryVaultFileSystem implements VaultFileSystem {
   }
 
   @override
-  Future<List<int>?> read(String path) async {
-    return _files[path];
-  }
+  Future<List<int>?> read(String path) async => _files[path];
 
   @override
   Future<void> writeAtomic(String path, List<int> bytes) async {
-    // En memoria, .tmp y el archivo final son lo mismo.
     await write(path, bytes);
   }
 
   @override
-  Future<List<int>?> readVault() async {
-    return await read(vaultPath);
-  }
+  Future<List<int>?> readVault() async => read(vaultPath);
 
   @override
-  Future<bool> vaultExists() async {
-    final bytes = await read(vaultPath);
-    return bytes != null;
-  }
+  Future<bool> vaultExists() async => (await read(vaultPath)) != null;
 
   @override
-  Future<void> deleteVault() async {
-    _files.remove(vaultPath);
-  }
+  Future<void> deleteVault() async => _files.remove(vaultPath);
 
   @override
   List<int>? bytesAt(String path) => _files[path];

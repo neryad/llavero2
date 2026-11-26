@@ -36,6 +36,12 @@ class AppControllers extends ChangeNotifier {
   static Future<AppControllers> secure() async {
     final packageInfo = await PackageInfo.fromPlatform();
     final store = FlutterSecureStore();
+    final fileSystem = PlatformVaultFileSystem(
+      packageName: packageInfo.packageName,
+    );
+    // Resolver la ruta privada y crear el directorio base antes de cualquier
+    // escritura (si no, el primer guardado falla con PathNotFoundException).
+    await fileSystem.initialize();
     return AppControllers(
       lock: LockController(
         initialKeyService: SecureStoreVaultKeyService(initialStore: store),
@@ -43,9 +49,7 @@ class AppControllers extends ChangeNotifier {
         initialBiometricAuth: DeviceBiometricAuth(),
       ),
       entries: EntriesController(
-        initialStorage: VaultStorage(
-          initialFileSystem: PlatformVaultFileSystem(packageName: packageInfo.packageName),
-        ),
+        initialStorage: VaultStorage(initialFileSystem: fileSystem),
       ),
     );
   }
