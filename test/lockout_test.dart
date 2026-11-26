@@ -222,6 +222,23 @@ void main() {
       expect(nuevo.remainingLockout(), const Duration(seconds: 30));
     });
 
+    test('reloj reiniciado a un valor menor no acorta el bloqueo', () async {
+      for (var i = 0; i < 5; i++) {
+        await controller.submitPin('111111');
+      }
+      final restante = controller.remainingLockout();
+      expect(restante, const Duration(seconds: 30));
+
+      // Simula un reinicio con el reloj movido hacia atrás.
+      ahora = ahora.subtract(const Duration(minutes: 10));
+
+      expect(controller.isLockedOut, isTrue);
+      expect(controller.remainingLockout(), restante);
+      final intentosAntes = service.pinAttempts;
+      expect(await controller.submitPin('482913'), isFalse);
+      expect(service.pinAttempts, intentosAntes);
+    });
+
     test('al vencer el bloqueo se puede volver a intentar', () async {
       for (var i = 0; i < 5; i++) {
         await controller.submitPin('111111');
