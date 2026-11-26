@@ -10,6 +10,21 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
 ---
 
+## [Fase 9] — 2026-11-26
+
+### Added
+- **README completo**: características, arquitectura, modelo de seguridad
+  (claves, bloqueo, formato de archivo), instrucciones de uso y de ejecución.
+- **Lista honesta de limitaciones**: 13 puntos documentados (sin sync,
+  biometría con bóveda abierta, sin cambio de PIN, exportación sin secretos,
+  Argon2id en Dart puro, anti-capturas en iOS por overlay, etc.).
+
+### Verification
+- `flutter analyze` → sin problemas.
+- `flutter test` → **139 pruebas, todas correctas**.
+
+---
+
 ## [Fase 8] — 2026-11-26
 
 ### Added

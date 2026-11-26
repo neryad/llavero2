@@ -307,7 +307,7 @@ flutter test test/entries_controller_test.dart test/vault_storage_test.dart test
 | 6 | Exportar/importar (backup cifrado, CSV/JSON, PDF) | ✅ Hecho |
 | 7 | Ajustes, estado de seguridad, bloqueo automático, capturas bloqueadas | ✅ Hecho |
 | 8 | Animaciones, accesibilidad, iconos, revisión ES/EN, tablets | ✅ Hecho |
-| 9 | README y lista honesta de limitaciones | Pendiente |
+| 9 | README y lista honesta de limitaciones | ✅ Hecho |
 
 ## Fase 4 — Completada ✅
 
