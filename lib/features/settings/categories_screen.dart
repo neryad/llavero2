@@ -6,6 +6,7 @@ import '../../core/theme/category_colors.dart';
 import '../../core/widgets/app_scaffold.dart';
 import '../../data/models/vault_category.dart';
 import '../../l10n/generated/app_l10n.dart';
+import '../shared/category_name.dart';
 
 /// Gestión de categorías personalizadas.
 class CategoriesScreen extends StatefulWidget {
@@ -123,37 +124,63 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       body: ListenableBuilder(
         listenable: categories,
         builder: (context, _) {
-          if (categories.custom.isEmpty) {
-            return Center(child: Text(l10n.noCustomCategories));
-          }
-          return ListView.builder(
-            itemCount: categories.custom.length,
-            itemBuilder: (context, index) {
-              final category = categories.custom[index];
-              return ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: Theme.of(context)
-                      .extension<CategoryColors>()
-                      ?.colorOf(category.colorId),
+          return ListView(
+            padding: const EdgeInsets.all(16),
+            children: <Widget>[
+              Text(
+                l10n.defaultCategoriesLabel,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 8),
+              for (final id in CategoriesController.defaultIds)
+                ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: Theme.of(context)
+                        .extension<CategoryColors>()
+                        ?.colorOf(id),
+                  ),
+                  title: Text(categoryDisplayName(id, l10n, categories)),
                 ),
-                title: Text(category.name),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    IconButton(
-                      icon: const Icon(Icons.edit_outlined),
-                      tooltip: l10n.editCategoryLabel,
-                      onPressed: () => _showDialog(editing: category),
+              const Divider(height: 32),
+              Text(
+                l10n.customCategoriesLabel,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 8),
+              if (categories.custom.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    l10n.noCustomCategories,
+                    textAlign: TextAlign.center,
+                  ),
+                )
+              else
+                for (final category in categories.custom)
+                  ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: Theme.of(context)
+                          .extension<CategoryColors>()
+                          ?.colorOf(category.colorId),
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.delete_outline),
-                      tooltip: l10n.deleteForeverLabel,
-                      onPressed: () => _remove(category),
+                    title: Text(category.name),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        IconButton(
+                          icon: const Icon(Icons.edit_outlined),
+                          tooltip: l10n.editCategoryLabel,
+                          onPressed: () => _showDialog(editing: category),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete_outline),
+                          tooltip: l10n.deleteForeverLabel,
+                          onPressed: () => _remove(category),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              );
-            },
+                  ),
+            ],
           );
         },
       ),

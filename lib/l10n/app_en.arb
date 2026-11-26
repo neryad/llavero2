@@ -663,5 +663,15 @@
   "historyHint": "A copy is saved before each change. Make a change to an entry to see the first version.",
   "@historyHint": {
     "description": "Hint shown when the vault history is empty."
+  },
+
+  "defaultCategoriesLabel": "Default categories",
+  "@defaultCategoriesLabel": {
+    "description": "Section title for the built-in read-only categories."
+  },
+
+  "customCategoriesLabel": "Your categories",
+  "@customCategoriesLabel": {
+    "description": "Section title for user-created categories."
   }
 }

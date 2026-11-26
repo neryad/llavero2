@@ -65,6 +65,10 @@ void main() {
       );
       await tester.pump();
 
+      expect(find.text('Categorías por defecto'), findsOneWidget);
+      await tester.drag(find.byType(ListView), const Offset(0, -700));
+      await tester.pumpAndSettle();
+      expect(find.text('Tus categorías'), findsOneWidget);
       expect(find.text('Todavía no has creado categorías.'), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.add));

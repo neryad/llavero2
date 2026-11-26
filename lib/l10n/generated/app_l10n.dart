@@ -924,6 +924,18 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'A copy is saved before each change. Make a change to an entry to see the first version.'**
   String get historyHint;
+
+  /// Section title for the built-in read-only categories.
+  ///
+  /// In en, this message translates to:
+  /// **'Default categories'**
+  String get defaultCategoriesLabel;
+
+  /// Section title for user-created categories.
+  ///
+  /// In en, this message translates to:
+  /// **'Your categories'**
+  String get customCategoriesLabel;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

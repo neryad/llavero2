@@ -442,4 +442,10 @@ class L10nEs extends L10n {
   @override
   String get historyHint =>
       'Se guarda una copia antes de cada cambio. Haz un cambio en una entrada para ver la primera versión.';
+
+  @override
+  String get defaultCategoriesLabel => 'Categorías por defecto';
+
+  @override
+  String get customCategoriesLabel => 'Tus categorías';
 }
