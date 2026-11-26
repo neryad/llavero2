@@ -708,6 +708,12 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'This device appears to be rooted or jailbroken. Your secrets may be at risk.'**
   String get compromisedDeviceWarning;
+
+  /// Note shown on iOS explaining that screenshot blocking is an overlay, not a system block.
+  ///
+  /// In en, this message translates to:
+  /// **'On iOS, screenshots cannot be blocked: the app only dims the screen when it detects them.'**
+  String get screenshotsIosNote;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

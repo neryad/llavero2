@@ -322,4 +322,8 @@ class L10nEs extends L10n {
   @override
   String get compromisedDeviceWarning =>
       'Este dispositivo parece estar rooteado o jailbreakeado. Tus secretos pueden estar en riesgo.';
+
+  @override
+  String get screenshotsIosNote =>
+      'En iOS no se pueden bloquear las capturas: la app solo oscurece la pantalla al detectarlas.';
 }

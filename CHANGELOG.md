@@ -8,6 +8,10 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- **Mejora #8 del plan de mejoras: nota sobre anti-capturas en iOS.** El
+  ajuste muestra una explicación en ES/EN de que iOS no permite bloquear
+  capturas y la app solo oscurece la pantalla. 1 test nuevo.
+
 - **Mejora #7 del plan de mejoras: ofuscación.** Comandos de release con
   `--obfuscate`, `--split-debug-info` y `--strip` documentados en el README;
   builds Android e iOS verificados.

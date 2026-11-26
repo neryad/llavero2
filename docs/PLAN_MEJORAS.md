@@ -58,8 +58,10 @@ este archivo y se hace commit.
   verificaron. Los símbolos se guardan fuera del repositorio en
   `build/symbols/`.
 
-- [ ] **8. Aclarar en la UI que el anti-capturas de iOS es un overlay**, no un
-  bloqueo del sistema como `FLAG_SECURE`.
+- [x] **8. Aclarar el anti-capturas de iOS en la UI.** ✅ Completada
+  2026-11-26 — el ajuste «Bloquear capturas» muestra en iOS la nota
+  «no se pueden bloquear: la app solo oscurece la pantalla», en ES/EN.
+  1 test nuevo.
 
 - [ ] **9. Evitar la re-lectura del archivo en cada cambio** en
   `EntriesController._saveToStorage()` (guarda y luego descifra de nuevo).
@@ -110,8 +112,8 @@ este archivo y se hace commit.
 |---|---|---|
 | 1 | 4 | 4 |
 | 2 | 2 | 5 |
-| 3 | 1 | 8 |
+| 3 | 2 | 8 |
 | 4 | 0 | 3 |
-| **Total** | **7** | **20** |
+| **Total** | **8** | **20** |
 
-Última actualización: 2026-11-26 (mejoras #1 a #7 completadas).
+Última actualización: 2026-11-26 (mejoras #1 a #8 completadas).

@@ -509,5 +509,10 @@
   "compromisedDeviceWarning": "Este dispositivo parece estar rooteado o jailbreakeado. Tus secretos pueden estar en riesgo.",
   "@compromisedDeviceWarning": {
     "description": "Warning shown when root or jailbreak signals are detected."
+  },
+
+  "screenshotsIosNote": "En iOS no se pueden bloquear las capturas: la app solo oscurece la pantalla al detectarlas.",
+  "@screenshotsIosNote": {
+    "description": "Note shown on iOS explaining that screenshot blocking is an overlay, not a system block."
   }
 }

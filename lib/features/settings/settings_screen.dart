@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../../core/app_scope.dart';
@@ -184,6 +186,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             SwitchListTile(
               secondary: const Icon(Icons.screenshot_outlined),
               title: Text(l10n.blockScreenshotsSettingLabel),
+              subtitle: Platform.isIOS ? Text(l10n.screenshotsIosNote) : null,
               value: settings.blockScreenshots,
               onChanged: _setScreenshots,
             ),
