@@ -52,7 +52,11 @@ este archivo y se hace commit.
   en ES/EN. 3 tests nuevos y builds nativos verificados. Es solo una señal,
   nunca una barrera.
 
-- [ ] **7. Ofuscación del binario** (`flutter build --obfuscate`).
+- **Ofuscación del binario** (`flutter build --obfuscate`). ✅ Completada
+  2026-11-26 — se documentaron los comandos de release con `--obfuscate`,
+  `--split-debug-info` y `--strip` para Android e iOS; ambos builds se
+  verificaron. Los símbolos se guardan fuera del repositorio en
+  `build/symbols/`.
 
 - [ ] **8. Aclarar en la UI que el anti-capturas de iOS es un overlay**, no un
   bloqueo del sistema como `FLAG_SECURE`.
@@ -106,8 +110,8 @@ este archivo y se hace commit.
 |---|---|---|
 | 1 | 4 | 4 |
 | 2 | 2 | 5 |
-| 3 | 0 | 8 |
+| 3 | 1 | 8 |
 | 4 | 0 | 3 |
-| **Total** | **6** | **20** |
+| **Total** | **7** | **20** |
 
-Última actualización: 2026-11-26 (mejoras #1 a #6 completadas).
+Última actualización: 2026-11-26 (mejoras #1 a #7 completadas).

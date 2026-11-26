@@ -8,6 +8,10 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- **Mejora #7 del plan de mejoras: ofuscación.** Comandos de release con
+  `--obfuscate`, `--split-debug-info` y `--strip` documentados en el README;
+  builds Android e iOS verificados.
+
 - **Mejora #6 del plan de mejoras: detección de root/jailbreak.** Canal
   `llavero/device_integrity` con heurísticas nativas y aviso informativo en
   Ajustes (ES/EN). 3 tests nuevos; builds Android e iOS verificados.

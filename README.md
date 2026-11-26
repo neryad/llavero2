@@ -158,6 +158,18 @@ Para generar las traducciones después de tocar los `.arb`:
 flutter gen-l10n
 ```
 
+Para generar una release ofuscada (los símbolos se guardan fuera del repo):
+
+```bash
+flutter build apk --release --obfuscate \
+  --split-debug-info=build/symbols/android --strip
+flutter build ios --release --no-codesign --obfuscate \
+  --split-debug-info=build/symbols/ios
+```
+
+`build/symbols/` no se versiona: guárdalo en un lugar seguro si necesitas
+leer stacks de crash de una release.
+
 Estructura de idiomas: `lib/l10n/app_es.arb` y `lib/l10n/app_en.arb`.
 Un test verifica que ambos tienen exactamente las mismas claves.
 
