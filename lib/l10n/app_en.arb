@@ -1,0 +1,138 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "Llavero",
+  "@appTitle": {
+    "description": "Application name shown in the launcher and app bars."
+  },
+
+  "appTagline": "Everything offline, yours to keep",
+  "@appTagline": {
+    "description": "Short tagline used on the splash and welcome screens."
+  },
+
+  "splashLoading": "Preparing your vault…",
+  "@splashLoading": {
+    "description": "Message shown while the app checks if a PIN already exists."
+  },
+
+  "continueLabel": "Continue",
+  "@continueLabel": {
+    "description": "Generic continue button."
+  },
+
+  "cancelLabel": "Cancel",
+  "@cancelLabel": {
+    "description": "Generic cancel button."
+  },
+
+  "okLabel": "OK",
+  "@okLabel": {
+    "description": "Generic confirm button."
+  },
+
+  "backLabel": "Back",
+  "@backLabel": {
+    "description": "Generic back button."
+  },
+
+  "phase1Title": "Llavero is alive",
+  "@phase1Title": {
+    "description": "Title of the placeholder screen shown in phase 1."
+  },
+
+  "phase1Message": "Phase 1 is ready: theme, bundled fonts, ES/EN languages and named routes are all in place.",
+  "@phase1Message": {
+    "description": "Body of the placeholder screen shown in phase 1."
+  },
+
+  "notReadyYet": "This screen arrives in a later phase",
+  "@notReadyYet": {
+    "description": "Placeholder for screens that are not implemented yet."
+  },
+
+  "themeLabel": "Theme",
+  "@themeLabel": {
+    "description": "Label of the theme setting."
+  },
+
+  "themeSystem": "System",
+  "@themeSystem": {
+    "description": "Theme option that follows the device setting."
+  },
+
+  "themeLight": "Light",
+  "@themeLight": {
+    "description": "Light theme option."
+  },
+
+  "themeDark": "Dark",
+  "@themeDark": {
+    "description": "Dark theme option."
+  },
+
+  "languageLabel": "Language",
+  "@languageLabel": {
+    "description": "Label of the language setting."
+  },
+
+  "languageSystem": "System",
+  "@languageSystem": {
+    "description": "Language option that follows the device setting."
+  },
+
+  "languageSpanish": "Spanish",
+  "@languageSpanish": {
+    "description": "Spanish language option."
+  },
+
+  "languageEnglish": "English",
+  "@languageEnglish": {
+    "description": "English language option."
+  },
+
+  "settingsLabel": "Settings",
+  "@settingsLabel": {
+    "description": "Title of the settings screen."
+  },
+
+  "homeLabel": "Home",
+  "@homeLabel": {
+    "description": "Title of the home screen."
+  },
+
+  "onboardingTitle": "Create your vault",
+  "@onboardingTitle": {
+    "description": "Title of the first-run onboarding screen."
+  },
+
+  "onboardingMessage": "Choose a 4 to 8 digit PIN to protect your passwords. You will use it every time you open the app.",
+  "@onboardingMessage": {
+    "description": "Body of the first-run onboarding screen."
+  },
+
+  "createVaultLabel": "Create vault",
+  "@createVaultLabel": {
+    "description": "Button that starts the first-run PIN creation flow."
+  },
+
+  "pinLabel": "PIN",
+  "@pinLabel": {
+    "description": "Label of the PIN entry field."
+  },
+
+  "confirmPinLabel": "Confirm PIN",
+  "@confirmPinLabel": {
+    "description": "Label shown on the confirm PIN step."
+  },
+
+  "pinMismatchError": "The two PINs do not match. Try again.",
+  "@pinMismatchError": {
+    "description": "Error shown when the create and confirm PINs differ."
+  },
+
+  "pinInvalidError": "The PIN is not valid. Use 4 to 8 digits, without sequences, repeats or common PINs.",
+  "@pinInvalidError": {
+    "description": "Error shown when the PIN does not pass the validation rules."
+  }
+}
