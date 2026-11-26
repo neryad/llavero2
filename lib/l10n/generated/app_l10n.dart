@@ -834,6 +834,36 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Yes, export'**
   String get exportAnywayLabel;
+
+  /// Title of the password health screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Password health'**
+  String get securityHealthLabel;
+
+  /// Summary of how many passwords were analyzed.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords checked: {count}'**
+  String healthSummary(Object count);
+
+  /// Section title for entries with weak passwords.
+  ///
+  /// In en, this message translates to:
+  /// **'Weak passwords'**
+  String get weakPasswords;
+
+  /// Section title for entries sharing a password.
+  ///
+  /// In en, this message translates to:
+  /// **'Reused passwords'**
+  String get reusedPasswords;
+
+  /// Message shown when no password issues were found.
+  ///
+  /// In en, this message translates to:
+  /// **'All good: no warnings.'**
+  String get allGood;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

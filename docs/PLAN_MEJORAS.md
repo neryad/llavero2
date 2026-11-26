@@ -97,8 +97,10 @@ este archivo y se hace commit.
   CSV o PDF con secretos. El respaldo `.llavero` sigue siempre cifrado.
   4 tests nuevos.
 
-- [ ] **15. Pantalla real de "security health"** (ruta `/security-health` hoy
-  es `ComingSoon`): contraseñas débiles, repetidas o antiguas.
+- [x] **15. Pantalla real de "security health".** ✅ Completada 2026-11-26 —
+  `PasswordHealth` detecta contraseñas débiles (<8, comunes, repetidas) y
+  reutilizadas; la pantalla `/security-health` muestra solo títulos, nunca
+  valores. Acceso desde Ajustes. 3 tests nuevos.
 
 - [ ] **16. Historial/versiones locales de la bóveda** para recuperar borrados
   antes de los 30 días de papelera.
@@ -127,8 +129,8 @@ este archivo y se hace commit.
 |---|---|---|
 | 1 | 4 | 4 |
 | 2 | 3 | 5 |
-| 3 | 4 | 8 |
+| 3 | 5 | 8 |
 | 4 | 0 | 3 |
-| **Total** | **13** | **20** |
+| **Total** | **14** | **20** |
 
-Última actualización: 2026-11-26 (13 completadas, 1 diferida).
+Última actualización: 2026-11-26 (14 completadas, 1 diferida).

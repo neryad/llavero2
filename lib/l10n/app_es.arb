@@ -588,5 +588,30 @@
   "exportAnywayLabel": "Sí, exportar",
   "@exportAnywayLabel": {
     "description": "Final confirmation button to export secrets in plain text."
+  },
+
+  "securityHealthLabel": "Salud de contraseñas",
+  "@securityHealthLabel": {
+    "description": "Title of the password health screen."
+  },
+
+  "healthSummary": "Contraseñas revisadas: {count}",
+  "@healthSummary": {
+    "description": "Summary of how many passwords were analyzed."
+  },
+
+  "weakPasswords": "Contraseñas débiles",
+  "@weakPasswords": {
+    "description": "Section title for entries with weak passwords."
+  },
+
+  "reusedPasswords": "Contraseñas repetidas",
+  "@reusedPasswords": {
+    "description": "Section title for entries sharing a password."
+  },
+
+  "allGood": "Todo en orden: no hay avisos.",
+  "@allGood": {
+    "description": "Message shown when no password issues were found."
   }
 }

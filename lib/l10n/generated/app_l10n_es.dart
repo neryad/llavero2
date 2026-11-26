@@ -388,4 +388,21 @@ class L10nEs extends L10n {
 
   @override
   String get exportAnywayLabel => 'Sí, exportar';
+
+  @override
+  String get securityHealthLabel => 'Salud de contraseñas';
+
+  @override
+  String healthSummary(Object count) {
+    return 'Contraseñas revisadas: $count';
+  }
+
+  @override
+  String get weakPasswords => 'Contraseñas débiles';
+
+  @override
+  String get reusedPasswords => 'Contraseñas repetidas';
+
+  @override
+  String get allGood => 'Todo en orden: no hay avisos.';
 }

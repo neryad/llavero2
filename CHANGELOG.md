@@ -8,6 +8,10 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- **Mejora #15 del plan de mejoras: salud de contraseñas.** Pantalla real en
+  `/security-health` con detección de contraseñas débiles y reutilizadas, sin
+  revelar nunca los valores. Acceso desde Ajustes. 3 tests nuevos.
+
 - **Mejora #14 del plan de mejoras: exportar secretos con doble confirmación.**
   `includeSecrets` en `ExportService` (por defecto `false`), interruptor en la
   UI y dos diálogos de confirmación para JSON/CSV/PDF. El respaldo cifrado

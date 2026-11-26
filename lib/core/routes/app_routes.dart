@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../features/home/home_screen.dart';
 import '../../features/settings/settings_screen.dart';
 import '../../features/settings/categories_screen.dart';
+import '../../features/security/security_health_screen.dart';
 import '../../features/settings/change_pin_screen.dart';
 import '../../features/export_import/export_import_screen.dart';
 import '../../features/entries/entry_detail_screen.dart';
@@ -89,8 +90,7 @@ abstract final class AppRoutes {
       case changePin:
         return _build(const ChangePinScreen(), routeSettings);
       case securityHealth:
-        // Estas pantallas se implementan en fases posteriores.
-        return _build(const ComingSoonScreen(), routeSettings);
+        return _build(const SecurityHealthScreen(), routeSettings);
       default:
         return _build(const ComingSoonScreen(), routeSettings);
     }
