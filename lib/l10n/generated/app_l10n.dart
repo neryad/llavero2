@@ -552,6 +552,96 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Could not import the backup.'**
   String get importError;
+
+  /// Section title of the security status on settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Security status'**
+  String get securityStatusLabel;
+
+  /// Status shown when the vault exists.
+  ///
+  /// In en, this message translates to:
+  /// **'Vault created'**
+  String get vaultCreatedStatus;
+
+  /// Status shown when there is no vault yet.
+  ///
+  /// In en, this message translates to:
+  /// **'No vault'**
+  String get noVaultStatus;
+
+  /// Status shown when biometrics is enabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometrics enabled'**
+  String get biometricsStatusOn;
+
+  /// Status shown when biometrics is disabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometrics disabled'**
+  String get biometricsStatusOff;
+
+  /// Label of the failed PIN attempts counter.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed attempts'**
+  String get failedAttemptsLabel;
+
+  /// Setting that controls how many digits the PIN has.
+  ///
+  /// In en, this message translates to:
+  /// **'PIN length'**
+  String get pinLengthSettingLabel;
+
+  /// Setting that controls when the vault locks itself.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-lock'**
+  String get autoLockSettingLabel;
+
+  /// Auto-lock option: lock when the app goes to background.
+  ///
+  /// In en, this message translates to:
+  /// **'Immediately'**
+  String get autoLockImmediately;
+
+  /// Auto-lock option: 30 seconds.
+  ///
+  /// In en, this message translates to:
+  /// **'30 seconds'**
+  String get autoLock30Seconds;
+
+  /// Auto-lock option: 1 minute.
+  ///
+  /// In en, this message translates to:
+  /// **'1 minute'**
+  String get autoLock1Minute;
+
+  /// Auto-lock option: 5 minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'5 minutes'**
+  String get autoLock5Minutes;
+
+  /// Setting that blocks screenshots and screen recording.
+  ///
+  /// In en, this message translates to:
+  /// **'Block screenshots'**
+  String get blockScreenshotsSettingLabel;
+
+  /// Setting that controls how long copied secrets stay in the clipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Clipboard timeout'**
+  String get clipboardTimeoutSettingLabel;
+
+  /// Button that locks the vault immediately.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock now'**
+  String get lockNowLabel;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

@@ -242,4 +242,49 @@ class L10nEs extends L10n {
 
   @override
   String get importError => 'No se pudo importar el respaldo.';
+
+  @override
+  String get securityStatusLabel => 'Estado de seguridad';
+
+  @override
+  String get vaultCreatedStatus => 'Bóveda creada';
+
+  @override
+  String get noVaultStatus => 'Sin bóveda';
+
+  @override
+  String get biometricsStatusOn => 'Biometría activada';
+
+  @override
+  String get biometricsStatusOff => 'Biometría desactivada';
+
+  @override
+  String get failedAttemptsLabel => 'Intentos fallidos';
+
+  @override
+  String get pinLengthSettingLabel => 'Longitud del PIN';
+
+  @override
+  String get autoLockSettingLabel => 'Bloqueo automático';
+
+  @override
+  String get autoLockImmediately => 'Inmediato';
+
+  @override
+  String get autoLock30Seconds => '30 segundos';
+
+  @override
+  String get autoLock1Minute => '1 minuto';
+
+  @override
+  String get autoLock5Minutes => '5 minutos';
+
+  @override
+  String get blockScreenshotsSettingLabel => 'Bloquear capturas';
+
+  @override
+  String get clipboardTimeoutSettingLabel => 'Tiempo en el portapapeles';
+
+  @override
+  String get lockNowLabel => 'Bloquear ahora';
 }

@@ -305,7 +305,7 @@ flutter test test/entries_controller_test.dart test/vault_storage_test.dart test
 | 4 | Onboarding, PIN, biometría, pantalla de bloqueo | ✅ Hecho |
 | 5 | Inicio, CRUD de entradas, plantillas, generador de contraseñas, papelera | ✅ Hecho |
 | 6 | Exportar/importar (backup cifrado, CSV/JSON, PDF) | ✅ Hecho |
-| 7 | Ajustes, estado de seguridad, bloqueo automático, capturas bloqueadas | Pendiente |
+| 7 | Ajustes, estado de seguridad, bloqueo automático, capturas bloqueadas | ✅ Hecho |
 | 8 | Animaciones, accesibilidad, iconos, revisión ES/EN, tablets | Pendiente |
 | 9 | README y lista honesta de limitaciones | Pendiente |
 
@@ -398,6 +398,36 @@ test/export_import_screen_test.dart                 ← 1 test de UI
 ### Pruebas
 
 `flutter analyze` → sin problemas. `flutter test` → **123 pruebas, todas correctas**.
+
+---
+
+## Fase 7 — Completada ✅
+
+### Qué se construyó
+
+| Área | Detalle |
+|---|---|
+| **Ajustes** | Pantalla real con tema, idioma, longitud PIN, retardo de bloqueo, tiempo de portapapeles y acceso a exportar/importar. |
+| **Estado de seguridad** | Bóveda creada, biometría activada, intentos fallidos y botón «Bloquear ahora». |
+| **Bloqueo automático** | `AppLifecycleLock` observa el ciclo de vida y bloquea al pasar a segundo plano según el retardo elegido. |
+| **Capturas** | `ScreenSecurity` con canal nativo: `FLAG_SECURE` en Android y overlay en iOS. |
+
+### Archivos creados/modificados
+
+```
+lib/core/platform/screen_security.dart        ← MethodChannel de capturas
+lib/core/widgets/app_lifecycle_lock.dart      ← bloqueo por ciclo de vida
+lib/features/settings/settings_screen.dart    ← ajustes reales
+android/.../MainActivity.kt                    ← FLAG_SECURE
+ios/.../AppDelegate.swift                      ← overlay anti-capturas
+test/screen_security_test.dart                ← 3 tests
+test/app_lifecycle_lock_test.dart             ← 1 test
+test/settings_screen_test.dart                ← 4 tests
+```
+
+### Pruebas
+
+`flutter analyze` → sin problemas. `flutter test` → **131 pruebas, todas correctas**.
 
 ---
 

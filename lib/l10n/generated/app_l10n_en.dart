@@ -241,4 +241,49 @@ class L10nEn extends L10n {
 
   @override
   String get importError => 'Could not import the backup.';
+
+  @override
+  String get securityStatusLabel => 'Security status';
+
+  @override
+  String get vaultCreatedStatus => 'Vault created';
+
+  @override
+  String get noVaultStatus => 'No vault';
+
+  @override
+  String get biometricsStatusOn => 'Biometrics enabled';
+
+  @override
+  String get biometricsStatusOff => 'Biometrics disabled';
+
+  @override
+  String get failedAttemptsLabel => 'Failed attempts';
+
+  @override
+  String get pinLengthSettingLabel => 'PIN length';
+
+  @override
+  String get autoLockSettingLabel => 'Auto-lock';
+
+  @override
+  String get autoLockImmediately => 'Immediately';
+
+  @override
+  String get autoLock30Seconds => '30 seconds';
+
+  @override
+  String get autoLock1Minute => '1 minute';
+
+  @override
+  String get autoLock5Minutes => '5 minutes';
+
+  @override
+  String get blockScreenshotsSettingLabel => 'Block screenshots';
+
+  @override
+  String get clipboardTimeoutSettingLabel => 'Clipboard timeout';
+
+  @override
+  String get lockNowLabel => 'Lock now';
 }

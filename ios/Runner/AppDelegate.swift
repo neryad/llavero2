@@ -13,6 +13,81 @@ import UIKit
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
     registerSecureFileChannel(with: engineBridge.pluginRegistry)
+    registerScreenSecurityChannel(with: engineBridge.pluginRegistry)
+  }
+
+  /// Canal nativo que oculta la interfaz cuando se detecta una captura o una
+  /// grabación de pantalla (iOS no permite bloquearlas como Android con
+  /// FLAG_SECURE, pero sí oscurecer la ventana en cuanto ocurren).
+  private func registerScreenSecurityChannel(with registry: FlutterPluginRegistry) {
+    guard let registrar = registry.registrar(forPlugin: "LlaveroScreenSecurity") else {
+      return
+    }
+    let channel = FlutterMethodChannel(
+      name: "llavero/screen_security",
+      binaryMessenger: registrar.messenger()
+    )
+    channel.setMethodCallHandler { [weak self] call, result in
+      switch call.method {
+      case "setScreenshotsBlocked":
+        let args = call.arguments as? [String: Any]
+        let blocked = args?["blocked"] as? Bool ?? true
+        self?.setScreenshotsBlocked(blocked)
+        result(nil)
+      default:
+        result(FlutterMethodNotImplemented)
+      }
+    }
+  }
+
+  private var securityOverlay: UIView?
+  private var screenshotObserver: NSObjectProtocol?
+  private var captureObserver: NSObjectProtocol?
+
+  private func setScreenshotsBlocked(_ blocked: Bool) {
+    guard let window = UIApplication.shared.primaryWindow else { return }
+
+    if !blocked {
+      securityOverlay?.removeFromSuperview()
+      securityOverlay = nil
+      if let screenshotObserver { NotificationCenter.default.removeObserver(screenshotObserver) }
+      if let captureObserver { NotificationCenter.default.removeObserver(captureObserver) }
+      screenshotObserver = nil
+      captureObserver = nil
+      return
+    }
+
+    guard securityOverlay == nil else { return }
+
+    let overlay = UIView(frame: window.bounds)
+    overlay.backgroundColor = UIColor.black
+    overlay.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+    overlay.isHidden = true
+    window.addSubview(overlay)
+    securityOverlay = overlay
+
+    screenshotObserver = NotificationCenter.default.addObserver(
+      forName: UIApplication.userDidTakeScreenshotNotification,
+      object: nil,
+      queue: .main
+    ) { [weak self] _ in
+      self?.flashOverlay()
+    }
+    captureObserver = NotificationCenter.default.addObserver(
+      forName: UIScreen.capturedDidChangeNotification,
+      object: nil,
+      queue: .main
+    ) { [weak self] notification in
+      guard let screen = notification.object as? UIScreen else { return }
+      self?.securityOverlay?.isHidden = !screen.isCaptured
+    }
+  }
+
+  private func flashOverlay() {
+    securityOverlay?.isHidden = false
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+      self?.securityOverlay?.isHidden = true
+    }
   }
 
   /// Canal nativo para los detalles de seguridad del archivo de la bóveda.

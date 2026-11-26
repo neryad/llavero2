@@ -10,6 +10,7 @@ import '../core/security/lockout_store.dart';
 import '../core/security/secure_store.dart';
 import '../data/vault_file_system.dart';
 import '../data/vault_storage.dart';
+import 'platform/screen_security.dart';
 
 /// Agrupa los controladores de la app y avisa a la interfaz cuando alguno
 /// de ellos cambia.
@@ -42,7 +43,7 @@ class AppControllers extends ChangeNotifier {
     // Resolver la ruta privada y crear el directorio base antes de cualquier
     // escritura (si no, el primer guardado falla con PathNotFoundException).
     await fileSystem.initialize();
-    return AppControllers(
+    final controllers = AppControllers(
       lock: LockController(
         initialKeyService: SecureStoreVaultKeyService(initialStore: store),
         initialLockoutStore: SecureStoreLockoutStore(store),
@@ -52,6 +53,10 @@ class AppControllers extends ChangeNotifier {
         initialStorage: VaultStorage(initialFileSystem: fileSystem),
       ),
     );
+    await ScreenSecurity.setScreenshotsBlocked(
+      controllers.settings.blockScreenshots,
+    );
+    return controllers;
   }
 
   /// Preferencias del usuario (idioma, tema, seguridad...).

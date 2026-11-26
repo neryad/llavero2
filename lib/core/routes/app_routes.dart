@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../features/home/home_screen.dart';
+import '../../features/settings/settings_screen.dart';
 import '../../features/export_import/export_import_screen.dart';
 import '../../features/entries/entry_detail_screen.dart';
 import '../../features/entries/entry_form_screen.dart';
@@ -74,6 +75,7 @@ abstract final class AppRoutes {
       case exportImport:
         return _build(const ExportImportScreen(), routeSettings);
       case settings:
+        return _build(const SettingsScreen(), routeSettings);
       case securityHealth:
         // Estas pantallas se implementan en fases posteriores.
         return _build(const ComingSoonScreen(), routeSettings);

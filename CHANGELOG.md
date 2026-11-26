@@ -10,6 +10,26 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
 ---
 
+## [Fase 7] — 2026-11-26
+
+### Added
+- **Pantalla de ajustes real**: tema, idioma, longitud del PIN, bloqueo
+  automático, tiempo en portapapeles y acceso a exportar/importar.
+- **Estado de seguridad**: bóveda creada, estado de la biometría, intentos
+  fallidos y botón «Bloquear ahora».
+- **Bloqueo automático**: `AppLifecycleLock` bloquea la bóveda al pasar a
+  segundo plano según el retardo configurado.
+- **Bloqueo de capturas**: `ScreenSecurity` con `FLAG_SECURE` en Android y
+  overlay oscuro en iOS al detectar captura o grabación.
+- **Acceso a ajustes** desde la pantalla de inicio.
+- **8 tests nuevos** (canal nativo, ciclo de vida y ajustes).
+
+### Verification
+- `flutter analyze` → sin problemas.
+- `flutter test` → **131 pruebas, todas correctas**.
+
+---
+
 ## [Fase 6] — 2026-11-26
 
 ### Added

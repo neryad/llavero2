@@ -35,6 +35,11 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text(l10n.homeLabel),
         actions: <Widget>[
           IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            tooltip: l10n.settingsLabel,
+            onPressed: () => Navigator.of(context).pushNamed(AppRoutes.settings),
+          ),
+          IconButton(
             icon: const Icon(Icons.delete_sweep_outlined),
             tooltip: l10n.trashLabel,
             onPressed: () => Navigator.of(context).pushNamed(AppRoutes.trash),

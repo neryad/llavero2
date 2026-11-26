@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'core/app_scope.dart';
+import 'core/widgets/app_lifecycle_lock.dart';
 import 'core/routes/app_routes.dart';
 import 'core/theme/app_theme.dart';
 import 'controllers/settings_controller.dart';
@@ -20,9 +21,10 @@ class LlaveroApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppScope(
       controllers: controllers,
-      child: ListenableBuilder(
-        // Solo hay que reconstruir cuando cambian los ajustes (tema/idioma).
-        listenable: controllers.settings,
+      child: AppLifecycleLock(
+        child: ListenableBuilder(
+          // Solo hay que reconstruir cuando cambian los ajustes (tema/idioma).
+          listenable: controllers.settings,
         builder: (context, _) {
           return MaterialApp(
             title: 'Llavero',
@@ -40,6 +42,7 @@ class LlaveroApp extends StatelessWidget {
             onGenerateRoute: AppRoutes.onGenerateRoute,
           );
         },
+        ),
       ),
     );
   }

@@ -379,5 +379,80 @@
   "importError": "No se pudo importar el respaldo.",
   "@importError": {
     "description": "Message shown when a backup import fails."
+  },
+
+  "securityStatusLabel": "Estado de seguridad",
+  "@securityStatusLabel": {
+    "description": "Section title of the security status on settings."
+  },
+
+  "vaultCreatedStatus": "Bóveda creada",
+  "@vaultCreatedStatus": {
+    "description": "Status shown when the vault exists."
+  },
+
+  "noVaultStatus": "Sin bóveda",
+  "@noVaultStatus": {
+    "description": "Status shown when there is no vault yet."
+  },
+
+  "biometricsStatusOn": "Biometría activada",
+  "@biometricsStatusOn": {
+    "description": "Status shown when biometrics is enabled."
+  },
+
+  "biometricsStatusOff": "Biometría desactivada",
+  "@biometricsStatusOff": {
+    "description": "Status shown when biometrics is disabled."
+  },
+
+  "failedAttemptsLabel": "Intentos fallidos",
+  "@failedAttemptsLabel": {
+    "description": "Label of the failed PIN attempts counter."
+  },
+
+  "pinLengthSettingLabel": "Longitud del PIN",
+  "@pinLengthSettingLabel": {
+    "description": "Setting that controls how many digits the PIN has."
+  },
+
+  "autoLockSettingLabel": "Bloqueo automático",
+  "@autoLockSettingLabel": {
+    "description": "Setting that controls when the vault locks itself."
+  },
+
+  "autoLockImmediately": "Inmediato",
+  "@autoLockImmediately": {
+    "description": "Auto-lock option: lock when the app goes to background."
+  },
+
+  "autoLock30Seconds": "30 segundos",
+  "@autoLock30Seconds": {
+    "description": "Auto-lock option: 30 seconds."
+  },
+
+  "autoLock1Minute": "1 minuto",
+  "@autoLock1Minute": {
+    "description": "Auto-lock option: 1 minute."
+  },
+
+  "autoLock5Minutes": "5 minutos",
+  "@autoLock5Minutes": {
+    "description": "Auto-lock option: 5 minutes."
+  },
+
+  "blockScreenshotsSettingLabel": "Bloquear capturas",
+  "@blockScreenshotsSettingLabel": {
+    "description": "Setting that blocks screenshots and screen recording."
+  },
+
+  "clipboardTimeoutSettingLabel": "Tiempo en el portapapeles",
+  "@clipboardTimeoutSettingLabel": {
+    "description": "Setting that controls how long copied secrets stay in the clipboard."
+  },
+
+  "lockNowLabel": "Bloquear ahora",
+  "@lockNowLabel": {
+    "description": "Button that locks the vault immediately."
   }
 }
