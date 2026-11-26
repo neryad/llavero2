@@ -100,6 +100,31 @@ Future<void> main() async {
       expect(bytes.isNotEmpty, isTrue);
     });
 
+    test('includeSecrets=true incluye los secretos en JSON y CSV', () {
+      final json = service.toJson(document(), includeSecrets: true);
+      final csv = service.toCsv(document(), includeSecrets: true);
+
+      expect(json.contains('secreto-unicornio'), isTrue);
+      expect(csv.contains('secreto-unicornio'), isTrue);
+      expect(json.contains(hiddenSecretPlaceholder), isFalse);
+    });
+
+    test('el respaldo cifrado nunca incluye secretos en claro', () async {
+      final backup = await service.createEncryptedBackup(
+        document(),
+        'clave',
+        createdAt: now,
+      );
+      expect(
+        jsonEncode(backup).contains('secreto-unicornio'),
+        isFalse,
+      );
+      expect(
+        jsonEncode(backup).contains(hiddenSecretPlaceholder),
+        isFalse,
+      );
+    });
+
     test('importar reemplaza las entradas y persiste el cambio', () async {
       final fileSystem = MemoryVaultFileSystem();
       final key = await VaultCrypto().generateDek();

@@ -568,5 +568,25 @@
   "noCustomCategories": "Todavía no has creado categorías.",
   "@noCustomCategories": {
     "description": "Message shown when there are no custom categories."
+  },
+
+  "includeSecretsLabel": "Incluir secretos en claro",
+  "@includeSecretsLabel": {
+    "description": "Switch that enables exporting secret values without hiding them."
+  },
+
+  "secretsExportWarning": "Los secretos se guardarán sin cifrar. Cualquiera que lea el archivo podrá verlos.",
+  "@secretsExportWarning": {
+    "description": "First confirmation warning when exporting secrets in plain text."
+  },
+
+  "secretsExportConfirm": "¿Confirmas que quieres exportar los secretos en claro?",
+  "@secretsExportConfirm": {
+    "description": "Second confirmation when exporting secrets in plain text."
+  },
+
+  "exportAnywayLabel": "Sí, exportar",
+  "@exportAnywayLabel": {
+    "description": "Final confirmation button to export secrets in plain text."
   }
 }

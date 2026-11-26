@@ -374,4 +374,18 @@ class L10nEs extends L10n {
 
   @override
   String get noCustomCategories => 'Todavía no has creado categorías.';
+
+  @override
+  String get includeSecretsLabel => 'Incluir secretos en claro';
+
+  @override
+  String get secretsExportWarning =>
+      'Los secretos se guardarán sin cifrar. Cualquiera que lea el archivo podrá verlos.';
+
+  @override
+  String get secretsExportConfirm =>
+      '¿Confirmas que quieres exportar los secretos en claro?';
+
+  @override
+  String get exportAnywayLabel => 'Sí, exportar';
 }

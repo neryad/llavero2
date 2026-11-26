@@ -91,8 +91,11 @@ este archivo y se hace commit.
   selector en el formulario y nombres traducidos en Home/detalle. No se puede
   borrar una categoría en uso. 2 tests nuevos.
 
-- [ ] **14. Opción de exportar secretos en claro** con doble confirmación
-  (por defecto siguen siendo `[oculto]`).
+- [x] **14. Opción de exportar secretos en claro.** ✅ Completada 2026-11-26 —
+  `ExportService` acepta `includeSecrets` (por defecto `false`), la pantalla
+  tiene un interruptor y pide **dos confirmaciones** antes de exportar JSON,
+  CSV o PDF con secretos. El respaldo `.llavero` sigue siempre cifrado.
+  4 tests nuevos.
 
 - [ ] **15. Pantalla real de "security health"** (ruta `/security-health` hoy
   es `ComingSoon`): contraseñas débiles, repetidas o antiguas.
@@ -126,6 +129,6 @@ este archivo y se hace commit.
 | 2 | 3 | 5 |
 | 3 | 4 | 8 |
 | 4 | 0 | 3 |
-| **Total** | **12** | **20** |
+| **Total** | **13** | **20** |
 
-Última actualización: 2026-11-26 (12 completadas, 1 diferida).
+Última actualización: 2026-11-26 (13 completadas, 1 diferida).

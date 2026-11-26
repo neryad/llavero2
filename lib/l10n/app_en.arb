@@ -568,5 +568,25 @@
   "noCustomCategories": "You haven't created any categories yet.",
   "@noCustomCategories": {
     "description": "Message shown when there are no custom categories."
+  },
+
+  "includeSecretsLabel": "Include secrets in plain text",
+  "@includeSecretsLabel": {
+    "description": "Switch that enables exporting secret values without hiding them."
+  },
+
+  "secretsExportWarning": "Secrets will be saved unencrypted. Anyone reading the file will see them.",
+  "@secretsExportWarning": {
+    "description": "First confirmation warning when exporting secrets in plain text."
+  },
+
+  "secretsExportConfirm": "Are you sure you want to export secrets in plain text?",
+  "@secretsExportConfirm": {
+    "description": "Second confirmation when exporting secrets in plain text."
+  },
+
+  "exportAnywayLabel": "Yes, export",
+  "@exportAnywayLabel": {
+    "description": "Final confirmation button to export secrets in plain text."
   }
 }

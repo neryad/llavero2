@@ -80,10 +80,68 @@ class _ExportImportScreenState extends State<ExportImportScreen> {
     }
   }
 
+  bool _includeSecrets = false;
+
+  Future<bool> _confirmSecretsExport() async {
+    final l10n = L10n.of(context);
+    final first = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.includeSecretsLabel),
+        content: Text(l10n.secretsExportWarning),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.cancelLabel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.continueLabel),
+          ),
+        ],
+      ),
+    );
+    if (first != true || !mounted) return false;
+
+    final second = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.includeSecretsLabel),
+        content: Text(l10n.secretsExportConfirm),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.cancelLabel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.exportAnywayLabel),
+          ),
+        ],
+      ),
+    );
+    return second == true;
+  }
+
+  /// Ejecuta una exportación, pidiendo doble confirmación si se van a
+  /// incluir secretos en claro.
+  Future<void> _guarded(Future<void> Function() action) async {
+    if (_includeSecrets) {
+      final confirmed = await _confirmSecretsExport();
+      if (!confirmed || !mounted) return;
+    }
+    await action();
+  }
+
   Future<void> _exportPdf() async {
-    final bytes = await _service.toPdf(_document());
-    final file = await _temporaryFile('pdf', bytes);
-    await Printing.layoutPdf(onLayout: (_) async => await file.readAsBytes());
+    await _guarded(() async {
+      final bytes = await _service.toPdf(
+        _document(),
+        includeSecrets: _includeSecrets,
+      );
+      final file = await _temporaryFile('pdf', bytes);
+      await Printing.layoutPdf(onLayout: (_) async => await file.readAsBytes());
+    });
   }
 
   Future<void> _exportText(String extension, String content) async {
@@ -112,7 +170,13 @@ class _ExportImportScreenState extends State<ExportImportScreen> {
           ),
           const SizedBox(height: 8),
           Text(l10n.backupWarning, style: Theme.of(context).textTheme.bodySmall),
-          const SizedBox(height: 24),
+          const SizedBox(height: 8),
+          SwitchListTile(
+            title: Text(l10n.includeSecretsLabel),
+            value: _includeSecrets,
+            onChanged: (value) => setState(() => _includeSecrets = value),
+          ),
+          const SizedBox(height: 16),
           FilledButton.icon(
             onPressed: _exportBackup,
             icon: const Icon(Icons.backup_outlined),
@@ -132,13 +196,29 @@ class _ExportImportScreenState extends State<ExportImportScreen> {
           ),
           const SizedBox(height: 8),
           OutlinedButton.icon(
-            onPressed: () => _exportText('json', _service.toJson(_document())),
+            onPressed: () => _guarded(
+              () => _exportText(
+                'json',
+                _service.toJson(
+                  _document(),
+                  includeSecrets: _includeSecrets,
+                ),
+              ),
+            ),
             icon: const Icon(Icons.code_outlined),
             label: Text(l10n.exportJsonLabel),
           ),
           const SizedBox(height: 8),
           OutlinedButton.icon(
-            onPressed: () => _exportText('csv', _service.toCsv(_document())),
+            onPressed: () => _guarded(
+              () => _exportText(
+                'csv',
+                _service.toCsv(
+                  _document(),
+                  includeSecrets: _includeSecrets,
+                ),
+              ),
+            ),
             icon: const Icon(Icons.table_chart_outlined),
             label: Text(l10n.exportCsvLabel),
           ),

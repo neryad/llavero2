@@ -45,16 +45,19 @@ class ExportService {
     );
   }
 
-  /// Exporta la bóveda a JSON sin secretos en claro.
-  String toJson(VaultDocument document) {
-    return jsonEncode(_safeDocument(document).toJson());
+  /// Exporta la bóveda a JSON.
+  ///
+  /// Por defecto los secretos se sustituyen por `[oculto]`. Solo se incluyen
+  /// en claro si el usuario lo pide explícitamente.
+  String toJson(VaultDocument document, {bool includeSecrets = false}) {
+    return jsonEncode(_safeDocument(document, includeSecrets).toJson());
   }
 
-  /// Exporta la bóveda a CSV sin secretos en claro.
-  String toCsv(VaultDocument document) {
+  /// Exporta la bóveda a CSV sin secretos en claro por defecto.
+  String toCsv(VaultDocument document, {bool includeSecrets = false}) {
     final buffer = StringBuffer()
       ..writeln('titulo,categoria,persona,etiqueta,valor,tipo,secreto,notas');
-    for (final entry in _safeDocument(document).entries) {
+    for (final entry in _safeDocument(document, includeSecrets).entries) {
       for (final field in entry.fields) {
         buffer.writeln(<String>[
           entry.title,
@@ -72,9 +75,12 @@ class ExportService {
   }
 
   /// Genera un PDF con el resumen de la bóveda (sin secretos en claro).
-  Future<Uint8List> toPdf(VaultDocument document) async {
+  Future<Uint8List> toPdf(
+    VaultDocument document, {
+    bool includeSecrets = false,
+  }) async {
     final pdf = pw.Document();
-    final safe = _safeDocument(document);
+    final safe = _safeDocument(document, includeSecrets);
     final fontData = await rootBundle.load(
       'assets/fonts/Plus_Jakarta_Sans/static/PlusJakartaSans-Regular.ttf',
     );
@@ -101,8 +107,10 @@ class ExportService {
     return pdf.save();
   }
 
-  /// Copia del documento con los valores secretos ocultos.
-  VaultDocument _safeDocument(VaultDocument document) {
+  /// Copia del documento con los valores secretos ocultos, salvo que el
+  /// usuario haya confirmado explícitamente que quiere incluirlos.
+  VaultDocument _safeDocument(VaultDocument document, bool includeSecrets) {
+    if (includeSecrets) return document;
     return VaultDocument(
       version: document.version,
       entries: document.entries

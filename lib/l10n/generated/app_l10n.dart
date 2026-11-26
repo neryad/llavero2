@@ -810,6 +810,30 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'You haven\'t created any categories yet.'**
   String get noCustomCategories;
+
+  /// Switch that enables exporting secret values without hiding them.
+  ///
+  /// In en, this message translates to:
+  /// **'Include secrets in plain text'**
+  String get includeSecretsLabel;
+
+  /// First confirmation warning when exporting secrets in plain text.
+  ///
+  /// In en, this message translates to:
+  /// **'Secrets will be saved unencrypted. Anyone reading the file will see them.'**
+  String get secretsExportWarning;
+
+  /// Second confirmation when exporting secrets in plain text.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to export secrets in plain text?'**
+  String get secretsExportConfirm;
+
+  /// Final confirmation button to export secrets in plain text.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, export'**
+  String get exportAnywayLabel;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {
