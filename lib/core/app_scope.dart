@@ -79,7 +79,7 @@ class AppControllers extends ChangeNotifier {
       // Desbloqueo reciente: cargar las entradas con la DEK desenvuelta.
       final dek = lock.unlockedDek;
       if (dek != null) {
-        entries.load(dek);
+        entries.open(dek);
       }
       _wasLocked = false;
     }

@@ -57,6 +57,15 @@ class EntriesController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Abre la bóveda, carga las entradas y purga la papelera caducada.
+  ///
+  /// Es el入口 que usa `AppControllers` al desbloquear: así la papelera se
+  /// limpia sin que el usuario tenga que abrir su pantalla.
+  Future<void> open(SecretKey key) async {
+    await load(key);
+    await purgeExpiredTrash();
+  }
+
   /// Cierra la bóveda y borra las entradas de memoria.
   void lock() {
     if (!_isOpen) return;
