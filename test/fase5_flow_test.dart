@@ -35,6 +35,9 @@ class _FakeKeyService implements VaultKeyService {
   }
 
   @override
+  Future<void> changePin(String currentPin, String newPin) async {}
+
+  @override
   Future<void> enableBiometrics(SecretKey dek) async {}
 
   @override

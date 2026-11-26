@@ -57,6 +57,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
             ListTile(
+              leading: const Icon(Icons.password_outlined),
+              title: Text(l10n.changePinLabel),
+              onTap: () => Navigator.of(context).pushNamed(AppRoutes.changePin),
+            ),
+            ListTile(
               leading: const Icon(Icons.fingerprint),
               title: Text(
                 lock.biometricsEnabled

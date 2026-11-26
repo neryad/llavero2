@@ -642,6 +642,42 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Lock now'**
   String get lockNowLabel;
+
+  /// Button and title of the change PIN screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Change PIN'**
+  String get changePinLabel;
+
+  /// Label of the current PIN field when changing it.
+  ///
+  /// In en, this message translates to:
+  /// **'Current PIN'**
+  String get currentPinLabel;
+
+  /// Label of the new PIN field.
+  ///
+  /// In en, this message translates to:
+  /// **'New PIN'**
+  String get newPinLabel;
+
+  /// Label of the new PIN confirmation field.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm new PIN'**
+  String get confirmNewPinLabel;
+
+  /// Message shown after changing the PIN.
+  ///
+  /// In en, this message translates to:
+  /// **'PIN changed successfully.'**
+  String get pinChangedSuccess;
+
+  /// Error shown when the current PIN is wrong.
+  ///
+  /// In en, this message translates to:
+  /// **'The current PIN is incorrect.'**
+  String get wrongCurrentPin;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

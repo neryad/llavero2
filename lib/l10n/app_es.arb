@@ -454,5 +454,35 @@
   "lockNowLabel": "Bloquear ahora",
   "@lockNowLabel": {
     "description": "Button that locks the vault immediately."
+  },
+
+  "changePinLabel": "Cambiar PIN",
+  "@changePinLabel": {
+    "description": "Button and title of the change PIN screen."
+  },
+
+  "currentPinLabel": "PIN actual",
+  "@currentPinLabel": {
+    "description": "Label of the current PIN field when changing it."
+  },
+
+  "newPinLabel": "Nuevo PIN",
+  "@newPinLabel": {
+    "description": "Label of the new PIN field."
+  },
+
+  "confirmNewPinLabel": "Confirmar nuevo PIN",
+  "@confirmNewPinLabel": {
+    "description": "Label of the new PIN confirmation field."
+  },
+
+  "pinChangedSuccess": "PIN cambiado correctamente.",
+  "@pinChangedSuccess": {
+    "description": "Message shown after changing the PIN."
+  },
+
+  "wrongCurrentPin": "El PIN actual no es correcto.",
+  "@wrongCurrentPin": {
+    "description": "Error shown when the current PIN is wrong."
   }
 }

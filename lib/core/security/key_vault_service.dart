@@ -25,6 +25,12 @@ abstract class VaultKeyService {
   /// Lanza [InvalidPinException] si el PIN no es correcto.
   Future<SecretKey> unlockWithPin(String pin);
 
+  /// Cambia el PIN re-envolviendo la DEK con una KEK nueva.
+  ///
+  /// Los datos no se re-cifran: solo cambia la clave que envuelve a la DEK.
+  /// Lanza [InvalidPinException] si el PIN actual no es correcto.
+  Future<void> changePin(String currentPin, String newPin);
+
   /// Guarda una copia de la DEK para poder abrir con biometría.
   ///
   /// El PIN sigue siendo obligatorio y siempre funciona: la biometría es
@@ -102,6 +108,38 @@ class SecureStoreVaultKeyService implements VaultKeyService {
     final kek = await params.deriveKey(pin);
     final wrappedDek = base64Decode(wrappedBase64);
     return _crypto.unwrapDek(wrappedDek, kek);
+  }
+
+  @override
+  Future<void> changePin(String currentPin, String newPin) async {
+    final wrappedBase64 = await _store.read(SecureStoreKeys.wrappedDek);
+    final paramsJson = await _store.read(SecureStoreKeys.kdfParameters);
+    if (wrappedBase64 == null || paramsJson == null) {
+      throw const MissingVaultException();
+    }
+
+    // 1. Desenvolver la DEK con la KEK derivada del PIN actual.
+    final oldParams = KdfParameters.fromJson(
+      (jsonDecode(paramsJson) as Map<String, Object?>).cast<String, Object?>(),
+    );
+    final oldKek = await oldParams.deriveKey(currentPin);
+    final dek = await _crypto.unwrapDek(base64Decode(wrappedBase64), oldKek);
+
+    // 2. Nueva sal y nueva KEK derivada del PIN nuevo.
+    final newParams = KdfParameters.random(KdfType.argon2id);
+    final newKek = await newParams.deriveKey(newPin);
+    final newWrapped = await _crypto.wrapDek(dek, newKek);
+
+    // 3. Guardar los parámetros y la DEK envuelta. Se escriben los dos juntos
+    //    porque cualquier combinación mixta dejaría la bóveda inabierta.
+    await _store.write(
+      SecureStoreKeys.kdfParameters,
+      jsonEncode(newParams.toJson()),
+    );
+    await _store.write(
+      SecureStoreKeys.wrappedDek,
+      base64Encode(newWrapped),
+    );
   }
 
   @override

@@ -162,6 +162,35 @@ class LockController extends ChangeNotifier {
     return true;
   }
 
+  /// Cambia el PIN de la bóveda.
+  ///
+  /// Devuelve `false` si el PIN actual es incorrecto o si la app está
+  /// bloqueada por intentos fallidos.
+  Future<bool> changePin(String currentPin, String newPin) async {
+    final service = _keyService;
+    if (service == null) {
+      throw StateError(
+        'LockController necesita un VaultKeyService para cambiar el PIN.',
+      );
+    }
+    if (isLockedOut) {
+      notifyListeners();
+      return false;
+    }
+
+    try {
+      await service.changePin(currentPin, newPin);
+    } on InvalidPinException {
+      await _registerFailedAttempt();
+      return false;
+    }
+
+    _lockoutState = _lockoutState.registerSuccess();
+    await _persistLockoutState();
+    notifyListeners();
+    return true;
+  }
+
   /// Cierra la bóveda (por ejemplo al pasar a segundo plano).
   void lock() {
     if (_isLocked) return;

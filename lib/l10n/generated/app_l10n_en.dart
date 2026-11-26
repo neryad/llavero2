@@ -286,4 +286,22 @@ class L10nEn extends L10n {
 
   @override
   String get lockNowLabel => 'Lock now';
+
+  @override
+  String get changePinLabel => 'Change PIN';
+
+  @override
+  String get currentPinLabel => 'Current PIN';
+
+  @override
+  String get newPinLabel => 'New PIN';
+
+  @override
+  String get confirmNewPinLabel => 'Confirm new PIN';
+
+  @override
+  String get pinChangedSuccess => 'PIN changed successfully.';
+
+  @override
+  String get wrongCurrentPin => 'The current PIN is incorrect.';
 }

@@ -6,7 +6,10 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 ## [Unreleased]
 
 ### Added
-- (Nada por ahora.)
+- **Mejora #1 del plan de mejoras: cambio de PIN.** Se verifica el PIN actual,
+  se valida el nuevo y se re-envuelve la DEK con una KEK nueva y sal nueva, sin
+  re-cifrar los datos. Pantalla `/settings/change-pin` y 4 tests nuevos.
+  El ajuste `pinLength` pasa a reflejar la longitud real del PIN.
 
 ---
 

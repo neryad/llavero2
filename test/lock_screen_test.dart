@@ -47,6 +47,9 @@ class FakeLockKeyService implements VaultKeyService {
   }
 
   @override
+  Future<void> changePin(String currentPin, String newPin) async {}
+
+  @override
   Future<void> enableBiometrics(SecretKey dek) async {}
 
   @override
@@ -270,6 +273,9 @@ class _FixedDekKeyService implements VaultKeyService {
 
   @override
   Future<SecretKey> unlockWithPin(String pin) async => dek;
+
+  @override
+  Future<void> changePin(String currentPin, String newPin) async {}
 
   @override
   Future<void> enableBiometrics(SecretKey dek) async {}
