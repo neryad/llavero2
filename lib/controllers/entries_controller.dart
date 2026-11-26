@@ -351,14 +351,17 @@ class EntriesController extends ChangeNotifier {
   }
 
   /// Guardar el estado actual en el archivo.
+  ///
+  /// La memoria ya contiene el estado correcto (todas las mutaciones la
+  /// actualizan antes de llegar aquí), así que no se vuelve a leer ni a
+  /// descifrar el archivo: eso era innecesario y podía introducir una
+  /// ventana en la que memoria y disco divergieran.
+  /// Tras guardar se notifica a la interfaz para que se redibuje.
   Future<void> _saveToStorage() async {
-    // Crear un documento con TODAS las entradas (incluidas las de la papelera).
     final document = VaultDocument(
       entries: _entries.toList(growable: false),
     );
     await _storage.save(document, _pinKey!);
-
-    // Re-cargar desde el archivo para sincronizar memoria.
-    await load(_pinKey!);
+    notifyListeners();
   }
 }

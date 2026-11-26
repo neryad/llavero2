@@ -63,8 +63,10 @@ este archivo y se hace commit.
   «no se pueden bloquear: la app solo oscurece la pantalla», en ES/EN.
   1 test nuevo.
 
-- [ ] **9. Evitar la re-lectura del archivo en cada cambio** en
-  `EntriesController._saveToStorage()` (guarda y luego descifra de nuevo).
+- [x] **9. Evitar la re-lectura del archivo en cada cambio.** ✅ Completada
+  2026-11-26 — `_saveToStorage()` ya no vuelve a cargar/descifrar el archivo;
+  tras guardar solo notifica a la interfaz. La memoria es la fuente de verdad
+  y se elimina la ventana de divergencia. 2 tests nuevos.
 
 ---
 
@@ -111,9 +113,9 @@ este archivo y se hace commit.
 | Prioridad | Completadas | Totales |
 |---|---|---|
 | 1 | 4 | 4 |
-| 2 | 2 | 5 |
+| 2 | 3 | 5 |
 | 3 | 2 | 8 |
 | 4 | 0 | 3 |
-| **Total** | **8** | **20** |
+| **Total** | **9** | **20** |
 
-Última actualización: 2026-11-26 (mejoras #1 a #8 completadas).
+Última actualización: 2026-11-26 (mejoras #1 a #9 completadas).
