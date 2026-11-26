@@ -30,6 +30,16 @@ enum KdfType {
   }
 }
 
+/// Memoria por defecto para Argon2id, en KiB.
+///
+/// Se puede ajustar al compilar sin cambiar el formato del archivo:
+///   flutter build apk --dart-define=LLAVERO_KDF_MEMORY_KIB=32768
+///
+/// El valor elegido viaja en la cabecera de cada bóveda, así que las bóvedas
+/// creadas con otra memoria siguen abriéndose normalmente.
+const int kDefaultArgon2MemoryKiB =
+    int.fromEnvironment('LLAVERO_KDF_MEMORY_KIB', defaultValue: 64 * 1024);
+
 /// Parámetros del KDF: qué algoritmo se usó, con qué sal y con qué coste.
 ///
 /// Estos parámetros se guardan (sin cifrar, no son secretos) junto a los
@@ -54,7 +64,7 @@ class KdfParameters {
   /// que PBKDF2 con 600 000 iteraciones (≈ 1,8 s aquí).
   factory KdfParameters.argon2id({
     required List<int> salt,
-    int memoryKiB = 64 * 1024,
+    int memoryKiB = kDefaultArgon2MemoryKiB,
     int iterations = 3,
     int parallelism = 1,
     int keyBits = 256,

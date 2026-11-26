@@ -40,8 +40,11 @@ este archivo y se hace commit.
 
 ## 🟠 Prioridad 2 — Seguridad y robustez
 
-- [ ] **5. Argon2id en Dart puro** (sin aceleración nativa permitida). Medir en
-  gama baja; si tarda >2 s, bajar a 32 MiB (no cambia el formato del archivo).
+- [x] **5. Argon2id en Dart puro.** ✅ Completada 2026-11-26 — la memoria es
+  configurable con `--dart-define=LLAVERO_KDF_MEMORY_KIB=32768` sin cambiar el
+  formato del archivo. Benchmark real en `emulator-5554`: **64 MiB → 766 ms**,
+  32 MiB → 168 ms, 16 MiB → 87 ms (todos <2 s), así que se mantiene 64 MiB por
+  defecto. 4 tests nuevos + `tool/bench_kdf_device.dart`.
 
 - [ ] **6. Detección de root/jailbreak** conadvertencia opcional.
 
@@ -98,9 +101,9 @@ este archivo y se hace commit.
 | Prioridad | Completadas | Totales |
 |---|---|---|
 | 1 | 4 | 4 |
-| 2 | 0 | 5 |
+| 2 | 1 | 5 |
 | 3 | 0 | 8 |
 | 4 | 0 | 3 |
-| **Total** | **4** | **20** |
+| **Total** | **5** | **20** |
 
-Última actualización: 2026-11-26 (mejoras #1 a #4 completadas).
+Última actualización: 2026-11-26 (mejoras #1 a #5 completadas).

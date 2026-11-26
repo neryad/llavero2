@@ -126,9 +126,11 @@ marca el archivo con `NSURLIsExcludedFromBackupKey`.
 
 ### Decisiones
 
-- **Argon2id por defecto** (benchmark real: 381 ms frente a 1838 ms de
-  PBKDF2 con 600 000 iteraciones) y PBKDF2 como alternativa, porque los
-  parámetros viajan en la cabecera y los archivos antiguos siguen leyéndose.
+- **Argon2id por defecto** (benchmark real en host: 381 ms; en emulador
+  Android: 766 ms con 64 MiB, 168 ms con 32 MiB) y PBKDF2 como alternativa,
+  porque los parámetros viajan en la cabecera y los archivos antiguos siguen
+  leyéndose. La memoria se puede ajustar al compilar con
+  `--dart-define=LLAVERO_KDF_MEMORY_KIB=32768` sin cambiar el formato.
 - **`intl` fijado en `^0.20.2`** por compatibilidad con Flutter 3.44.
 - Sin `google_fonts`: las fuentes están empaquetadas como assets.
 

@@ -8,6 +8,12 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- **Mejora #5 del plan de mejoras: memoria de Argon2id configurable y medida.**
+  `--dart-define=LLAVERO_KDF_MEMORY_KIB=32768` permite bajar a 32 MiB sin
+  cambiar el formato. Benchmark real en emulador: 64 MiB → 766 ms, 32 MiB →
+  168 ms, 16 MiB → 87 ms; se mantiene 64 MiB por defecto. 4 tests nuevos y
+  `tool/bench_kdf_device.dart`.
+
 - **Mejora #4 del plan de mejoras: verificación en dispositivo/build nativo.**
   Guía interactiva `docs/PRUEBAS_DISPOSITIVO.md`, tests de contrato de canales
   (`local_auth`, `share_plus`), instalación y arranque en emulador sin
