@@ -74,7 +74,13 @@ void main() {
       await tester.pump();
 
       expect(find.text('Salud de contraseñas'), findsOneWidget);
-      expect(find.text('Todo en orden: no hay avisos.'), findsOneWidget);
+      expect(find.text('Contraseñas revisadas: 0'), findsOneWidget);
+      expect(
+        find.text(
+          'No hay campos secretos todavía. Marca la casilla «Secreto» en los campos de tus entradas para que se revisen.',
+        ),
+        findsOneWidget,
+      );
       expect(find.text('Llavero2026!Segura'), findsNothing);
     });
   });

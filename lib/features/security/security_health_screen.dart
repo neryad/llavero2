@@ -17,13 +17,13 @@ class SecurityHealthScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = L10n.of(context);
     final controllers = AppScope.of(context);
-    final report = PasswordHealth.analyze(controllers.entries.allEntries);
 
     return AppScaffold(
       appBar: AppBar(title: Text(l10n.securityHealthLabel)),
       body: ListenableBuilder(
         listenable: controllers.entries,
         builder: (context, _) {
+          final report = PasswordHealth.analyze(controllers.entries.allEntries);
           return ListView(
             padding: const EdgeInsets.all(16),
             children: <Widget>[
@@ -36,11 +36,19 @@ class SecurityHealthScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              if (report.isEmpty || (report.weak.isEmpty && report.reused.isEmpty))
+              if (report.total == 0)
                 Padding(
                   padding: const EdgeInsets.all(16),
                   child: Text(
-                    l10n.allGood,
+                    l10n.noSecretsToCheck,
+                    textAlign: TextAlign.center,
+                  ),
+                )
+              else if (report.weak.isEmpty && report.reused.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    l10n.healthAllGood(report.total),
                     textAlign: TextAlign.center,
                   ),
                 )

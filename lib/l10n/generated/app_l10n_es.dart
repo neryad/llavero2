@@ -429,4 +429,17 @@ class L10nEs extends L10n {
   @override
   String get webStorageWarning =>
       'En la web los datos se guardan en el navegador, no en un almacén seguro del sistema. Usa la app móvil para mayor seguridad.';
+
+  @override
+  String get noSecretsToCheck =>
+      'No hay campos secretos todavía. Marca la casilla «Secreto» en los campos de tus entradas para que se revisen.';
+
+  @override
+  String healthAllGood(Object count) {
+    return '$count contraseñas revisadas, sin avisos.';
+  }
+
+  @override
+  String get historyHint =>
+      'Se guarda una copia antes de cada cambio. Haz un cambio en una entrada para ver la primera versión.';
 }

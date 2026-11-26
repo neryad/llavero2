@@ -648,5 +648,20 @@
   "webStorageWarning": "On the web, data is stored in the browser rather than a system secure vault. Use the mobile app for stronger security.",
   "@webStorageWarning": {
     "description": "Warning shown on web about less secure local storage."
+  },
+
+  "noSecretsToCheck": "There are no secret fields yet. Tick the \"Secret\" box on your entries' fields so they can be checked.",
+  "@noSecretsToCheck": {
+    "description": "Message shown when no secret fields exist to analyze."
+  },
+
+  "healthAllGood": "{count} passwords checked, no warnings.",
+  "@healthAllGood": {
+    "description": "Message shown when all passwords passed the health checks."
+  },
+
+  "historyHint": "A copy is saved before each change. Make a change to an entry to see the first version.",
+  "@historyHint": {
+    "description": "Hint shown when the vault history is empty."
   }
 }

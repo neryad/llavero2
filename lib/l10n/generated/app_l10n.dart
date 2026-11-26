@@ -906,6 +906,24 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'On the web, data is stored in the browser rather than a system secure vault. Use the mobile app for stronger security.'**
   String get webStorageWarning;
+
+  /// Message shown when no secret fields exist to analyze.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no secret fields yet. Tick the \"Secret\" box on your entries\' fields so they can be checked.'**
+  String get noSecretsToCheck;
+
+  /// Message shown when all passwords passed the health checks.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} passwords checked, no warnings.'**
+  String healthAllGood(Object count);
+
+  /// Hint shown when the vault history is empty.
+  ///
+  /// In en, this message translates to:
+  /// **'A copy is saved before each change. Make a change to an entry to see the first version.'**
+  String get historyHint;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {
