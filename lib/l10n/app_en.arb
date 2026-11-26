@@ -319,5 +319,65 @@
   "purgeTrashLabel": "Empty trash",
   "@purgeTrashLabel": {
     "description": "Button that empties the trash."
+  },
+
+  "exportImportTitle": "Export / import",
+  "@exportImportTitle": {
+    "description": "Title of the export and import screen."
+  },
+
+  "backupPasswordLabel": "Backup password",
+  "@backupPasswordLabel": {
+    "description": "Label of the backup password field."
+  },
+
+  "backupWarning": "Save this password: it cannot be recovered.",
+  "@backupWarning": {
+    "description": "Warning shown when exporting an encrypted backup."
+  },
+
+  "exportBackupLabel": "Export backup (.llavero)",
+  "@exportBackupLabel": {
+    "description": "Button that exports an encrypted backup file."
+  },
+
+  "importBackupLabel": "Import backup",
+  "@importBackupLabel": {
+    "description": "Button that imports an encrypted backup file."
+  },
+
+  "exportPdfLabel": "Export PDF",
+  "@exportPdfLabel": {
+    "description": "Button that exports the vault as a PDF."
+  },
+
+  "exportJsonLabel": "Export JSON",
+  "@exportJsonLabel": {
+    "description": "Button that exports the vault as JSON."
+  },
+
+  "exportCsvLabel": "Export CSV",
+  "@exportCsvLabel": {
+    "description": "Button that exports the vault as CSV."
+  },
+
+  "shareLabel": "Share",
+  "@shareLabel": {
+    "description": "Button that shares an exported file."
+  },
+
+  "printLabel": "Print",
+  "@printLabel": {
+    "description": "Button that prints the PDF."
+  },
+
+  "importSuccess": "Backup imported successfully.",
+  "@importSuccess": {
+    "description": "Message shown after a successful backup import."
+  },
+
+  "importError": "Could not import the backup.",
+  "@importError": {
+    "description": "Message shown when a backup import fails."
   }
 }

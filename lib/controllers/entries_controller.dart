@@ -65,6 +65,17 @@ class EntriesController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Reemplaza todas las entradas por las de un documento importado.
+  Future<void> replaceAll(VaultDocument document) async {
+    if (!_isOpen) {
+      throw StateError('La bóveda está cerrada.');
+    }
+    _entries
+      ..clear()
+      ..addAll(document.entries);
+    await _saveToStorage();
+  }
+
   /// Obtiene las entradas activas.
   List<VaultEntry> get entries {
     return _entries.where((e) => !e.isDeleted).toList(growable: false);

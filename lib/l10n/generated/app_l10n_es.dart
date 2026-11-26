@@ -206,4 +206,40 @@ class L10nEs extends L10n {
 
   @override
   String get purgeTrashLabel => 'Vaciar papelera';
+
+  @override
+  String get exportImportTitle => 'Exportar / importar';
+
+  @override
+  String get backupPasswordLabel => 'Contraseña del respaldo';
+
+  @override
+  String get backupWarning => 'Guarda esta contraseña: no se puede recuperar.';
+
+  @override
+  String get exportBackupLabel => 'Exportar respaldo (.llavero)';
+
+  @override
+  String get importBackupLabel => 'Importar respaldo';
+
+  @override
+  String get exportPdfLabel => 'Exportar PDF';
+
+  @override
+  String get exportJsonLabel => 'Exportar JSON';
+
+  @override
+  String get exportCsvLabel => 'Exportar CSV';
+
+  @override
+  String get shareLabel => 'Compartir';
+
+  @override
+  String get printLabel => 'Imprimir';
+
+  @override
+  String get importSuccess => 'Respaldo importado correctamente.';
+
+  @override
+  String get importError => 'No se pudo importar el respaldo.';
 }

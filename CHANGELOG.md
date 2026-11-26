@@ -10,6 +10,26 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
 ---
 
+## [Fase 6] — 2026-11-26
+
+### Added
+- **Respaldo cifrado `.llavero`**: exportar e importar con contraseña
+  independiente del PIN, usando Argon2id + AES-256-GCM (`BackupCrypto`).
+- **Exportación JSON y CSV**: sin valores secretos en claro (`[oculto]`), con
+  escapado correcto de comillas en CSV.
+- **Exportación PDF**: resumen imprimible con la fuente del proyecto embebida.
+- **Pantalla de exportar/importar**: selección de archivo (`file_picker`),
+  compartir (`share_plus`) e imprimir (`printing`).
+- **`EntriesController.replaceAll`**: importar un respaldo reemplaza la bóveda
+  actual y persiste el cambio en el archivo cifrado.
+- **8 tests nuevos** (servicio + UI + importación).
+
+### Verification
+- `flutter analyze` → sin problemas.
+- `flutter test` → **123 pruebas, todas correctas**.
+
+---
+
 ## [Fase 5] — 2026-11-26
 
 ### Added

@@ -205,4 +205,40 @@ class L10nEn extends L10n {
 
   @override
   String get purgeTrashLabel => 'Empty trash';
+
+  @override
+  String get exportImportTitle => 'Export / import';
+
+  @override
+  String get backupPasswordLabel => 'Backup password';
+
+  @override
+  String get backupWarning => 'Save this password: it cannot be recovered.';
+
+  @override
+  String get exportBackupLabel => 'Export backup (.llavero)';
+
+  @override
+  String get importBackupLabel => 'Import backup';
+
+  @override
+  String get exportPdfLabel => 'Export PDF';
+
+  @override
+  String get exportJsonLabel => 'Export JSON';
+
+  @override
+  String get exportCsvLabel => 'Export CSV';
+
+  @override
+  String get shareLabel => 'Share';
+
+  @override
+  String get printLabel => 'Print';
+
+  @override
+  String get importSuccess => 'Backup imported successfully.';
+
+  @override
+  String get importError => 'Could not import the backup.';
 }

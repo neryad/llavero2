@@ -480,6 +480,78 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Empty trash'**
   String get purgeTrashLabel;
+
+  /// Title of the export and import screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Export / import'**
+  String get exportImportTitle;
+
+  /// Label of the backup password field.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup password'**
+  String get backupPasswordLabel;
+
+  /// Warning shown when exporting an encrypted backup.
+  ///
+  /// In en, this message translates to:
+  /// **'Save this password: it cannot be recovered.'**
+  String get backupWarning;
+
+  /// Button that exports an encrypted backup file.
+  ///
+  /// In en, this message translates to:
+  /// **'Export backup (.llavero)'**
+  String get exportBackupLabel;
+
+  /// Button that imports an encrypted backup file.
+  ///
+  /// In en, this message translates to:
+  /// **'Import backup'**
+  String get importBackupLabel;
+
+  /// Button that exports the vault as a PDF.
+  ///
+  /// In en, this message translates to:
+  /// **'Export PDF'**
+  String get exportPdfLabel;
+
+  /// Button that exports the vault as JSON.
+  ///
+  /// In en, this message translates to:
+  /// **'Export JSON'**
+  String get exportJsonLabel;
+
+  /// Button that exports the vault as CSV.
+  ///
+  /// In en, this message translates to:
+  /// **'Export CSV'**
+  String get exportCsvLabel;
+
+  /// Button that shares an exported file.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get shareLabel;
+
+  /// Button that prints the PDF.
+  ///
+  /// In en, this message translates to:
+  /// **'Print'**
+  String get printLabel;
+
+  /// Message shown after a successful backup import.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup imported successfully.'**
+  String get importSuccess;
+
+  /// Message shown when a backup import fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not import the backup.'**
+  String get importError;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

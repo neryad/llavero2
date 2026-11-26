@@ -304,7 +304,7 @@ flutter test test/entries_controller_test.dart test/vault_storage_test.dart test
 | 3 | Archivo cifrado, modelos, `EntriesController` con CRUD | ✅ Hecho |
 | 4 | Onboarding, PIN, biometría, pantalla de bloqueo | ✅ Hecho |
 | 5 | Inicio, CRUD de entradas, plantillas, generador de contraseñas, papelera | ✅ Hecho |
-| 6 | Exportar/importar (backup cifrado, CSV/JSON, PDF) | Pendiente |
+| 6 | Exportar/importar (backup cifrado, CSV/JSON, PDF) | ✅ Hecho |
 | 7 | Ajustes, estado de seguridad, bloqueo automático, capturas bloqueadas | Pendiente |
 | 8 | Animaciones, accesibilidad, iconos, revisión ES/EN, tablets | Pendiente |
 | 9 | README y lista honesta de limitaciones | Pendiente |
@@ -371,6 +371,33 @@ test/fase5_flow_test.dart                   ← test de integración del flujo
 ### Pruebas
 
 `flutter analyze` → sin problemas. `flutter test` → **111 pruebas, todas correctas**.
+
+---
+
+## Fase 6 — Completada ✅
+
+### Qué se construyó
+
+| Área | Detalle |
+|---|---|
+| **Respaldo cifrado** | `.llavero` con contraseña distinta del PIN (Argon2id + AES-GCM); exportar e importar. |
+| **JSON / CSV** | Exportación en claro pero **sin valores secretos** (`[oculto]`). |
+| **PDF** | Resumen imprimible con fuente embebida (sin avisos de Unicode). |
+| **UI** | Pantalla de exportar/importar con `file_picker`, `share_plus` y `printing`. |
+| **`replaceAll`** | Importar reemplaza la bóveda actual y persiste el cambio. |
+
+### Archivos creados
+
+```
+lib/data/export_service.dart                        ← backup cifrado + JSON/CSV/PDF
+lib/features/export_import/export_import_screen.dart ← pantalla de exportar/importar
+test/export_service_test.dart                       ← 7 tests
+test/export_import_screen_test.dart                 ← 1 test de UI
+```
+
+### Pruebas
+
+`flutter analyze` → sin problemas. `flutter test` → **123 pruebas, todas correctas**.
 
 ---
 
