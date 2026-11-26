@@ -123,11 +123,14 @@ este archivo y se hace commit.
   y esperan a `pendingUnlock` (la carga de entradas). La lock screen navega
   solo después de que las entradas están listas. 2 tests nuevos.
 
-- [ ] **19. Inicializar siempre el directorio con `path_provider`.** El fallback
-  de iOS sigue siendo relativo (`Documents/llavero/vault.dat`).
+- [x] **19. Inicializar siempre el directorio con `path_provider`.** ✅
+  Completada 2026-11-26 — se eliminó el fallback relativo: `vaultPath` exige
+  `initialize()` (o un directorio inyectado) y lanza `StateError` si no está
+  resuelto. 3 tests nuevos.
 
-- [ ] **20. Re-resolver la ruta si cambia el directorio de la app** tras una
-  actualización.
+- [x] **20. Re-resolver la ruta si cambia el directorio de la app** ✅
+  Completada 2026-11-26 — `resolveVaultPath()` consulta `path_provider` en
+  cada operación; `VaultStorage` y `VaultHistory` la usan. 2 tests nuevos.
 
 ---
 
@@ -138,7 +141,7 @@ este archivo y se hace commit.
 | 1 | 4 | 4 |
 | 2 | 3 | 5 |
 | 3 | 7 | 8 |
-| 4 | 1 | 3 |
-| **Total** | **17** | **20** |
+| 4 | 3 | 3 |
+| **Total** | **19** | **20** |
 
-Última actualización: 2026-11-26 (17 completadas, 1 diferida).
+Última actualización: 2026-11-26 (19 completadas, 1 diferida — plan cerrado).

@@ -46,11 +46,11 @@ class PlatformVaultFileSystem implements VaultFileSystem {
   PlatformVaultFileSystem({
     required this.packageName,
     Directory? baseDirectory,
-  }) : _baseDir = baseDirectory;
+  })  : _baseDir = baseDirectory,
+        _injectedBase = baseDirectory != null;
 
-  /// Identificador del paquete (informativo; la ruta real viene de
-  /// `path_provider`).
   final String packageName;
+  final bool _injectedBase;
 
   Directory? _baseDir;
 
@@ -60,9 +60,11 @@ class PlatformVaultFileSystem implements VaultFileSystem {
   }
 
   /// Vuelve a consultar `path_provider` y actualiza la ruta cacheada.
+  ///
+  /// Si se inyectó un directorio (tests), no se consulta el plugin.
   @override
   Future<String> resolveVaultPath() async {
-    _baseDir = await _freshDirectory();
+    if (!_injectedBase) _baseDir = await _freshDirectory();
     return vaultPath;
   }
 
@@ -70,7 +72,12 @@ class PlatformVaultFileSystem implements VaultFileSystem {
 
   @override
   String get vaultPath {
-    final base = _baseDir?.path ?? 'PrivateSupportDirectory';
+    final base = _baseDir?.path;
+    if (base == null) {
+      throw StateError(
+        'PlatformVaultFileSystem.initialize() debe llamarse antes de usar vaultPath.',
+      );
+    }
     return '$base/llavero/vault.dat';
   }
 

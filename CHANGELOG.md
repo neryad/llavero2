@@ -8,6 +8,10 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- **Mejoras #19 y #20 del plan de mejoras: rutas resueltas.** Se eliminó el
+  fallback relativo (`vaultPath` exige inicialización) y se re-resuelve la
+  ruta en cada operación por si cambia tras una actualización. 5 tests nuevos.
+
 - **Mejora #18 del plan de mejoras: wiring explícito de desbloqueo.** Los
   métodos `unlockWithPin`/`unlockWithBiometrics` de `AppControllers` esperan
   a que las entradas se carguen antes de navegar. 2 tests nuevos.
