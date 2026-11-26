@@ -556,4 +556,23 @@ class L10nEs extends L10n {
 
   @override
   String get moveDown => 'Bajar';
+
+  @override
+  String get wifiQrShowLabel => 'Mostrar QR';
+
+  @override
+  String get wifiQrHideLabel => 'Ocultar QR';
+
+  @override
+  String get wifiQrNote => 'Cualquiera que lo escanee obtiene la contraseña.';
+
+  @override
+  String get wifiQrUnavailable =>
+      'Faltan la red o la contraseña para generar el QR.';
+
+  @override
+  String get filterByCategory => 'Por categoría';
+
+  @override
+  String get filterByPerson => 'Por persona';
 }

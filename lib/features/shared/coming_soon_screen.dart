@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:llavero2/core/theme/app_spacing.dart';
+
 import '../../core/widgets/app_scaffold.dart';
 import '../../l10n/generated/app_l10n.dart';
 
@@ -23,7 +25,7 @@ class ComingSoonScreen extends StatelessWidget {
             size: 56,
             color: Theme.of(context).colorScheme.secondary,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           Text(
             l10n.notReadyYet,
             style: Theme.of(context).textTheme.titleMedium,

@@ -7,6 +7,7 @@ import 'package:printing/printing.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../core/app_scope.dart';
+import '../../core/theme/app_spacing.dart';
 import '../../core/widgets/app_scaffold.dart';
 import '../../core/widgets/reauth_dialog.dart';
 import '../../data/export_service.dart';
@@ -222,7 +223,7 @@ class _ExportImportScreenState extends State<ExportImportScreen> {
     return AppScaffold(
       appBar: AppBar(title: Text(l10n.exportImportTitle)),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         children: <Widget>[
           TextField(
             controller: _password,
@@ -232,33 +233,42 @@ class _ExportImportScreenState extends State<ExportImportScreen> {
               filled: true,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(l10n.backupWarning, style: Theme.of(context).textTheme.bodySmall),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           SwitchListTile(
             title: Text(l10n.includeSecretsLabel),
             value: _includeSecrets,
             onChanged: (value) => setState(() => _includeSecrets = value),
           ),
-          const SizedBox(height: 16),
+          if (_includeSecrets) ...[
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              l10n.secretsExportWarning,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+            ),
+          ],
+          const SizedBox(height: AppSpacing.md),
           FilledButton.icon(
             onPressed: _exportBackup,
             icon: const Icon(Icons.backup_outlined),
             label: Text(l10n.exportBackupLabel),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           OutlinedButton.icon(
             onPressed: _importBackup,
             icon: const Icon(Icons.file_upload_outlined),
             label: Text(l10n.importBackupLabel),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
           OutlinedButton.icon(
             onPressed: _exportPdf,
             icon: const Icon(Icons.picture_as_pdf_outlined),
             label: Text(l10n.exportPdfLabel),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           OutlinedButton.icon(
             onPressed: () => _guarded(
               () => _exportText(
@@ -272,7 +282,7 @@ class _ExportImportScreenState extends State<ExportImportScreen> {
             icon: const Icon(Icons.code_outlined),
             label: Text(l10n.exportJsonLabel),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           OutlinedButton.icon(
             onPressed: () => _guarded(
               () => _exportText(
@@ -287,7 +297,7 @@ class _ExportImportScreenState extends State<ExportImportScreen> {
             label: Text(l10n.exportCsvLabel),
           ),
           if (_message != null) ...[
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
             Text(
               _message!,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(

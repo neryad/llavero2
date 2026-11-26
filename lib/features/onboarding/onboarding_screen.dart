@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:llavero2/core/theme/app_spacing.dart';
+
 import '../../../core/app_scope.dart';
 import '../../../controllers/settings_controller.dart';
 import '../../../core/widgets/app_scaffold.dart';
@@ -42,13 +44,13 @@ class OnboardingScreen extends StatelessWidget {
               color: Theme.of(context).colorScheme.primary,
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             l10n.onboardingTitle,
             style: Theme.of(context).textTheme.displaySmall,
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32),
             child: Text(
@@ -57,12 +59,12 @@ class OnboardingScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32),
             child: PinLossWarning(message: l10n.pinLossWarning),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           SegmentedButton<AppLanguage>(
             segments: <ButtonSegment<AppLanguage>>[
               ButtonSegment(value: AppLanguage.spanish, label: Text(l10n.languageSpanish)),
@@ -75,7 +77,7 @@ class OnboardingScreen extends StatelessWidget {
             },
             onSelectionChanged: (s) => settings.setLanguage(s.first),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
           SizedBox(
             width: double.infinity,
             child: FilledButton(
@@ -107,7 +109,7 @@ class PinLossWarning extends StatelessWidget {
     return Semantics(
       container: true,
       child: Container(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(AppSpacing.cardGap),
         decoration: BoxDecoration(
           color: colors.errorContainer,
           borderRadius: BorderRadius.circular(12),
@@ -116,7 +118,7 @@ class PinLossWarning extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Icon(Icons.warning_amber_rounded, color: colors.onErrorContainer),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: Text(
                 message,

@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import 'package:llavero2/core/theme/app_spacing.dart';
+
 import '../../../core/app_scope.dart';
 import '../../../core/routes/app_routes.dart';
 import '../../../core/widgets/app_scaffold.dart';
@@ -77,14 +79,14 @@ class _LockScreenState extends State<LockScreen> {
         appBar: AppBar(title: Text(l10n.appTitle)),
         body: Center(
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(AppSpacing.lg),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 const Icon(Icons.warning_amber_rounded, size: 48),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 Text(l10n.vaultCorruptedMessage, textAlign: TextAlign.center),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.lg),
                 FilledButton(
                   onPressed: () => Navigator.of(context)
                       .pushNamed(AppRoutes.exportImport),
@@ -109,18 +111,18 @@ class _LockScreenState extends State<LockScreen> {
                 size: 56,
                 color: Theme.of(context).colorScheme.primary,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.lg),
               Text(
                 l10n.appTitle,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               Text(
                 l10n.pinLengthHelp,
                 style: Theme.of(context).textTheme.bodyMedium,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.lg),
               if (lockedOut) ...[
                 Text(
                   l10n.lockedOutMessage,
@@ -129,7 +131,7 @@ class _LockScreenState extends State<LockScreen> {
                       ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 Text(
                   '${lock.remainingLockout().inSeconds}s',
                   style: Theme.of(context).textTheme.headlineSmall,
@@ -142,7 +144,7 @@ class _LockScreenState extends State<LockScreen> {
                   semanticLabel: l10n.pinLabel,
                 ),
                 if (lock.biometricsEnabled) ...[
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.lg),
                   OutlinedButton.icon(
                     onPressed: _onBiometrics,
                     icon: const Icon(Icons.fingerprint),
@@ -151,7 +153,7 @@ class _LockScreenState extends State<LockScreen> {
                 ],
               ],
               if (_error != null && !lockedOut) ...[
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 Text(
                   _error!,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(

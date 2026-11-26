@@ -695,5 +695,29 @@
   "moveDown": "Move down",
   "@moveDown": {
     "description": "moveDown"
+  },
+  "wifiQrShowLabel": "Show QR",
+  "@wifiQrShowLabel": {
+    "description": "wifiQrShowLabel"
+  },
+  "wifiQrHideLabel": "Hide QR",
+  "@wifiQrHideLabel": {
+    "description": "wifiQrHideLabel"
+  },
+  "wifiQrNote": "Anyone who scans it gets the password.",
+  "@wifiQrNote": {
+    "description": "wifiQrNote"
+  },
+  "wifiQrUnavailable": "Network or password is missing to generate the QR.",
+  "@wifiQrUnavailable": {
+    "description": "wifiQrUnavailable"
+  },
+  "filterByCategory": "By category",
+  "@filterByCategory": {
+    "description": "filterByCategory"
+  },
+  "filterByPerson": "By person",
+  "@filterByPerson": {
+    "description": "filterByPerson"
   }
 }

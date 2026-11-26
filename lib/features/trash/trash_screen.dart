@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/app_scope.dart';
+import '../../core/theme/app_spacing.dart';
 import '../../core/widgets/app_scaffold.dart';
 import '../../core/widgets/empty_state.dart';
 import '../../data/models/vault_entry.dart';
@@ -37,10 +38,15 @@ class TrashScreen extends StatelessWidget {
             );
           }
           return ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.only(
+              top: AppSpacing.cardPadding,
+              bottom: AppSpacing.listBottom,
+            ),
             itemCount: trashed.length,
-            itemBuilder: (context, index) =>
-                _TrashedTile(entry: trashed[index]),
+            itemBuilder: (context, index) => Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.cardGap),
+              child: _TrashedTile(entry: trashed[index]),
+            ),
           );
         },
       ),
@@ -60,6 +66,8 @@ class _TrashedTile extends StatelessWidget {
 
     return Card(
       child: ListTile(
+        contentPadding: const EdgeInsets.all(AppSpacing.cardPadding),
+        minTileHeight: AppSpacing.rowMinHeight,
         title: Text(entry.title),
         subtitle: Text(entry.categoryId),
         trailing: Row(

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import 'package:llavero2/core/theme/app_spacing.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../app.dart';
@@ -257,7 +259,7 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
           onChanged: (_) => setState(() => _dirty = true),
         ),
       );
-      widgets.add(const SizedBox(height: 8));
+      widgets.add(const SizedBox(height: AppSpacing.sm));
       widgets.add(
         Row(
           children: <Widget>[
@@ -341,7 +343,7 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
             _dirty = true;
           }),
           child: Container(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(AppSpacing.sm),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
@@ -357,7 +359,7 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
                   customIconName: category?.iconName,
                   size: 32,
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(
                     category?.name ??
@@ -397,7 +399,7 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
                 children: <Widget>[
                   Expanded(
                     child: SingleChildScrollView(
-                      padding: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.only(bottom: AppSpacing.md),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
@@ -409,7 +411,7 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
                               filled: true,
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppSpacing.md),
                           TextField(
                             controller: _person,
                             onChanged: (_) => setState(() => _dirty = true),
@@ -418,15 +420,15 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
                               filled: true,
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppSpacing.md),
                           Text(
                             l10n.categoryFieldLabel,
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: AppSpacing.sm),
                           _categoryGrid(l10n),
                           if (_categoryId == CategoryIds.streaming) ...[
-                            const SizedBox(height: 16),
+                            const SizedBox(height: AppSpacing.md),
                             Wrap(
                               spacing: 8,
                               children: <Widget>[
@@ -443,19 +445,19 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
                               ],
                             ),
                           ],
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppSpacing.md),
                           Text(
                             l10n.fieldsLabel,
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: AppSpacing.sm),
                           ..._fieldWidgets(l10n),
                           TextButton.icon(
                             onPressed: _addField,
                             icon: const Icon(Icons.add),
                             label: Text(l10n.addFieldLabel),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppSpacing.md),
                           TextField(
                             controller: _notes,
                             maxLines: 3,
@@ -477,7 +479,7 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
                           ),
                           if (_saveError != null)
                             Padding(
-                              padding: const EdgeInsets.only(bottom: 16),
+                              padding: const EdgeInsets.only(bottom: AppSpacing.md),
                               child: Text(
                                 _saveError!,
                                 style: Theme.of(context)
@@ -493,7 +495,7 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 8),
+                    padding: const EdgeInsets.only(top: AppSpacing.sm),
                     child: FilledButton(
                       onPressed: _save,
                       child: Text(l10n.saveLabel),

@@ -519,6 +519,98 @@ Siguiente: FASE B (corregir Critical + Bug).
 
 ---
 
+## FASE D — Limpieza y comprobación final ✅
+
+### Checklist manual ampliada
+
+`docs/PRUEBAS_DISPOSITIVO.md` incorpora una nueva sección 8 con: longitudes de
+PIN 4/6/8, modo oscuro en **todas** las pantallas (incluidos segmentos y chips),
+escala de fuente al 200 %, rotación, pantalla de 320 dp y ciclo completo
+exportar → borrar datos → reinstalar → importar (con contraseña correcta e
+incorrecta). La sección de registro de errores pasa a ser la 9.
+
+### Contraste de segmentos (corrección previa a esta fase)
+
+Un único `segmentedButtonTheme` en `AppTheme` para claro y oscuro, resuelto con
+`WidgetState`: seleccionado = acento (dark `#F0B866`; light mantiene el ámbar
+suave anterior) con texto y check en `onAccent`; no seleccionado =
+fondo transparente, texto del tema y borde `outline`. Sin
+`secondaryContainer`/`onSecondaryContainer` ni hexadecimales en widgets.
+
+Contrastes medidos: dark 9.36 / 13.54, light 14.71 / 13.46. Corregidos además
+el check del `FilterChip` (1.41 → 10.06), el texto de acción del SnackBar en
+dark (1.52 → 15.05), los puntos vacíos del PIN, `onPrimaryContainer`/
+`onSecondaryContainer` y `onErrorContainer` en light (3.54 → 6.16). Quedan
+`onError` (4.35) y `onTertiary` (3.98) en light, sin uso en pantallas.
+
+### Verificación ejecutada (evidencia fresca)
+
+- `flutter analyze` → **No issues found!**
+- `flutter test` → **213 pruebas, todas correctas**.
+- `flutter build apk --release` → `app-release.apk` (55,4 MB), exit 0.
+- `flutter build ios --release --no-codesign` → `Runner.app` (20,0 MB), exit 0.
+
+Manifiesto de release (`android/app/src/main/AndroidManifest.xml`):
+
+```xml
+<!-- Llavero es 100% offline: aquí NO se pide permiso de INTERNET. -->
+android:allowBackup="false"
+android:fullBackupContent="false"
+android:dataExtractionRules="@xml/data_extraction_rules"
+```
+
+El APK compilado confirma lo anterior: `aapt dump permissions` solo lista
+`USE_BIOMETRIC`, `USE_FINGERPRINT` y el permiso dinámico de AndroidX (**sin
+INTERNET**), y `aapt dump xmltree` muestra `allowBackup=0x0` y
+`fullBackupContent=0x0`.
+
+### Limitaciones conocidas (documentadas en README)
+
+- **Reloj offline**: el bloqueo por intentos fallidos usa la hora del equipo;
+  adelantarla puede agotar el castigo, retrasarla no lo acorta. Reiniciar no lo
+  reinicia; borrar datos o reinstalar sí.
+- **Portapapeles en segundo plano**: limpieza "best effort"; Android 10+ e iOS
+  restringen el acceso en background.
+- **iCloud no verificado en dispositivo real**: exclusión implementada con
+  `NSURLIsExcludedFromBackupKey`, pero no probada en iPhone/iPad con iCloud.
+
+### Pendiente de decisión del usuario (no se ha tocado nada)
+
+- Opción «Incluir secretos en claro» en JSON/CSV/PDF (`includeSecrets`),
+  añadida como mejora 14 del plan pero **no solicitada** por el usuario.
+- Dependencia `qr_flutter` declarada en `pubspec.yaml` y sin uso en `lib/`.
+- Cambiar la longitud del PIN en Ajustes pide el PIN actual pero solo ajusta
+  el teclado: no reescribe el PIN. Propuesta: navegar a «Cambiar PIN» con la
+  longitud elegida para que el PIN y el teclado vuelvan a coincidir.
+
+---
+
+## FASE D — Ampliaciones finales ✅
+
+- **QR de Wi-Fi** (`core/security/wifi_qr.dart`): payload estándar
+  `WIFI:T:<security>;S:<ssid>;P:<password>;;` con escape de `; , : \ "`.
+  Se extrae de los campos Red/SSID, Contraseña y Seguridad (WPA por defecto).
+  En el detalle aparece solo tras pulsar «Mostrar QR», avisa de que quien lo
+  escanea obtiene la contraseña y se oculta a los 30 s o al bloquear la app.
+- **Exportaciones en claro**: aviso rojo visible al activar «Incluir secretos
+  en claro», dos confirmaciones y re-autenticación antes de crear el archivo
+  JSON/CSV/PDF. Se ha conservado la opción.
+- **Cambio de longitud del PIN**: se eliminó el selector de Ajustes; ahora se
+  elige 4/6/8 dentro de «Cambiar PIN», tras verificar el PIN actual. La DEK se
+  reenvuelve de forma atómica. Test: 6 → 8, PIN viejo falla y nuevo abre.
+- **Espaciado unificado** (`core/theme/app_spacing.dart`): 12dp entre tarjetas,
+  16dp de padding interior, 12dp cabecera→ítem, 24dp entre secciones y grupos,
+  24dp banner→sección, 12dp búsqueda→chips, 16dp chips→lista, 8dp entre chips,
+  96dp abajo, filas de Ajustes ≥56dp. Home usa botones icono con tooltip para
+  Ajustes y Papelera, y grupos separados de chips de categoría y persona.
+- Comprobado en claro/oscuro, fuente 200 % y 320dp mediante tests de layout;
+  se corrigió un desborde real en Home al convertir su columna en lista.
+
+Verificación: `flutter analyze` limpio, **228 pruebas**, release de Android e
+iOS compilando.
+
+---
+
 ## Decisiones y notas
 
 - **Idioma por defecto**: si el móvil está en un idioma que no es es/en, se

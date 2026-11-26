@@ -553,4 +553,23 @@ class L10nEn extends L10n {
 
   @override
   String get moveDown => 'Move down';
+
+  @override
+  String get wifiQrShowLabel => 'Show QR';
+
+  @override
+  String get wifiQrHideLabel => 'Hide QR';
+
+  @override
+  String get wifiQrNote => 'Anyone who scans it gets the password.';
+
+  @override
+  String get wifiQrUnavailable =>
+      'Network or password is missing to generate the QR.';
+
+  @override
+  String get filterByCategory => 'By category';
+
+  @override
+  String get filterByPerson => 'By person';
 }

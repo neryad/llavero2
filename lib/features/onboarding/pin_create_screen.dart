@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:llavero2/core/theme/app_spacing.dart';
+
 import '../../../core/app_scope.dart';
 import '../../../core/security/pin_validator.dart';
 import '../../../core/widgets/app_scaffold.dart';
@@ -99,13 +101,13 @@ class _PinCreateScreenState extends State<PinCreateScreen> {
                 style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 _firstPin == null ? l10n.pinLengthHelp : l10n.confirmPinHelp,
                 style: Theme.of(context).textTheme.bodyMedium,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.lg),
               if (_firstPin == null)
                 SegmentedButton<int>(
                   segments: <ButtonSegment<int>>[
@@ -120,7 +122,7 @@ class _PinCreateScreenState extends State<PinCreateScreen> {
                     });
                   },
                 ),
-              const SizedBox(height: 32),
+              const SizedBox(height: AppSpacing.xl),
               if (_busy)
                 const CircularProgressIndicator()
               else
@@ -130,7 +132,7 @@ class _PinCreateScreenState extends State<PinCreateScreen> {
                   onCompleted: _onPin,
                   semanticLabel: l10n.pinLabel,
                 ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               if (_error != null)
                 Text(
                   _error!,
@@ -139,7 +141,7 @@ class _PinCreateScreenState extends State<PinCreateScreen> {
                       ),
                   textAlign: TextAlign.center,
                 ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.lg),
               if (_firstPin == null)
                 PinLossWarning(message: l10n.pinLossWarning),
             ],

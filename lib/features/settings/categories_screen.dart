@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/app_scope.dart';
 import '../../controllers/categories_controller.dart';
 import '../../core/theme/category_colors.dart';
+import '../../core/theme/app_spacing.dart';
 import '../../core/theme/category_icons.dart';
 import '../../core/widgets/category_icon_badge.dart';
 import '../../core/widgets/app_scaffold.dart';
@@ -44,9 +45,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   filled: true,
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               Text(l10n.categoryColorLabel),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.headerToItem),
               Wrap(
                 spacing: 8,
                 children: CategoriesController.defaultIds.map((id) {
@@ -71,9 +72,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   );
                 }).toList(),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               Text(l10n.categoryIconLabel),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.headerToItem),
               SizedBox(
                 height: 120,
                 child: SingleChildScrollView(
@@ -156,24 +157,27 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         listenable: categories,
         builder: (context, _) {
           return ListView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.only(
+              top: AppSpacing.cardPadding,
+              bottom: AppSpacing.listBottom,
+            ),
             children: <Widget>[
               Text(
                 l10n.defaultCategoriesLabel,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.headerToItem),
               for (final id in CategoriesController.defaultIds)
                 ListTile(
                   leading: CategoryIconBadge(categoryId: id),
                   title: Text(categoryDisplayName(id, l10n, categories)),
                 ),
-              const Divider(height: 32),
+              const SizedBox(height: AppSpacing.sectionGap),
               Text(
                 l10n.customCategoriesLabel,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.headerToItem),
               if (categories.custom.isEmpty)
                 EmptyState(
                   icon: Icons.category_outlined,

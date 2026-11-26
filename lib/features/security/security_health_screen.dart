@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/app_scope.dart';
 import '../../core/security/password_health.dart';
 import '../../core/widgets/app_scaffold.dart';
+import '../../core/theme/app_spacing.dart';
 import '../../core/widgets/empty_state.dart';
 import '../../data/models/vault_entry.dart';
 import '../../l10n/generated/app_l10n.dart';
@@ -26,11 +27,17 @@ class SecurityHealthScreen extends StatelessWidget {
         builder: (context, _) {
           final report = PasswordHealth.analyze(controllers.entries.allEntries);
           return ListView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.only(
+              top: AppSpacing.cardPadding,
+              bottom: AppSpacing.listBottom,
+            ),
             children: <Widget>[
               Card(
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.only(
+              top: AppSpacing.cardPadding,
+              bottom: AppSpacing.listBottom,
+            ),
                   child: Text(
                     l10n.healthSummary(report.total),
                     style: Theme.of(context).textTheme.titleMedium,
@@ -44,7 +51,10 @@ class SecurityHealthScreen extends StatelessWidget {
                 )
               else if (report.weak.isEmpty && report.reused.isEmpty)
                 Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.only(
+              top: AppSpacing.cardPadding,
+              bottom: AppSpacing.listBottom,
+            ),
                   child: Text(
                     l10n.healthAllGood(report.total),
                     textAlign: TextAlign.center,
@@ -56,17 +66,17 @@ class SecurityHealthScreen extends StatelessWidget {
                     l10n.weakPasswords,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   for (final entry in report.weak)
                     _EntryRow(entry: entry),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.md),
                 ],
                 if (report.reused.isNotEmpty) ...[
                   Text(
                     l10n.reusedPasswords,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   for (final entry in report.reused)
                     _EntryRow(entry: entry),
                 ],
@@ -88,6 +98,8 @@ class _EntryRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final controllers = AppScope.of(context);
     return ListTile(
+      contentPadding: const EdgeInsets.all(AppSpacing.cardPadding),
+      minTileHeight: AppSpacing.rowMinHeight,
       leading: const Icon(Icons.warning_amber_outlined),
       title: Text(entry.title),
       subtitle: Text(

@@ -123,7 +123,11 @@ class _PinCodeInputState extends State<PinCodeInput>
                         margin: const EdgeInsets.symmetric(horizontal: 6),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: i < filled ? color.primary : color.outline,
+                          // Los puntos vacíos usan el texto secundario: en
+                          // dark el outline apenas se veía sobre el fondo.
+                          color: i < filled
+                              ? color.primary
+                              : color.onSurfaceVariant,
                         ),
                       ),
                   ],

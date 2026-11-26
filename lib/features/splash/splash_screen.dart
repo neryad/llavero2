@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:llavero2/core/theme/app_spacing.dart';
+
 import '../../../core/app_scope.dart';
 import '../../../core/routes/app_routes.dart';
 import '../../../core/widgets/app_scaffold.dart';
@@ -39,19 +41,19 @@ class SplashScreen extends StatelessWidget {
               color: Theme.of(context).colorScheme.primary,
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             l10n.appTitle,
             style: Theme.of(context).textTheme.displaySmall,
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             l10n.appTagline,
             style: Theme.of(context).textTheme.bodyMedium,
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: AppSpacing.xxl),
           FilledButton(
             onPressed: () {
               if (showOnboarding) {

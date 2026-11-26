@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/app_scope.dart';
 import '../../core/routes/app_routes.dart';
+import '../../core/theme/app_spacing.dart';
 import '../../core/widgets/animated_entry_tile.dart';
 import '../../core/widgets/app_scaffold.dart';
 import '../../core/widgets/category_icon_badge.dart';
@@ -29,6 +30,34 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
+  Widget _chipGroup({
+    required String label,
+    required Map<String, String> items,
+    required String? selected,
+    required ValueChanged<String?> onChanged,
+  }) {
+    if (items.isEmpty) return const SizedBox.shrink();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(label, style: Theme.of(context).textTheme.labelSmall),
+        const SizedBox(height: AppSpacing.xs),
+        Wrap(
+          spacing: AppSpacing.chipGap,
+          runSpacing: AppSpacing.chipGap,
+          children: <Widget>[
+            for (final item in items.entries)
+              FilterChip(
+                label: Text(item.value),
+                selected: selected == item.key,
+                onSelected: (picked) => onChanged(picked ? item.key : null),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = L10n.of(context);
@@ -44,10 +73,10 @@ class _HomeScreenState extends State<HomeScreen> {
             tooltip: l10n.settingsLabel,
             onPressed: () => Navigator.of(context).pushNamed(AppRoutes.settings),
           ),
-          TextButton.icon(
-            onPressed: () => Navigator.of(context).pushNamed(AppRoutes.trash),
+          IconButton(
             icon: const Icon(Icons.delete_sweep_outlined),
-            label: Text(l10n.trashLabel),
+            tooltip: l10n.trashLabel,
+            onPressed: () => Navigator.of(context).pushNamed(AppRoutes.trash),
           ),
         ],
       ),
@@ -71,8 +100,8 @@ class _HomeScreenState extends State<HomeScreen> {
           final favorites = visible.where((e) => e.isFavorite).toList();
           final all = visible;
 
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          return ListView(
+            padding: const EdgeInsets.only(bottom: AppSpacing.listBottom),
             children: <Widget>[
               Semantics(
                 label: l10n.searchHint,
@@ -86,37 +115,29 @@ class _HomeScreenState extends State<HomeScreen> {
                   onChanged: (_) => setState(() {}),
                 ),
               ),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                children: <Widget>[
+              const SizedBox(height: AppSpacing.searchToChips),
+              _chipGroup(
+                label: l10n.filterByCategory,
+                items: <String, String>{
                   for (final id in entries.categoryIds)
-                    FilterChip(
-                      label: Text(
-                        categoryDisplayName(
-                          id,
-                          l10n,
-                          controllers.categories,
-                        ),
-                      ),
-                      selected: _categoryFilter == id,
-                      onSelected: (selected) => setState(() {
-                        _categoryFilter = selected ? id : null;
-                      }),
-                    ),
-                  for (final person in entries.persons)
-                    FilterChip(
-                      label: Text(person),
-                      selected: _personFilter == person,
-                      onSelected: (selected) => setState(() {
-                        _personFilter = selected ? person : null;
-                      }),
-                    ),
-                ],
+                    id: categoryDisplayName(id, l10n, controllers.categories),
+                },
+                selected: _categoryFilter,
+                onChanged: (value) => setState(() => _categoryFilter = value),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
+              _chipGroup(
+                label: l10n.filterByPerson,
+                items: <String, String>{
+                  for (final person in entries.persons) person: person,
+                },
+                selected: _personFilter,
+                onChanged: (value) => setState(() => _personFilter = value),
+              ),
+              const SizedBox(height: AppSpacing.chipsToList),
               Card(
                 child: ListTile(
+                  contentPadding: const EdgeInsets.all(AppSpacing.cardPadding),
                   leading: const Icon(Icons.backup_outlined),
                   title: Text(l10n.backupReminderTitle),
                   subtitle: Text(l10n.backupReminderBody),
@@ -124,38 +145,33 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.of(context).pushNamed(AppRoutes.exportImport),
                 ),
               ),
-              Expanded(
-                child: all.isEmpty
-                    ? EmptyState(
-                        icon: Icons.key_outlined,
-                        message: l10n.emptyVaultMessage,
-                        actionLabel: l10n.emptyAction,
-                        onAction: () => Navigator.of(context)
-                            .pushNamed(AppRoutes.entryForm),
-                      )
-                    : ListView(
-                        padding: const EdgeInsets.only(bottom: 88),
-                        children: <Widget>[
-                          if (favorites.isNotEmpty) ...[
-                            Text(
-                              l10n.favoritesSection,
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                            const SizedBox(height: 8),
-                            for (final entry in favorites)
-                              _animatedTile(entry: entry, index: 0),
-                            const SizedBox(height: 16),
-                          ],
-                          Text(
-                            l10n.allSection,
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          const SizedBox(height: 8),
-                          for (final entry in all)
-                            _animatedTile(entry: entry, index: 1),
-                        ],
-                      ),
-              ),
+              if (all.isEmpty)
+                EmptyState(
+                  icon: Icons.key_outlined,
+                  message: l10n.emptyVaultMessage,
+                  actionLabel: l10n.emptyAction,
+                  onAction: () => Navigator.of(context)
+                      .pushNamed(AppRoutes.entryForm),
+                )
+              else ...[
+                const SizedBox(height: AppSpacing.bannerGap),
+                if (favorites.isNotEmpty) ...[
+                  Text(
+                    l10n.favoritesSection,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: AppSpacing.headerToItem),
+                  for (final entry in favorites)
+                    _animatedTile(entry: entry, index: 0),
+                  const SizedBox(height: AppSpacing.sectionGap),
+                ],
+                Text(
+                  l10n.allSection,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: AppSpacing.headerToItem),
+                for (final entry in all) _animatedTile(entry: entry, index: 1),
+              ],
             ],
           );
         },
@@ -164,12 +180,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _animatedTile({required VaultEntry entry, required int index}) {
-    return AnimatedEntryTile(
-      index: index,
-      child: Semantics(
-        button: true,
-        label: entry.title,
-        child: _EntryTile(entry: entry),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.cardGap),
+      child: AnimatedEntryTile(
+        index: index,
+        child: Semantics(
+          button: true,
+          label: entry.title,
+          child: _EntryTile(entry: entry),
+        ),
       ),
     );
   }
@@ -185,6 +204,7 @@ class _EntryTile extends StatelessWidget {
     final l10n = L10n.of(context);
     return Card(
       child: ListTile(
+        contentPadding: const EdgeInsets.all(AppSpacing.cardPadding),
         leading: CategoryIconBadge(categoryId: entry.categoryId),
         title: Text(entry.title),
         subtitle: Text(

@@ -26,11 +26,15 @@ abstract final class AppTheme {
       primary: palette.primary,
       onPrimary: palette.onPrimary,
       primaryContainer: palette.primary.withValues(alpha: 0.14),
-      onPrimaryContainer: palette.onPrimary,
+      // onPrimary/onPrimaryContainer del M3 son ilegibles en los dos temas:
+      // el texto del contenedor es el color normal del tema.
+      onPrimaryContainer: palette.text,
       secondary: palette.accent,
       onSecondary: palette.onAccent,
       secondaryContainer: palette.accent.withValues(alpha: 0.18),
-      onSecondaryContainer: palette.onAccent,
+      onSecondaryContainer: palette.brightness == Brightness.dark
+          ? palette.text
+          : palette.onAccent,
       tertiary: palette.success,
       onTertiary: palette.onPrimary,
       error: palette.error,
@@ -38,7 +42,9 @@ abstract final class AppTheme {
           ? Colors.white
           : const Color(0xFF3A0E06),
       errorContainer: palette.error.withValues(alpha: 0.16),
-      onErrorContainer: palette.error,
+      onErrorContainer: palette.brightness == Brightness.light
+          ? Color.lerp(palette.error, Colors.black, 0.30)!
+          : palette.error,
       surface: palette.surface,
       onSurface: palette.text,
       surfaceDim: palette.background,
@@ -146,11 +152,47 @@ abstract final class AppTheme {
           textStyle: textTheme.labelLarge?.copyWith(fontSize: 15),
         ),
       ),
+      segmentedButtonTheme: SegmentedButtonThemeData(
+        // Un único estilo para TODOS los segmentos (PIN, tema, idioma, filtros).
+        // El color del check se fija aparte: M3 lo toma de onSecondaryContainer,
+        // que en dark no tiene suficiente contraste.
+        style: ButtonStyle(
+          backgroundColor: WidgetStateProperty.resolveWith<Color?>((states) {
+            if (states.contains(WidgetState.selected)) {
+              // En dark el acento es sólido; en light se mantiene el look
+              // anterior (acento suave sobre la superficie).
+              return palette.brightness == Brightness.dark
+                  ? palette.accent
+                  : palette.accent.withValues(alpha: 0.18);
+            }
+            return Colors.transparent;
+          }),
+          foregroundColor: WidgetStateProperty.resolveWith<Color?>((states) {
+            return states.contains(WidgetState.selected)
+                ? palette.onAccent
+                : palette.text;
+          }),
+          iconColor: WidgetStateProperty.resolveWith<Color?>((states) {
+            return states.contains(WidgetState.selected)
+                ? palette.onAccent
+                : palette.text;
+          }),
+          side: WidgetStateProperty.resolveWith<BorderSide?>((states) {
+            return states.contains(WidgetState.selected)
+                ? BorderSide.none
+                : BorderSide(color: palette.outline);
+          }),
+          textStyle: WidgetStatePropertyAll<TextStyle>(textTheme.labelLarge!),
+        ),
+      ),
       chipTheme: ChipThemeData(
         backgroundColor: palette.surfaceVariant,
         selectedColor: palette.primary.withValues(alpha: 0.16),
         side: BorderSide.none,
         labelStyle: textTheme.labelLarge,
+        // En dark el check por defecto (onSecondaryContainer) era casi negro
+        // sobre un fondo oscuro: 1.41:1. El texto del tema siempre cumple.
+        checkmarkColor: palette.text,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(controlRadius),
@@ -176,7 +218,11 @@ abstract final class AppTheme {
       snackBarTheme: SnackBarThemeData(
         backgroundColor: palette.text,
         contentTextStyle: textTheme.bodyMedium?.copyWith(color: palette.background),
-        actionTextColor: palette.accent,
+        // En dark el SnackBar tiene fondo claro: el acento (ámbar) daba
+        // 1.52:1. El color inverso del fondo garantiza el contraste.
+        actionTextColor: palette.brightness == Brightness.dark
+            ? palette.background
+            : palette.accent,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(cardRadius),

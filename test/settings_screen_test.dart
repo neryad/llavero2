@@ -40,6 +40,11 @@ Future<void> scrollTo(WidgetTester tester, String text) async {
     await tester.drag(find.byType(ListView), const Offset(0, -400));
     await tester.pumpAndSettle();
   }
+  for (var i = 0; i < 12; i++) {
+    if (find.text(text).evaluate().isNotEmpty) return;
+    await tester.drag(find.byType(ListView), const Offset(0, 400));
+    await tester.pumpAndSettle();
+  }
 }
 
 void main() {
@@ -49,6 +54,7 @@ void main() {
 
       expect(find.text('Ajustes'), findsOneWidget);
       expect(find.text('Seguridad'), findsOneWidget);
+      await scrollTo(tester, 'Herramientas');
       expect(find.text('Herramientas'), findsOneWidget);
       await scrollTo(tester, 'Apariencia');
       expect(find.text('Apariencia'), findsOneWidget);
@@ -61,6 +67,30 @@ void main() {
         await tester.pumpAndSettle();
       }
       expect(find.text('Desbloqueo biométrico'), findsOneWidget);
+    });
+
+    testWidgets('la longitud del PIN no está en Ajustes, solo en Cambiar PIN',
+        (tester) async {
+      await pumpSettings(tester);
+
+      expect(find.text('Longitud del PIN'), findsNothing);
+      expect(find.byType(SegmentedButton<int>), findsNothing);
+      expect(find.text('Cambiar PIN'), findsOneWidget);
+    });
+
+    testWidgets('el tiempo de portapapeles se ve como un desplegable',
+        (tester) async {
+      await pumpSettings(tester);
+      await scrollTo(tester, 'Tiempo en el portapapeles');
+
+      final row = find.ancestor(
+        of: find.text('Tiempo en el portapapeles'),
+        matching: find.byType(ListTile),
+      );
+      expect(
+        find.descendant(of: row, matching: find.byType(DropdownButton<int>)),
+        findsOneWidget,
+      );
     });
 
     testWidgets('cambiar el tema actualiza el controlador', (tester) async {
@@ -88,7 +118,10 @@ void main() {
     testWidgets('el bloqueo de capturas respeta la plataforma', (tester) async {
       final controllers = await pumpSettings(tester);
       await scrollTo(tester, 'Bloquear capturas');
-      final switcher = find.byType(SwitchListTile);
+      final switcher = find.ancestor(
+        of: find.text('Bloquear capturas'),
+        matching: find.byType(SwitchListTile),
+      );
 
       if (PlatformCapabilities.detect().supportsScreenshotBlocking) {
         expect(tester.widget<SwitchListTile>(switcher).onChanged, isNotNull);

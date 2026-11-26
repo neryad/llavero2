@@ -53,12 +53,12 @@ void main() {
       await tester.tap(find.text('Exportar JSON'));
       await tester.pumpAndSettle();
 
-      // Primer aviso.
+      // Primer aviso: en pantalla (rojo) y en el diálogo de confirmación.
       expect(
         find.text(
           'Los secretos se guardarán sin cifrar. Cualquiera que lea el archivo podrá verlos.',
         ),
-        findsOneWidget,
+        findsNWidgets(2),
       );
 
       await tester.tap(find.text('Continuar'));

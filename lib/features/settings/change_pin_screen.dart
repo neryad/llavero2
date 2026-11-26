@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:llavero2/core/theme/app_spacing.dart';
+
 import '../../core/app_scope.dart';
 import '../../core/security/pin_validator.dart';
 import '../../core/widgets/app_scaffold.dart';
@@ -37,6 +39,14 @@ class _ChangePinScreenState extends State<ChangePinScreen> {
   Future<void> _onPin(String pin) async {
     final l10n = L10n.of(context);
     if (_step == 0) {
+      // Re-autenticación: solo se elige la nueva longitud si el PIN actual
+      // es correcto. Después se reenvuelve la DEK de forma atómica.
+      final valid = await AppScope.of(context).lock.verifyPin(pin);
+      if (!mounted) return;
+      if (!valid) {
+        setState(() => _error = l10n.wrongCurrentPin);
+        return;
+      }
       _currentPin = pin;
       setState(() {
         _step = 1;
@@ -109,14 +119,14 @@ class _ChangePinScreenState extends State<ChangePinScreen> {
                 style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 _step == 1 ? l10n.pinLengthHelp : l10n.confirmPinHelp,
                 style: Theme.of(context).textTheme.bodyMedium,
                 textAlign: TextAlign.center,
               ),
               if (_step == 1) ...[
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 SegmentedButton<int>(
                   segments: <ButtonSegment<int>>[
                     for (final n in <int>[4, 6, 8])
@@ -128,18 +138,18 @@ class _ChangePinScreenState extends State<ChangePinScreen> {
                   },
                 ),
               ],
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.lg),
               if (_busy)
                 const CircularProgressIndicator()
               else
                 PinCodeInput(
-                  length: _step == 0 ? _length : _length,
+                  length: _length,
                   error: _error,
                   onCompleted: _onPin,
                   semanticLabel: l10n.pinLabel,
                 ),
               if (_error != null) ...[
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 Text(
                   _error!,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(

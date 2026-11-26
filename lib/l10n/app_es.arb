@@ -695,5 +695,29 @@
   "moveDown": "Bajar",
   "@moveDown": {
     "description": "moveDown"
+  },
+  "wifiQrShowLabel": "Mostrar QR",
+  "@wifiQrShowLabel": {
+    "description": "wifiQrShowLabel"
+  },
+  "wifiQrHideLabel": "Ocultar QR",
+  "@wifiQrHideLabel": {
+    "description": "wifiQrHideLabel"
+  },
+  "wifiQrNote": "Cualquiera que lo escanee obtiene la contraseña.",
+  "@wifiQrNote": {
+    "description": "wifiQrNote"
+  },
+  "wifiQrUnavailable": "Faltan la red o la contraseña para generar el QR.",
+  "@wifiQrUnavailable": {
+    "description": "wifiQrUnavailable"
+  },
+  "filterByCategory": "Por categoría",
+  "@filterByCategory": {
+    "description": "filterByCategory"
+  },
+  "filterByPerson": "Por persona",
+  "@filterByPerson": {
+    "description": "filterByPerson"
   }
 }

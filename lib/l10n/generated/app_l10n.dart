@@ -1140,6 +1140,42 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Move down'**
   String get moveDown;
+
+  /// wifiQrShowLabel
+  ///
+  /// In en, this message translates to:
+  /// **'Show QR'**
+  String get wifiQrShowLabel;
+
+  /// wifiQrHideLabel
+  ///
+  /// In en, this message translates to:
+  /// **'Hide QR'**
+  String get wifiQrHideLabel;
+
+  /// wifiQrNote
+  ///
+  /// In en, this message translates to:
+  /// **'Anyone who scans it gets the password.'**
+  String get wifiQrNote;
+
+  /// wifiQrUnavailable
+  ///
+  /// In en, this message translates to:
+  /// **'Network or password is missing to generate the QR.'**
+  String get wifiQrUnavailable;
+
+  /// filterByCategory
+  ///
+  /// In en, this message translates to:
+  /// **'By category'**
+  String get filterByCategory;
+
+  /// filterByPerson
+  ///
+  /// In en, this message translates to:
+  /// **'By person'**
+  String get filterByPerson;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

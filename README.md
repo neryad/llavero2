@@ -23,6 +23,8 @@ permisos de Internet en la versión de producción.
 - **Plantillas y generador**: plantillas para Wi-Fi, cuentas web, PINs,
   tarjetas y notas; generador de contraseñas y PINs aleatorios.
 - **Exportar/importar**: respaldo cifrado `.llavero`, JSON, CSV y PDF.
+- **QR de Wi-Fi**: para entradas Wi-Fi, código QR estándar `WIFI:T:...` que se
+  muestra solo al pedirlo y se oculta al bloquear o a los 30 s.
 - **Bloqueo automático** al pasar a segundo plano y **bloqueo de capturas**
   de pantalla.
 - **Español e inglés**, tema claro/oscuro/sistema y diseño adaptable a tablets.
@@ -149,7 +151,7 @@ Para comprobar que todo sigue bien:
 
 ```bash
 flutter analyze             # debe decir "No issues found!"
-flutter test                # 139 pruebas
+flutter test                # 228 pruebas
 ```
 
 Para generar las traducciones después de tocar los `.arb`:
@@ -179,8 +181,10 @@ Un test verifica que ambos tienen exactamente las mismas claves.
 
 1. Al abrir por primera vez, elige un PIN y confírmalo.
 2. Añade entradas desde el botón **+**. Puedes usar plantillas y el generador.
-3. Busca por título, persona o etiqueta; filtra por favoritas desde la Home.
-4. Ajusta tema, idioma, bloqueo automático y capturas desde **Ajustes**.
+3. Busca por título, persona o etiqueta; filtra por categoría, persona y
+   favoritas desde la Home.
+4. Ajusta tema, idioma, longitud del PIN, bloqueo automático y capturas desde
+   **Ajustes**. Para cambiar el PIN real usa **Cambiar PIN**.
 5. Exporta un respaldo cifrado desde **Exportar / importar** y guarda la
    contraseña del respaldo en un lugar seguro: **no se puede recuperar**.
 
@@ -188,51 +192,58 @@ Un test verifica que ambos tienen exactamente las mismas claves.
 
 ## Limitaciones honestas
 
-Estas son decisiones o carencias reales de la versión actual, no detalles
-menores:
+Estas son carencias reales de la versión actual, no detalles menores:
 
-1. **Sin sincronización (por diseño)**: Llavero es 100 % offline; la bóveda
-   vive en un solo dispositivo y no se sincroniza con la nube. Para pasarla a
-   otro, exporta un respaldo cifrado e impórtalo allí. No está en el plan de
-   mejoras: sería una contradicción con el propósito de la app.
-2. **La biometría solo se activa con la bóveda abierta**: hace falta la DEK para
-   guardar su copia. Si intentas activarla desde Ajustes con la bóveda cerrada,
-   no se hace nada.
-3. **Cambiar la longitud del PIN en Ajustes no cambia el PIN existente**: el
-   ajuste solo afecta al generador de PINs; re-crear la bóveda sería necesario
-   para cambiar el PIN real (y eso borra los datos).
-4. **No hay cambio de PIN** ni recuperación del PIN olvidado. Sin el PIN y sin
-   un respaldo cifrado con contraseña conocida, los datos son irrecuperables
-   (eso es el precio de no tener puerta trasera).
-5. **JSON, CSV y PDF no contienen secretos**: los valores se sustituyen por
-   `[oculto]` por diseño. Solo el respaldo `.llavero` conserva los secretos,
-   cifrados con la contraseña del respaldo.
-6. **La búsqueda no incluye las notas** ni los valores de campos secretos.
-7. **La papelera no se purga sola en segundo plano**: se purga al abrir la
-   pantalla de papelera y pulsar «Vaciar papelera».
-8. **Argon2id se ejecuta en Dart puro** (`cryptography`, sin aceleración
-   nativa). En móviles de gama baja el desbloqueo puede tardar 1–2 s. Bajar la
-   memoria a 32 MiB es una opción sin cambiar el formato del archivo.
-9. **Anti-capturas en iOS es un overlay**, no un bloqueo del sistema (iOS no
-   ofrece el equivalente a `FLAG_SECURE`). En Android sí se usa `FLAG_SECURE`.
-10. **Sin detección de root/jailbreak ni ofuscación del binario**: la app
-    protege los datos en reposo, pero no intenta defenderse de un dispositivo
-    comprometido.
-11. **Categorías fijas**: los identificadores son cadenas para permitir
-    categorías personalizadas en el futuro, pero hoy no se pueden crear.
-12. **No hay tests en dispositivo real** de `local_auth`, `file_picker`,
-    `share_plus` ni `printing`: esas rutas se prueban con mocks o canales
-    simulados; la verificación en hardware queda pendiente.
-13. **Soporte móvil principal**: hay carpetas `web/` y `macos/` del template,
+1. **Sin sincronización (por diseño)**: la bóveda vive en un solo dispositivo.
+   Para pasarla a otro, exporta un respaldo cifrado e impórtalo allí.
+2. **La biometría solo se activa con la bóveda abierta**: hace falta la DEK
+   para guardar su copia en el almacén seguro del sistema.
+3. **Reloj del dispositivo**: el bloqueo por intentos fallidos guarda el tiempo
+   restante y la última marca de hora; reiniciar el móvil **no** lo reinicia,
+   pero si se adelanta el reloj el castigo puede agotarse antes. Si se retrasa,
+   no se acorta. Sin servidor no se puede demostrar la hora real. Borrar los
+   datos de la app o reinstalar también borra el estado del bloqueo.
+4. **La longitud del PIN se cambia dentro de «Cambiar PIN»**, nunca desde
+   Ajustes: primero se verifica el PIN actual, luego se elige 4/6/8 y se
+   reenvuelve la DEK de forma atómica. El selector de Ajustes se eliminó.
+5. **Portapapeles en segundo plano**: la limpieza es "best effort". Android 10+
+   e iOS restringen manipular el portapapeles desde una app en segundo plano;
+   al pasar a segundo plano se intenta, pero no se garantiza.
+6. **iCloud no verificado en dispositivo real**: el archivo se marca con
+   `NSURLIsExcludedFromBackupKey`, pero no se ha comprobado en un iPhone/iPad
+   con iCloud activo; solo está verificado que compila.
+7. **JSON, CSV y PDF omiten secretos por defecto** (`[oculto]`). Existe una
+   opción «Incluir secretos en claro» con dos confirmaciones; el respaldo
+   `.llavero` sigue siempre cifrado con la contraseña del respaldo.
+8. **La búsqueda incluye títulos, personas, etiquetas y notas**, pero nunca
+   valores secretos.
+9. **La papelera se purga al abrir la bóveda** y también con el botón «Vaciar
+   papelera»; no hay un servicio en segundo plano que lo haga.
+10. **Argon2id se ejecuta en Dart puro** (`cryptography`, sin aceleración
+    nativa). En móviles de gama baja el desbloqueo puede tardar 1–2 s; bajar la
+    memoria a 32 MiB es una opción sin cambiar el formato del archivo.
+11. **Anti-capturas en iOS es un overlay**, no un bloqueo del sistema. En
+    Android sí se usa `FLAG_SECURE`.
+12. **Sin detección de root/jailbreak ni ofuscación por defecto**: los datos
+    están protegidos en reposo, pero la app no se defiende de un dispositivo
+    comprometido. Los comandos de release con `--obfuscate` están documentados.
+13. **Verificación en hardware pendiente**: los plugins (`local_auth`,
+    `file_picker`, `share_plus`, `printing`) se probaron con mocks y canales
+    simulados, y los builds nativos compilan, pero falta la ejecución
+    interactiva en un teléfono real. La guía está en
+    [docs/PRUEBAS_DISPOSITIVO.md](docs/PRUEBAS_DISPOSITIVO.md).
+14. **Soporte móvil principal**: hay carpetas `web/` y `macos/` del template,
     pero el flujo de seguridad (Keystore/Keychain, capturas) está pensado para
-    Android e iOS.
+    Android e iOS; el release universal de macOS falla por empaquetado.
 
 ---
 
 ## Estado del proyecto
 
-Todas las fases planificadas están completadas (1–9). El historial de cambios
-por fase está en [CHANGELOG.md](CHANGELOG.md) y el detalle de decisiones en
-[PROGRESS.md](PROGRESS.md).
+Todas las fases planificadas están completadas (1–9), con la auditoría (A/B),
+las mejoras de diseño (C) y la limpieza final (D) cerradas. El historial de
+cambios por fase está en [CHANGELOG.md](CHANGELOG.md), el detalle de decisiones
+en [PROGRESS.md](PROGRESS.md) y la checklist manual en
+[docs/PRUEBAS_DISPOSITIVO.md](docs/PRUEBAS_DISPOSITIVO.md).
 
 Licencia: uso personal / privado. `publish_to: none` en `pubspec.yaml`.

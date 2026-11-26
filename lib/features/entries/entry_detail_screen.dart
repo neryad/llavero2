@@ -1,13 +1,18 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
-import '../../core/platform/clipboard_service.dart';
 import '../../core/app_scope.dart';
+import '../../core/platform/clipboard_service.dart';
 import '../../core/routes/app_routes.dart';
-import '../../core/widgets/category_icon_badge.dart';
-import '../../core/widgets/app_scaffold.dart';
 import '../../core/security/secret_detector.dart';
+import '../../core/security/wifi_qr.dart';
+import '../../core/theme/app_spacing.dart';
+import '../../core/theme/category_colors.dart';
+import '../../core/widgets/app_scaffold.dart';
+import '../../core/widgets/category_icon_badge.dart';
+import '../../controllers/lock_controller.dart';
 import '../shared/category_name.dart';
 import '../../data/models/entry_field.dart';
 import '../../l10n/generated/app_l10n.dart';
@@ -27,6 +32,9 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
   final Set<int> _revealed = <int>{};
   final ClipboardService _clipboard = ClipboardService.instance;
   Timer? _revealTimer;
+  Timer? _qrTimer;
+  bool _qrVisible = false;
+  LockController? _lock;
 
   void _toggleReveal(int index) {
     setState(() {
@@ -43,11 +51,77 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
     });
   }
 
+  void _showQr() {
+    _qrTimer?.cancel();
+    setState(() => _qrVisible = true);
+    _qrTimer = Timer(const Duration(seconds: 30), _hideQr);
+  }
+
+  void _hideQr() {
+    _qrTimer?.cancel();
+    if (!mounted || !_qrVisible) return;
+    setState(() => _qrVisible = false);
+  }
+
+  void _onLockChanged() {
+    if (_lock?.isLocked ?? false) _hideQr();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final lock = AppScope.of(context).lock;
+    if (identical(_lock, lock)) return;
+    _lock?.removeListener(_onLockChanged);
+    _lock = lock;
+    _lock!.addListener(_onLockChanged);
+  }
+
   @override
   void dispose() {
+    _lock?.removeListener(_onLockChanged);
     _revealTimer?.cancel();
+    _qrTimer?.cancel();
     _clipboard.dispose();
     super.dispose();
+  }
+
+  Widget _wifiQrSection(
+    BuildContext context,
+    L10n l10n,
+    String? payload,
+  ) {
+    if (!_qrVisible) {
+      return OutlinedButton.icon(
+        onPressed: payload == null ? null : _showQr,
+        icon: const Icon(Icons.qr_code_2_outlined),
+        label: Text(l10n.wifiQrShowLabel),
+      );
+    }
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.cardPadding),
+        child: Column(
+          children: <Widget>[
+            QrImageView(data: payload!, version: QrVersions.auto, size: 180),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              l10n.wifiQrNote,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            OutlinedButton.icon(
+              onPressed: _hideQr,
+              icon: const Icon(Icons.visibility_off_outlined),
+              label: Text(l10n.wifiQrHideLabel),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -68,7 +142,9 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
           );
         }
 
-    
+        final isWifi = entry.categoryId == CategoryIds.wifi;
+        final payload = isWifi ? WifiQr.payloadFor(entry) : null;
+
         return AppScaffold(
           appBar: AppBar(
             title: Text(entry.title),
@@ -91,7 +167,7 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
             ],
           ),
           body: ListView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.only(bottom: AppSpacing.listBottom),
             children: <Widget>[
               ListTile(
                 leading: CategoryIconBadge(categoryId: entry.categoryId),
@@ -104,9 +180,25 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
                 ),
                 subtitle: entry.person == null ? null : Text(entry.person!),
               ),
-              const SizedBox(height: 8),
-              Text(l10n.fieldsLabel, style: Theme.of(context).textTheme.titleMedium),
-              const SizedBox(height: 8),
+              if (isWifi) ...[
+                const SizedBox(height: AppSpacing.cardGap),
+                _wifiQrSection(context, l10n, payload),
+                if (payload == null && !_qrVisible) ...[
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    l10n.wifiQrUnavailable,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                  ),
+                ],
+              ],
+              const SizedBox(height: AppSpacing.headerToItem),
+              Text(
+                l10n.fieldsLabel,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: AppSpacing.headerToItem),
               for (final field in entry.fields)
                 _FieldRow(
                   field: field,
@@ -120,12 +212,15 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
                   ),
                 ),
               if (entry.notes.isNotEmpty) ...[
-                const SizedBox(height: 16),
-                Text(l10n.notesFieldLabel, style: Theme.of(context).textTheme.titleMedium),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.headerToItem),
+                Text(
+                  l10n.notesFieldLabel,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: AppSpacing.headerToItem),
                 Text(entry.notes),
               ],
-              const SizedBox(height: 32),
+              const SizedBox(height: AppSpacing.lg),
               Row(
                 children: <Widget>[
                   Expanded(
@@ -135,7 +230,7 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
                       label: Text(l10n.duplicateLabel),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: () async {
@@ -173,38 +268,41 @@ class _FieldRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = L10n.of(context);
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(field.label, style: Theme.of(context).textTheme.labelLarge),
-                  const SizedBox(height: 4),
-                  Text(
-                    SecretDetector.isSecret(field) && !revealed
-                        ? '••••••••'
-                        : field.value,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                ],
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.cardGap),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.cardPadding),
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(field.label, style: Theme.of(context).textTheme.labelLarge),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      SecretDetector.isSecret(field) && !revealed
+                          ? '••••••••'
+                          : field.value,
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            if (SecretDetector.isSecret(field))
+              if (SecretDetector.isSecret(field))
+                IconButton(
+                  icon: Icon(revealed ? Icons.visibility_off : Icons.visibility),
+                  tooltip: revealed ? l10n.hideLabel : l10n.revealLabel,
+                  onPressed: onToggle,
+                ),
               IconButton(
-                icon: Icon(revealed ? Icons.visibility_off : Icons.visibility),
-                tooltip: revealed ? l10n.hideLabel : l10n.revealLabel,
-                onPressed: onToggle,
+                icon: const Icon(Icons.copy_outlined),
+                tooltip: l10n.copyLabel,
+                onPressed: onCopy,
               ),
-            IconButton(
-              icon: const Icon(Icons.copy_outlined),
-              tooltip: l10n.copyLabel,
-              onPressed: onCopy,
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

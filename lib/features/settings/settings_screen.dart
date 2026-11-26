@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import '../../core/app_scope.dart';
+import '../../core/theme/app_spacing.dart';
 import '../../core/platform/platform_capabilities.dart';
 import '../../core/platform/screen_security.dart';
 import '../../core/routes/app_routes.dart';
@@ -12,6 +13,10 @@ import '../../controllers/settings_controller.dart';
 import '../../l10n/generated/app_l10n.dart';
 
 /// Ajustes agrupados: Seguridad, Herramientas, Apariencia y Acerca de.
+///
+/// Todas las filas comparten la misma columna de icono (contentPadding cero),
+/// el mismo estilo de etiqueta (titleMedium) y la misma separación. Los
+/// controles anchos van debajo de la etiqueta, alineados con ella.
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
@@ -20,6 +25,9 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  /// Icono, etiqueta y valor alineados igual en toda la pantalla.
+  static const double _labelIndent = 56;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -34,19 +42,58 @@ class _SettingsScreenState extends State<SettingsScreen> {
     ScreenSecurity.setScreenshotsBlocked(value);
   }
 
-  Future<void> _setPinLength(int value) async {
-    // Cambiar la longitud afecta al PIN: hay que confirmar identidad primero.
-    if (!await requireReauth(context)) return;
-    if (mounted) AppScope.of(context).settings.setPinLength(value);
+  TextStyle get _labelStyle => Theme.of(context).textTheme.titleMedium!;
+
+  Widget _row({
+    required IconData icon,
+    required String label,
+    String? subtitle,
+    Widget? trailing,
+    VoidCallback? onTap,
+  }) {
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      minTileHeight: AppSpacing.rowMinHeight,
+      leading: Icon(icon),
+      title: Text(label, style: _labelStyle),
+      subtitle: subtitle == null ? null : Text(subtitle),
+      trailing: trailing,
+      onTap: onTap,
+    );
+  }
+
+  /// Fila con un control ancho (segmentado) debajo, alineado con la etiqueta.
+  Widget _controlRow({
+    required IconData icon,
+    required String label,
+    required Widget control,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        _row(icon: icon, label: label),
+        Padding(
+          padding: const EdgeInsets.only(
+            left: _labelIndent,
+            top: AppSpacing.xs,
+            bottom: AppSpacing.sm,
+          ),
+          child: control,
+        ),
+      ],
+    );
   }
 
   Widget _group(String title, List<Widget> children) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Text(title, style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 8),
-          ...children,
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.headerToItem),
+          for (final child in children) ...[
+            child,
+            const SizedBox(height: AppSpacing.cardGap),
+          ],
+          const SizedBox(height: AppSpacing.groupGap),
         ],
       );
 
@@ -61,9 +108,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
         !lock.isLocked &&
         lock.unlockedDek != null;
 
-    final pinLength = (settings.pinLength == 4 || settings.pinLength == 8)
-        ? settings.pinLength
-        : 6;
+    final clipboardTimeouts = <int>{
+      15,
+      30,
+      60,
+      120,
+      settings.clipboardTimeoutSeconds,
+    }.toList()
+      ..sort();
 
     return AppScaffold(
       appBar: AppBar(title: Text(l10n.settingsLabel)),
@@ -75,38 +127,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
             padding: const EdgeInsets.symmetric(vertical: 8),
             children: <Widget>[
               _group(l10n.securityLabel, <Widget>[
-                ListTile(
-                  leading: const Icon(Icons.password_outlined),
-                  title: Text(l10n.changePinLabel),
+                _row(
+                  icon: Icons.password_outlined,
+                  label: l10n.changePinLabel,
                   onTap: () => Navigator.of(context)
                       .pushNamed(AppRoutes.changePin),
                 ),
-                ListTile(
-                  leading: const Icon(Icons.fingerprint),
-                  title: Text(l10n.biometricSettingLabel),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  minTileHeight: AppSpacing.rowMinHeight,
+                  secondary: const Icon(Icons.fingerprint),
+                  title: Text(l10n.biometricSettingLabel, style: _labelStyle),
                   subtitle: !capabilities.supportsBiometrics
                       ? Text(l10n.biometricsNotSupported)
                       : (canToggleBiometrics
                           ? null
                           : Text(l10n.biometricsNeedsUnlock)),
-                  trailing: Switch(
-                    value: lock.biometricsEnabled,
-                    onChanged: canToggleBiometrics
-                        ? (value) async {
-                            if (!value && !await requireReauth(context)) {
-                              return;
-                            }
-                            await lock.setBiometricsEnabled(
-                              value,
-                              reauthenticated: !value,
-                            );
+                  value: lock.biometricsEnabled,
+                  onChanged: canToggleBiometrics
+                      ? (value) async {
+                          if (!value && !await requireReauth(context)) {
+                            return;
                           }
-                        : null,
-                  ),
+                          await lock.setBiometricsEnabled(
+                            value,
+                            reauthenticated: !value,
+                          );
+                        }
+                      : null,
                 ),
-                ListTile(
-                  leading: const Icon(Icons.lock_clock_outlined),
-                  title: Text(l10n.autoLockSettingLabel),
+                _row(
+                  icon: Icons.lock_clock_outlined,
+                  label: l10n.autoLockSettingLabel,
                   trailing: DropdownButton<AutoLockDelay>(
                     value: settings.autoLockDelay,
                     items: <MapEntry<AutoLockDelay, String>>[
@@ -122,17 +174,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     },
                   ),
                 ),
-                SegmentedButton<int>(
-                  segments: <ButtonSegment<int>>[
-                    for (final n in <int>[4, 6, 8])
-                      ButtonSegment<int>(value: n, label: Text('$n')),
-                  ],
-                  selected: <int>{pinLength},
-                  onSelectionChanged: (s) => _setPinLength(s.first),
-                ),
                 SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  minTileHeight: AppSpacing.rowMinHeight,
                   secondary: const Icon(Icons.screenshot_outlined),
-                  title: Text(l10n.blockScreenshotsSettingLabel),
+                  title: Text(
+                    l10n.blockScreenshotsSettingLabel,
+                    style: _labelStyle,
+                  ),
                   subtitle: !capabilities.supportsScreenshotBlocking
                       ? Text(l10n.screenshotsNotSupported)
                       : (Platform.isIOS ? Text(l10n.screenshotsIosNote) : null),
@@ -142,89 +191,100 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ? _setScreenshots
                       : null,
                 ),
-                ListTile(
-                  leading: const Icon(Icons.content_paste_off_outlined),
-                  title: Text(
-                    '${l10n.clipboardTimeoutSettingLabel}: '
-                    '${settings.clipboardTimeoutSeconds}s',
+                _row(
+                  icon: Icons.content_paste_off_outlined,
+                  label: l10n.clipboardTimeoutSettingLabel,
+                  trailing: DropdownButton<int>(
+                    value: settings.clipboardTimeoutSeconds,
+                    items: <DropdownMenuItem<int>>[
+                      for (final seconds in clipboardTimeouts)
+                        DropdownMenuItem<int>(
+                          value: seconds,
+                          child: Text('${seconds}s'),
+                        ),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        settings.setClipboardTimeoutSeconds(value);
+                      }
+                    },
                   ),
                 ),
-                ListTile(
-                  leading: const Icon(Icons.lock_outline),
-                  title: Text(l10n.lockNowLabel),
+                _row(
+                  icon: Icons.lock_outline,
+                  label: l10n.lockNowLabel,
                   onTap: () => lock.lock(),
                 ),
               ]),
               _group(l10n.toolsLabel, <Widget>[
-                ListTile(
-                  leading: const Icon(Icons.health_and_safety_outlined),
-                  title: Text(l10n.securityHealthLabel),
+                _row(
+                  icon: Icons.health_and_safety_outlined,
+                  label: l10n.securityHealthLabel,
                   onTap: () => Navigator.of(context)
                       .pushNamed(AppRoutes.securityHealth),
                 ),
-                ListTile(
-                  leading: const Icon(Icons.category_outlined),
-                  title: Text(l10n.categoriesLabel),
+                _row(
+                  icon: Icons.category_outlined,
+                  label: l10n.categoriesLabel,
                   onTap: () =>
                       Navigator.of(context).pushNamed(AppRoutes.categories),
                 ),
-                ListTile(
-                  leading: const Icon(Icons.import_export),
-                  title: Text(l10n.exportImportTitle),
+                _row(
+                  icon: Icons.import_export,
+                  label: l10n.exportImportTitle,
                   onTap: () => Navigator.of(context)
                       .pushNamed(AppRoutes.exportImport),
                 ),
-                ListTile(
-                  leading: const Icon(Icons.delete_sweep_outlined),
-                  title: Text(l10n.trashLabel),
+                _row(
+                  icon: Icons.delete_sweep_outlined,
+                  label: l10n.trashLabel,
                   onTap: () => Navigator.of(context).pushNamed(AppRoutes.trash),
                 ),
               ]),
               _group(l10n.appearanceLabel, <Widget>[
-                Text(
-                  l10n.themeLabel,
-                  style: Theme.of(context).textTheme.bodyMedium,
+                _controlRow(
+                  icon: Icons.palette_outlined,
+                  label: l10n.themeLabel,
+                  control: SegmentedButton<AppThemeMode>(
+                    segments: <ButtonSegment<AppThemeMode>>[
+                      ButtonSegment(
+                        value: AppThemeMode.system,
+                        label: Text(l10n.themeSystem),
+                      ),
+                      ButtonSegment(
+                        value: AppThemeMode.light,
+                        label: Text(l10n.themeLight),
+                      ),
+                      ButtonSegment(
+                        value: AppThemeMode.dark,
+                        label: Text(l10n.themeDark),
+                      ),
+                    ],
+                    selected: <AppThemeMode>{settings.themeMode},
+                    onSelectionChanged: (s) => settings.setThemeMode(s.first),
+                  ),
                 ),
-                SegmentedButton<AppThemeMode>(
-                  segments: <ButtonSegment<AppThemeMode>>[
-                    ButtonSegment(
-                      value: AppThemeMode.system,
-                      label: Text(l10n.themeSystem),
-                    ),
-                    ButtonSegment(
-                      value: AppThemeMode.light,
-                      label: Text(l10n.themeLight),
-                    ),
-                    ButtonSegment(
-                      value: AppThemeMode.dark,
-                      label: Text(l10n.themeDark),
-                    ),
-                  ],
-                  selected: <AppThemeMode>{settings.themeMode},
-                  onSelectionChanged: (s) => settings.setThemeMode(s.first),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  l10n.languageLabel,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                SegmentedButton<AppLanguage>(
-                  segments: <ButtonSegment<AppLanguage>>[
-                    ButtonSegment(
-                      value: AppLanguage.system,
-                      label: Text(l10n.languageSystem),
-                    ),
-                    ButtonSegment(
-                      value: AppLanguage.spanish,
-                      label: Text(l10n.languageSpanish),
-                    ),
-                    ButtonSegment(
-                      value: AppLanguage.english,
-                      label: Text(l10n.languageEnglish),
-                    ),
-                  ],
-                  selected: <AppLanguage>{settings.language},
-                  onSelectionChanged: (s) => settings.setLanguage(s.first),
+                _controlRow(
+                  icon: Icons.language_outlined,
+                  label: l10n.languageLabel,
+                  control: SegmentedButton<AppLanguage>(
+                    segments: <ButtonSegment<AppLanguage>>[
+                      ButtonSegment(
+                        value: AppLanguage.system,
+                        label: Text(l10n.languageSystem),
+                      ),
+                      ButtonSegment(
+                        value: AppLanguage.spanish,
+                        label: Text(l10n.languageSpanish),
+                      ),
+                      ButtonSegment(
+                        value: AppLanguage.english,
+                        label: Text(l10n.languageEnglish),
+                      ),
+                    ],
+                    selected: <AppLanguage>{settings.language},
+                    onSelectionChanged: (s) => settings.setLanguage(s.first),
+                  ),
                 ),
               ]),
               _group(l10n.aboutLabel, <Widget>[
@@ -232,7 +292,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ]),
               if (capabilities.isWeb)
                 Padding(
-                  padding: const EdgeInsets.only(top: 8),
+                  padding: const EdgeInsets.only(top: AppSpacing.sm),
                   child: Text(
                     l10n.webStorageWarning,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
