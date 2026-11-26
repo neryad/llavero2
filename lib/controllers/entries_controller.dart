@@ -5,6 +5,7 @@ import '../data/models/entry_field.dart';
 import '../data/models/vault_entry.dart';
 import '../data/models/vault_document.dart';
 import '../data/vault_storage.dart';
+import '../data/vault_history.dart';
 
 /// Controlador que gestiona las entradas de la bóveda.
 ///
@@ -84,6 +85,9 @@ class EntriesController extends ChangeNotifier {
       ..addAll(document.entries);
     await _saveToStorage();
   }
+
+  /// Historial de versiones del archivo (puede ser null en tests).
+  VaultHistory? get history => _storage.history;
 
   /// Obtiene las entradas activas.
   List<VaultEntry> get entries {

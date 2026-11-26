@@ -8,6 +8,7 @@ import 'package:llavero2/data/models/vault_document.dart';
 import 'package:llavero2/data/models/vault_entry.dart';
 import 'package:llavero2/data/vault_file_system.dart';
 import 'package:llavero2/data/vault_storage.dart';
+import 'package:llavero2/data/vault_history.dart';
 
 /// Almacén que cuenta lecturas y escrituras.
 class _CountingStorage implements VaultStorage {
@@ -22,6 +23,9 @@ class _CountingStorage implements VaultStorage {
 
   @override
   String get vaultPath => _inner.vaultPath;
+
+  @override
+  VaultHistory? get history => _inner.history;
 
   @override
   Future<void> save(VaultDocument document, SecretKey key) async {

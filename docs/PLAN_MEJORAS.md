@@ -102,8 +102,10 @@ este archivo y se hace commit.
   reutilizadas; la pantalla `/security-health` muestra solo títulos, nunca
   valores. Acceso desde Ajustes. 3 tests nuevos.
 
-- [ ] **16. Historial/versiones locales de la bóveda** para recuperar borrados
-  antes de los 30 días de papelera.
+- [x] **16. Historial/versiones locales de la bóveda.** ✅ Completada
+  2026-11-26 — `VaultHistory` guarda una copia antes de cada escritura
+  (máx. 10 versiones), pantalla `/settings/history` para listar y restaurar.
+  5 tests nuevos.
 
 - [ ] **17. Soporte real de escritorio/web** (hoy solo móvil).
 
@@ -129,8 +131,8 @@ este archivo y se hace commit.
 |---|---|---|
 | 1 | 4 | 4 |
 | 2 | 3 | 5 |
-| 3 | 5 | 8 |
+| 3 | 6 | 8 |
 | 4 | 0 | 3 |
-| **Total** | **14** | **20** |
+| **Total** | **15** | **20** |
 
-Última actualización: 2026-11-26 (14 completadas, 1 diferida).
+Última actualización: 2026-11-26 (15 completadas, 1 diferida).

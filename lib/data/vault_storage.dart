@@ -6,6 +6,7 @@ import '../core/security/crypto/crypto_errors.dart';
 import '../core/security/crypto/vault_crypto.dart';
 import '../data/models/vault_document.dart';
 import '../data/vault_file_system.dart';
+import '../data/vault_history.dart';
 
 /// Almacena y gestiona el archivo cifrado de la bóveda.
 ///
@@ -14,8 +15,13 @@ import '../data/vault_file_system.dart';
 /// - El contenido cifrado en base64.
 abstract class VaultStorage {
   /// Crea un nuevo almacenamiento de bóveda.
-  factory VaultStorage({required VaultFileSystem initialFileSystem}) =
-      _VaultStorage;
+  factory VaultStorage({
+    required VaultFileSystem initialFileSystem,
+    VaultHistory? history,
+  }) = _VaultStorage;
+
+  /// Historial de versiones (null si no se usa, por ejemplo en tests).
+  VaultHistory? get history;
 
   /// El sistema de archivos usado (permite inyectar uno en memoria para tests).
   VaultFileSystem get fileSystem;
@@ -38,10 +44,16 @@ abstract class VaultStorage {
 
 /// Implementación real sobre [VaultFileSystem].
 class _VaultStorage implements VaultStorage {
-  _VaultStorage({required VaultFileSystem initialFileSystem})
-      : _fileSystem = initialFileSystem;
+  _VaultStorage({
+    required VaultFileSystem initialFileSystem,
+    this._history,
+  })  : _fileSystem = initialFileSystem;
 
   final VaultFileSystem _fileSystem;
+  final VaultHistory? _history;
+
+  @override
+  VaultHistory? get history => _history;
 
   @override
   VaultFileSystem get fileSystem => _fileSystem;
@@ -53,6 +65,8 @@ class _VaultStorage implements VaultStorage {
 
   @override
   Future<void> save(VaultDocument document, SecretKey key) async {
+    // Antes de sobrescribir, guardamos la versión buena como histórico.
+    await _history?.snapshot();
     final plainJson = utf8.encode(jsonEncode(document.toJson()));
     final blob = await _crypto.encryptVault(plainJson, key);
     final envelope = <String, Object?>{

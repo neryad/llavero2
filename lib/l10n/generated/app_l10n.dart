@@ -864,6 +864,30 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'All good: no warnings.'**
   String get allGood;
+
+  /// Title of the vault history screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Vault history'**
+  String get historyLabel;
+
+  /// Message shown when the vault history is empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No saved versions yet.'**
+  String get historyEmpty;
+
+  /// Button that restores an older version of the vault.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore this version'**
+  String get restoreVersionLabel;
+
+  /// Message shown after restoring a vault version.
+  ///
+  /// In en, this message translates to:
+  /// **'Version restored.'**
+  String get versionRestored;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

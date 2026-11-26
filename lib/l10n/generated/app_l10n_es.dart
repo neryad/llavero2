@@ -405,4 +405,16 @@ class L10nEs extends L10n {
 
   @override
   String get allGood => 'Todo en orden: no hay avisos.';
+
+  @override
+  String get historyLabel => 'Historial de la bóveda';
+
+  @override
+  String get historyEmpty => 'Todavía no hay versiones guardadas.';
+
+  @override
+  String get restoreVersionLabel => 'Restaurar esta versión';
+
+  @override
+  String get versionRestored => 'Versión restaurada.';
 }

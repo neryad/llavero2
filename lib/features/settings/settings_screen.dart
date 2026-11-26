@@ -86,6 +86,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               subtitle: Text(l10n.deviceIntegrityLabel),
             ),
             ListTile(
+              leading: const Icon(Icons.history),
+              title: Text(l10n.historyLabel),
+              onTap: () => Navigator.of(context).pushNamed(AppRoutes.vaultHistory),
+            ),
+            ListTile(
               leading: const Icon(Icons.health_and_safety_outlined),
               title: Text(l10n.securityHealthLabel),
               onTap: () =>

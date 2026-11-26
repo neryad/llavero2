@@ -613,5 +613,25 @@
   "allGood": "All good: no warnings.",
   "@allGood": {
     "description": "Message shown when no password issues were found."
+  },
+
+  "historyLabel": "Vault history",
+  "@historyLabel": {
+    "description": "Title of the vault history screen."
+  },
+
+  "historyEmpty": "No saved versions yet.",
+  "@historyEmpty": {
+    "description": "Message shown when the vault history is empty."
+  },
+
+  "restoreVersionLabel": "Restore this version",
+  "@restoreVersionLabel": {
+    "description": "Button that restores an older version of the vault."
+  },
+
+  "versionRestored": "Version restored.",
+  "@versionRestored": {
+    "description": "Message shown after restoring a vault version."
   }
 }

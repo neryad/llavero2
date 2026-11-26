@@ -405,4 +405,16 @@ class L10nEn extends L10n {
 
   @override
   String get allGood => 'All good: no warnings.';
+
+  @override
+  String get historyLabel => 'Vault history';
+
+  @override
+  String get historyEmpty => 'No saved versions yet.';
+
+  @override
+  String get restoreVersionLabel => 'Restore this version';
+
+  @override
+  String get versionRestored => 'Version restored.';
 }

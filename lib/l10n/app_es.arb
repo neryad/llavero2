@@ -613,5 +613,25 @@
   "allGood": "Todo en orden: no hay avisos.",
   "@allGood": {
     "description": "Message shown when no password issues were found."
+  },
+
+  "historyLabel": "Historial de la bóveda",
+  "@historyLabel": {
+    "description": "Title of the vault history screen."
+  },
+
+  "historyEmpty": "Todavía no hay versiones guardadas.",
+  "@historyEmpty": {
+    "description": "Message shown when the vault history is empty."
+  },
+
+  "restoreVersionLabel": "Restaurar esta versión",
+  "@restoreVersionLabel": {
+    "description": "Button that restores an older version of the vault."
+  },
+
+  "versionRestored": "Versión restaurada.",
+  "@versionRestored": {
+    "description": "Message shown after restoring a vault version."
   }
 }

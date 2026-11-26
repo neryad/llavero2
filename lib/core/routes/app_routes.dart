@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../features/home/home_screen.dart';
 import '../../features/settings/settings_screen.dart';
 import '../../features/settings/categories_screen.dart';
+import '../../features/settings/vault_history_screen.dart';
 import '../../features/security/security_health_screen.dart';
 import '../../features/settings/change_pin_screen.dart';
 import '../../features/export_import/export_import_screen.dart';
@@ -52,6 +53,9 @@ abstract final class AppRoutes {
   /// Categorías personalizadas.
   static const String categories = '/settings/categories';
 
+  /// Historial de versiones de la bóveda.
+  static const String vaultHistory = '/settings/history';
+
   /// Estado de seguridad de las contraseñas.
   static const String securityHealth = '/security-health';
 
@@ -85,6 +89,8 @@ abstract final class AppRoutes {
         return _build(const ExportImportScreen(), routeSettings);
       case settings:
         return _build(const SettingsScreen(), routeSettings);
+      case vaultHistory:
+        return _build(const VaultHistoryScreen(), routeSettings);
       case categories:
         return _build(const CategoriesScreen(), routeSettings);
       case changePin:

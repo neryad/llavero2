@@ -8,6 +8,10 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- **Mejora #16 del plan de mejoras: historial local de la bóveda.** Copias
+  automáticas antes de cada escritura (máx. 10), pantalla para listar y
+  restaurar versiones. 5 tests nuevos.
+
 - **Mejora #15 del plan de mejoras: salud de contraseñas.** Pantalla real en
   `/security-health` con detección de contraseñas débiles y reutilizadas, sin
   revelar nunca los valores. Acceso desde Ajustes. 3 tests nuevos.

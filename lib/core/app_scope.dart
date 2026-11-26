@@ -10,6 +10,7 @@ import '../core/security/biometric_auth.dart';
 import '../core/security/lockout_store.dart';
 import '../core/security/secure_store.dart';
 import '../data/vault_file_system.dart';
+import '../data/vault_history.dart';
 import '../data/vault_storage.dart';
 import 'platform/screen_security.dart';
 
@@ -56,7 +57,10 @@ class AppControllers extends ChangeNotifier {
         initialBiometricAuth: DeviceBiometricAuth(),
       ),
       entries: EntriesController(
-        initialStorage: VaultStorage(initialFileSystem: fileSystem),
+        initialStorage: VaultStorage(
+          initialFileSystem: fileSystem,
+          history: VaultHistory(vaultPath: fileSystem.vaultPath),
+        ),
       ),
       initialCategories: CategoriesController(store: store),
     );
