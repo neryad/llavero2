@@ -134,5 +134,35 @@
   "pinInvalidError": "The PIN is not valid. Use 4 to 8 digits, without sequences, repeats or common PINs.",
   "@pinInvalidError": {
     "description": "Error shown when the PIN does not pass the validation rules."
+  },
+
+  "vaultCreationError": "Could not create the vault. Please try again.",
+  "@vaultCreationError": {
+    "description": "Error shown when creating the vault fails during onboarding."
+  },
+
+  "unlockLabel": "Unlock",
+  "@unlockLabel": {
+    "description": "Button that submits the PIN on the lock screen."
+  },
+
+  "biometricUnlockLabel": "Unlock with biometrics",
+  "@biometricUnlockLabel": {
+    "description": "Button that starts biometric unlock on the lock screen."
+  },
+
+  "wrongPinError": "Incorrect PIN. Try again.",
+  "@wrongPinError": {
+    "description": "Error shown after a wrong PIN on the lock screen."
+  },
+
+  "lockedOutMessage": "Too many failed attempts. Please wait before trying again.",
+  "@lockedOutMessage": {
+    "description": "Message shown while the app is locked out after failed PIN attempts."
+  },
+
+  "biometricReason": "Use your fingerprint or face to unlock Llavero.",
+  "@biometricReason": {
+    "description": "Reason shown by the system biometric prompt when unlocking the vault."
   }
 }

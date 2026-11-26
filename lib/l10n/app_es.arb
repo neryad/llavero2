@@ -134,5 +134,35 @@
   "pinInvalidError": "El PIN no es válido. Usa 4 a 8 dígitos, sin secuencias, repeticiones ni PINs comunes.",
   "@pinInvalidError": {
     "description": "Error shown when the PIN does not pass the validation rules."
+  },
+
+  "vaultCreationError": "No se pudo crear la bóveda. Inténtalo de nuevo.",
+  "@vaultCreationError": {
+    "description": "Error shown when creating the vault fails during onboarding."
+  },
+
+  "unlockLabel": "Desbloquear",
+  "@unlockLabel": {
+    "description": "Button that submits the PIN on the lock screen."
+  },
+
+  "biometricUnlockLabel": "Desbloquear con biometría",
+  "@biometricUnlockLabel": {
+    "description": "Button that starts biometric unlock on the lock screen."
+  },
+
+  "wrongPinError": "PIN incorrecto. Inténtalo de nuevo.",
+  "@wrongPinError": {
+    "description": "Error shown after a wrong PIN on the lock screen."
+  },
+
+  "lockedOutMessage": "Demasiados intentos fallidos. Espera antes de volver a intentarlo.",
+  "@lockedOutMessage": {
+    "description": "Message shown while the app is locked out after failed PIN attempts."
+  },
+
+  "biometricReason": "Usa tu huella o rostro para abrir Llavero.",
+  "@biometricReason": {
+    "description": "Reason shown by the system biometric prompt when unlocking the vault."
   }
 }

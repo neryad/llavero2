@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../features/home/home_screen.dart';
+import '../../features/lock/lock_screen.dart';
 import '../../features/onboarding/onboarding_screen.dart';
 import '../../features/shared/coming_soon_screen.dart';
 import '../../features/splash/splash_screen.dart';
@@ -50,6 +51,7 @@ abstract final class AppRoutes {
       case home:
         return _build(const HomeScreen(), routeSettings);
       case lock:
+        return _build(const LockScreen(), routeSettings);
       case entryDetail:
       case entryForm:
       case trash:

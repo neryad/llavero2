@@ -302,12 +302,44 @@ flutter test test/entries_controller_test.dart test/vault_storage_test.dart test
 | 1 | Configuración, tema, fuentes, idiomas, rutas, `AppScope` | ✅ Hecho |
 | 2 | Criptografía, almacén seguro, bloqueo por intentos | ✅ Hecho |
 | 3 | Archivo cifrado, modelos, `EntriesController` con CRUD | ✅ Hecho |
-| 4 | Onboarding, PIN, biometría, pantalla de bloqueo | Pendiente |
+| 4 | Onboarding, PIN, biometría, pantalla de bloqueo | ✅ Hecho |
 | 5 | Inicio, CRUD de entradas, plantillas, generador de contraseñas, papelera | Pendiente |
 | 6 | Exportar/importar (backup cifrado, CSV/JSON, PDF) | Pendiente |
 | 7 | Ajustes, estado de seguridad, bloqueo automático, capturas bloqueadas | Pendiente |
 | 8 | Animaciones, accesibilidad, iconos, revisión ES/EN, tablets | Pendiente |
 | 9 | README y lista honesta de limitaciones | Pendiente |
+
+## Fase 4 — Completada ✅
+
+### Qué se construyó
+
+| Área | Detalle |
+|---|---|
+| **Onboarding** | Pantalla de primera ejecución + crear PIN (validar + confirmar) → crear bóveda. |
+| **Pantalla de bloqueo** | Entrada de PIN oculta, botón biométrico (si habilitado), cuenta atrás de bloqueo. |
+| **Biometría** | `BiometricAuth` con `local_auth`: la copia de la DEK solo se lee tras confirmar huella/rostro. PIN siempre plan B. |
+| **Wiring** | `LockController` → `EntriesController`: al desbloquear carga las entradas con la DEK; al bloquear, borra la memoria. |
+
+### Archivos creados
+
+```
+lib/core/security/biometric_auth.dart      ← BiometricAuth + DeviceBiometricAuth
+lib/features/onboarding/                   ← onboarding_screen.dart, pin_create_screen.dart
+lib/features/lock/lock_screen.dart         ← pantalla de bloqueo
+test/onboarding_test.dart                  ← 3 tests de onboarding
+test/lock_screen_test.dart                 ← 7 tests de bloqueo/biometría/wiring
+```
+
+### Decisiones
+
+- El PIN de onboarding permite **4–8 dígitos** (el ajuste `pinLength` no limita el campo).
+- La biometría se habilita desde `LockController.setBiometricsEnabled`, que requiere la bóveda abierta (DEK disponible); la UI de ajustes llegará en la Fase 7.
+
+### Pruebas
+
+`flutter analyze` → sin problemas. `flutter test` → **99 pruebas, todas correctas**.
+
+---
 
 ## Decisiones y notas
 

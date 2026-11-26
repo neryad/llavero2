@@ -258,6 +258,42 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'The PIN is not valid. Use 4 to 8 digits, without sequences, repeats or common PINs.'**
   String get pinInvalidError;
+
+  /// Error shown when creating the vault fails during onboarding.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not create the vault. Please try again.'**
+  String get vaultCreationError;
+
+  /// Button that submits the PIN on the lock screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock'**
+  String get unlockLabel;
+
+  /// Button that starts biometric unlock on the lock screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock with biometrics'**
+  String get biometricUnlockLabel;
+
+  /// Error shown after a wrong PIN on the lock screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect PIN. Try again.'**
+  String get wrongPinError;
+
+  /// Message shown while the app is locked out after failed PIN attempts.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many failed attempts. Please wait before trying again.'**
+  String get lockedOutMessage;
+
+  /// Reason shown by the system biometric prompt when unlocking the vault.
+  ///
+  /// In en, this message translates to:
+  /// **'Use your fingerprint or face to unlock Llavero.'**
+  String get biometricReason;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

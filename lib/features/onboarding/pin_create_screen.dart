@@ -70,7 +70,13 @@ class _PinCreateScreenState extends State<PinCreateScreen> {
     // PIN repetido correctamente: crear la bóveda (y pasar a estado
     // bloqueado, que es la pantalla que pedirá el PIN en la fase 2).
     final lock = AppScope.of(context).lock;
-    await lock.createVault(pin);
+    try {
+      await lock.createVault(pin);
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _error = l10n.vaultCreationError);
+      return;
+    }
     if (!mounted) return;
     Navigator.of(context).popUntil((route) => route.isFirst);
   }
@@ -78,7 +84,6 @@ class _PinCreateScreenState extends State<PinCreateScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = L10n.of(context);
-    final pinLength = AppScope.of(context).settings.pinLength;
 
     return AppScaffold(
       body: Padding(
@@ -95,7 +100,11 @@ class _PinCreateScreenState extends State<PinCreateScreen> {
             TextField(
               controller: _pinController,
               keyboardType: TextInputType.number,
-              maxLength: pinLength,
+              // El rango permitido es 4–8; el ajuste pinLength solo es un
+              // valor por defecto y no debe limitar lo que el usuario puede
+              // escribir aquí (el validador acepta cualquier longitud 4–8).
+              maxLength: 8,
+              obscureText: true,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     fontFamily: AppTypography.monoFont,
@@ -105,7 +114,7 @@ class _PinCreateScreenState extends State<PinCreateScreen> {
                   ),
               decoration: InputDecoration(
                 labelText: l10n.pinLabel,
-                hintText: pinLength.toString(),
+                hintText: '••••••',
                 filled: true,
               ),
             ),

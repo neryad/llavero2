@@ -1,5 +1,7 @@
+import 'package:cryptography/cryptography.dart';
 import 'package:flutter/foundation.dart';
 
+import '../core/security/biometric_auth.dart';
 import '../core/security/crypto/crypto_errors.dart';
 import '../core/security/key_vault_service.dart';
 import '../core/security/lockout_policy.dart';
@@ -18,13 +20,16 @@ class LockController extends ChangeNotifier {
   LockController({
     VaultKeyService? initialKeyService,
     LockoutStore? initialLockoutStore,
+    BiometricAuth? initialBiometricAuth,
     DateTime Function()? clock,
   })  : _keyService = initialKeyService,
         _lockoutStore = initialLockoutStore,
+        _biometricAuth = initialBiometricAuth,
         _clock = clock ?? DateTime.now;
 
   final VaultKeyService? _keyService;
   final LockoutStore? _lockoutStore;
+  final BiometricAuth? _biometricAuth;
   final DateTime Function() _clock;
 
   bool _isLocked = true;
@@ -32,6 +37,12 @@ class LockController extends ChangeNotifier {
   bool _biometricsEnabled = false;
   LockoutState _lockoutState = LockoutState.initial;
   bool _initialized = false;
+
+  /// DEK disponible mientras la bóveda está abierta.
+  SecretKey? _unlockedDek;
+
+  /// La DEK de la bóveda abierta (null si está cerrada).
+  SecretKey? get unlockedDek => _unlockedDek;
 
   /// `true` cuando la bóveda está cerrada.
   bool get isLocked => _isLocked;
@@ -98,8 +109,9 @@ class LockController extends ChangeNotifier {
       return false;
     }
 
+    final SecretKey dek;
     try {
-      await service.unlockWithPin(pin);
+      dek = await service.unlockWithPin(pin);
     } on InvalidPinException {
       await _registerFailedAttempt();
       return false;
@@ -109,6 +121,7 @@ class LockController extends ChangeNotifier {
 
     _lockoutState = _lockoutState.registerSuccess();
     await _persistLockoutState();
+    _unlockedDek = dek;
     _isLocked = false;
     notifyListeners();
     return true;
@@ -118,7 +131,9 @@ class LockController extends ChangeNotifier {
   ///
   /// El PIN sigue siendo el plan B: si la biometría falla, el usuario
   /// escribe el PIN.
-  Future<bool> unlockWithBiometrics() async {
+  Future<bool> unlockWithBiometrics({
+    required String localizedReason,
+  }) async {
     final service = _keyService;
     if (service == null) return false;
     if (isLockedOut) {
@@ -126,11 +141,22 @@ class LockController extends ChangeNotifier {
       return false;
     }
 
+    // La copia de la DEK solo se lee DESPUÉS de que el sistema confirme
+    // la huella/rostro. Así el usuario ve un único aviso biométrico.
+    final auth = _biometricAuth;
+    if (auth != null) {
+      final authenticated = await auth.authenticate(
+        localizedReason: localizedReason,
+      );
+      if (!authenticated) return false;
+    }
+
     final key = await service.biometricKey();
     if (key == null) return false;
 
     _lockoutState = _lockoutState.registerSuccess();
     await _persistLockoutState();
+    _unlockedDek = key;
     _isLocked = false;
     notifyListeners();
     return true;
@@ -140,6 +166,7 @@ class LockController extends ChangeNotifier {
   void lock() {
     if (_isLocked) return;
     _isLocked = true;
+    _unlockedDek = null;
     notifyListeners();
   }
 
@@ -175,8 +202,22 @@ class LockController extends ChangeNotifier {
   }
 
   /// Activa o desactiva la copia de la clave para biometría.
+  ///
+  /// Para activarla hace falta la DEK de la bóveda abierta; si la bóveda
+  /// está cerrada no se hace nada.
   Future<void> setBiometricsEnabled(bool value) async {
     if (_biometricsEnabled == value) return;
+    final service = _keyService;
+    if (service == null) return;
+
+    if (value) {
+      final dek = _unlockedDek;
+      if (dek == null) return;
+      await service.enableBiometrics(dek);
+    } else {
+      await service.disableBiometrics();
+    }
+
     _biometricsEnabled = value;
     notifyListeners();
   }

@@ -91,4 +91,25 @@ class L10nEn extends L10n {
   @override
   String get pinInvalidError =>
       'The PIN is not valid. Use 4 to 8 digits, without sequences, repeats or common PINs.';
+
+  @override
+  String get vaultCreationError =>
+      'Could not create the vault. Please try again.';
+
+  @override
+  String get unlockLabel => 'Unlock';
+
+  @override
+  String get biometricUnlockLabel => 'Unlock with biometrics';
+
+  @override
+  String get wrongPinError => 'Incorrect PIN. Try again.';
+
+  @override
+  String get lockedOutMessage =>
+      'Too many failed attempts. Please wait before trying again.';
+
+  @override
+  String get biometricReason =>
+      'Use your fingerprint or face to unlock Llavero.';
 }

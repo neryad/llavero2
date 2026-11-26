@@ -58,7 +58,7 @@ class SplashScreen extends StatelessWidget {
                 Navigator.of(context).pushNamed(AppRoutes.onboarding);
                 return;
               }
-              Navigator.of(context).pushReplacementNamed(AppRoutes.home);
+              Navigator.of(context).pushReplacementNamed(AppRoutes.lock);
             },
             child: Text(l10n.continueLabel),
           ),

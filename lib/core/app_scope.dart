@@ -5,6 +5,7 @@ import '../controllers/entries_controller.dart';
 import '../controllers/lock_controller.dart';
 import '../controllers/settings_controller.dart';
 import '../core/security/key_vault_service.dart';
+import '../core/security/biometric_auth.dart';
 import '../core/security/lockout_store.dart';
 import '../core/security/secure_store.dart';
 import '../data/vault_file_system.dart';
@@ -39,6 +40,7 @@ class AppControllers extends ChangeNotifier {
       lock: LockController(
         initialKeyService: SecureStoreVaultKeyService(initialStore: store),
         initialLockoutStore: SecureStoreLockoutStore(store),
+        initialBiometricAuth: DeviceBiometricAuth(),
       ),
       entries: EntriesController(
         initialStorage: VaultStorage(
@@ -60,11 +62,22 @@ class AppControllers extends ChangeNotifier {
   void _onControllerChanged() {
     // Si la bóveda se bloquea (candado), también debemos limpiar las
     // entradas en memoria para que los secretos no sigan "rodando".
+    final lock = this.lock;
     if (lock.isLocked) {
       entries.lock();
+      _wasLocked = true;
+    } else if (_wasLocked) {
+      // Desbloqueo reciente: cargar las entradas con la DEK desenvuelta.
+      final dek = lock.unlockedDek;
+      if (dek != null) {
+        entries.load(dek);
+      }
+      _wasLocked = false;
     }
     notifyListeners();
   }
+
+  bool _wasLocked = true;
 
   @override
   void dispose() {

@@ -92,4 +92,24 @@ class L10nEs extends L10n {
   @override
   String get pinInvalidError =>
       'El PIN no es válido. Usa 4 a 8 dígitos, sin secuencias, repeticiones ni PINs comunes.';
+
+  @override
+  String get vaultCreationError =>
+      'No se pudo crear la bóveda. Inténtalo de nuevo.';
+
+  @override
+  String get unlockLabel => 'Desbloquear';
+
+  @override
+  String get biometricUnlockLabel => 'Desbloquear con biometría';
+
+  @override
+  String get wrongPinError => 'PIN incorrecto. Inténtalo de nuevo.';
+
+  @override
+  String get lockedOutMessage =>
+      'Demasiados intentos fallidos. Espera antes de volver a intentarlo.';
+
+  @override
+  String get biometricReason => 'Usa tu huella o rostro para abrir Llavero.';
 }

@@ -36,13 +36,13 @@ void main() {
     expect(find.text('Todo offline, todo tuyo'), findsOneWidget);
   });
 
-  testWidgets('el botón continuar lleva a la pantalla principal', (tester) async {
+  testWidgets('el botón continuar lleva a la pantalla de bloqueo', (tester) async {
     await pumpApp(tester);
 
     await tester.tap(find.text('Continuar'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Llavero ya está vivo'), findsOneWidget);
+    expect(find.text('Desbloquear'), findsOneWidget);
   });
 
   testWidgets('cambiar el idioma a inglés traduce la interfaz al instante',
