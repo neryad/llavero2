@@ -44,10 +44,11 @@ void main() {
       expect(find.text('Estado de seguridad'), findsOneWidget);
       expect(find.text('Sin bóveda'), findsOneWidget);
       expect(find.text('Integridad del dispositivo'), findsOneWidget);
-      expect(find.text('Tema'), findsOneWidget);
+      expect(find.text('Categorías'), findsOneWidget);
 
       await tester.drag(find.byType(ListView), const Offset(0, -600));
       await tester.pumpAndSettle();
+      expect(find.text('Tema'), findsOneWidget);
       expect(find.text('Idioma'), findsOneWidget);
       expect(find.text('Bloqueo automático'), findsOneWidget);
       expect(find.text('Longitud del PIN'), findsOneWidget);
@@ -58,6 +59,8 @@ void main() {
     testWidgets('cambiar el tema actualiza el controlador', (tester) async {
       final controllers = await pumpSettings(tester);
 
+      await tester.drag(find.byType(ListView), const Offset(0, -500));
+      await tester.pump();
       await tester.tap(find.text('Oscuro'));
       await tester.pumpAndSettle();
 

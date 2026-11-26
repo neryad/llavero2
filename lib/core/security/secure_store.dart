@@ -106,4 +106,7 @@ abstract final class SecureStoreKeys {
 
   /// Marca de que ya se completó el onboarding.
   static const String onboardingDone = 'llavero.onboarding_done';
+
+  /// Categorías personalizadas (JSON).
+  static const String categories = 'llavero.categories';
 }

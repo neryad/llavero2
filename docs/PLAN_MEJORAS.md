@@ -85,7 +85,11 @@ este archivo y se hace commit.
   2026-11-26 — `search()` incluye las notas; se mantiene la regla de no buscar
   en valores secretos ni en la papelera. 4 tests nuevos.
 
-- [ ] **13. Categorías personalizadas** (los IDs ya son cadenas).
+- [x] **13. Categorías personalizadas.** ✅ Completada 2026-11-26 —
+  `VaultCategory` + `CategoriesController` con persistencia en el almacén
+  seguro, pantalla de gestión (crear/editar/borrar con paleta de colores),
+  selector en el formulario y nombres traducidos en Home/detalle. No se puede
+  borrar una categoría en uso. 2 tests nuevos.
 
 - [ ] **14. Opción de exportar secretos en claro** con doble confirmación
   (por defecto siguen siendo `[oculto]`).
@@ -122,6 +126,6 @@ este archivo y se hace commit.
 | 2 | 3 | 5 |
 | 3 | 4 | 8 |
 | 4 | 0 | 3 |
-| **Total** | **11** | **20** |
+| **Total** | **12** | **20** |
 
-Última actualización: 2026-11-26 (11 completadas, 1 diferida).
+Última actualización: 2026-11-26 (12 completadas, 1 diferida).

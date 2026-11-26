@@ -714,6 +714,102 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'On iOS, screenshots cannot be blocked: the app only dims the screen when it detects them.'**
   String get screenshotsIosNote;
+
+  /// Title of the custom categories screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get categoriesLabel;
+
+  /// Title of the dialog to create a category.
+  ///
+  /// In en, this message translates to:
+  /// **'New category'**
+  String get newCategoryLabel;
+
+  /// Title of the dialog to edit a category.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit category'**
+  String get editCategoryLabel;
+
+  /// Label of the category name field.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get categoryNameLabel;
+
+  /// Label of the category color selector.
+  ///
+  /// In en, this message translates to:
+  /// **'Color'**
+  String get categoryColorLabel;
+
+  /// Message shown when trying to delete a category that is in use.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot delete: entries still use it.'**
+  String get categoryInUse;
+
+  /// Default category name.
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi'**
+  String get categoryWifi;
+
+  /// Default category name.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get categoryEmail;
+
+  /// Default category name.
+  ///
+  /// In en, this message translates to:
+  /// **'Streaming'**
+  String get categoryStreaming;
+
+  /// Default category name.
+  ///
+  /// In en, this message translates to:
+  /// **'Banking'**
+  String get categoryBanking;
+
+  /// Default category name.
+  ///
+  /// In en, this message translates to:
+  /// **'PIN'**
+  String get categoryPin;
+
+  /// Default category name.
+  ///
+  /// In en, this message translates to:
+  /// **'Social'**
+  String get categorySocial;
+
+  /// Default category name.
+  ///
+  /// In en, this message translates to:
+  /// **'Devices'**
+  String get categoryDevices;
+
+  /// Default category name.
+  ///
+  /// In en, this message translates to:
+  /// **'Documents'**
+  String get categoryDocuments;
+
+  /// Default category name.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get categoryOther;
+
+  /// Message shown when there are no custom categories.
+  ///
+  /// In en, this message translates to:
+  /// **'You haven\'t created any categories yet.'**
+  String get noCustomCategories;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

@@ -326,4 +326,52 @@ class L10nEn extends L10n {
   @override
   String get screenshotsIosNote =>
       'On iOS, screenshots cannot be blocked: the app only dims the screen when it detects them.';
+
+  @override
+  String get categoriesLabel => 'Categories';
+
+  @override
+  String get newCategoryLabel => 'New category';
+
+  @override
+  String get editCategoryLabel => 'Edit category';
+
+  @override
+  String get categoryNameLabel => 'Name';
+
+  @override
+  String get categoryColorLabel => 'Color';
+
+  @override
+  String get categoryInUse => 'Cannot delete: entries still use it.';
+
+  @override
+  String get categoryWifi => 'Wi-Fi';
+
+  @override
+  String get categoryEmail => 'Email';
+
+  @override
+  String get categoryStreaming => 'Streaming';
+
+  @override
+  String get categoryBanking => 'Banking';
+
+  @override
+  String get categoryPin => 'PIN';
+
+  @override
+  String get categorySocial => 'Social';
+
+  @override
+  String get categoryDevices => 'Devices';
+
+  @override
+  String get categoryDocuments => 'Documents';
+
+  @override
+  String get categoryOther => 'Other';
+
+  @override
+  String get noCustomCategories => 'You haven\'t created any categories yet.';
 }

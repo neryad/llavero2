@@ -514,5 +514,59 @@
   "screenshotsIosNote": "On iOS, screenshots cannot be blocked: the app only dims the screen when it detects them.",
   "@screenshotsIosNote": {
     "description": "Note shown on iOS explaining that screenshot blocking is an overlay, not a system block."
+  },
+
+  "categoriesLabel": "Categories",
+  "@categoriesLabel": {
+    "description": "Title of the custom categories screen."
+  },
+
+  "newCategoryLabel": "New category",
+  "@newCategoryLabel": {
+    "description": "Title of the dialog to create a category."
+  },
+
+  "editCategoryLabel": "Edit category",
+  "@editCategoryLabel": {
+    "description": "Title of the dialog to edit a category."
+  },
+
+  "categoryNameLabel": "Name",
+  "@categoryNameLabel": {
+    "description": "Label of the category name field."
+  },
+
+  "categoryColorLabel": "Color",
+  "@categoryColorLabel": {
+    "description": "Label of the category color selector."
+  },
+
+  "categoryInUse": "Cannot delete: entries still use it.",
+  "@categoryInUse": {
+    "description": "Message shown when trying to delete a category that is in use."
+  },
+
+  "categoryWifi": "Wi-Fi",
+  "@categoryWifi": { "description": "Default category name." },
+  "categoryEmail": "Email",
+  "@categoryEmail": { "description": "Default category name." },
+  "categoryStreaming": "Streaming",
+  "@categoryStreaming": { "description": "Default category name." },
+  "categoryBanking": "Banking",
+  "@categoryBanking": { "description": "Default category name." },
+  "categoryPin": "PIN",
+  "@categoryPin": { "description": "Default category name." },
+  "categorySocial": "Social",
+  "@categorySocial": { "description": "Default category name." },
+  "categoryDevices": "Devices",
+  "@categoryDevices": { "description": "Default category name." },
+  "categoryDocuments": "Documents",
+  "@categoryDocuments": { "description": "Default category name." },
+  "categoryOther": "Other",
+  "@categoryOther": { "description": "Default category name." },
+
+  "noCustomCategories": "You haven't created any categories yet.",
+  "@noCustomCategories": {
+    "description": "Message shown when there are no custom categories."
   }
 }

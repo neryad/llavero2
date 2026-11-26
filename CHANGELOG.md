@@ -8,6 +8,10 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- **Mejora #13 del plan de mejoras: categorías personalizadas.** Modelo,
+  controlador persistente, pantalla de gestión con colores, selector en el
+  formulario y nombres ES/EN en listas y detalle. 2 tests nuevos.
+
 - **Mejora #12 del plan de mejoras: búsqueda en notas.** `search()` incluye el
   texto de las notas sin buscar nunca en valores secretos ni en la papelera.
   4 tests nuevos.

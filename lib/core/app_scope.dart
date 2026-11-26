@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../controllers/entries_controller.dart';
+import '../controllers/categories_controller.dart';
 import '../controllers/lock_controller.dart';
 import '../controllers/settings_controller.dart';
 import '../core/security/key_vault_service.dart';
@@ -23,12 +24,17 @@ class AppControllers extends ChangeNotifier {
     required this.entries,
     SettingsController? settings,
     LockController? lock,
+    CategoriesController? initialCategories,
   })  : settings = settings ?? SettingsController(),
-        lock = lock ?? LockController() {
+        lock = lock ?? LockController(),
+        categories = initialCategories ?? CategoriesController(
+          store: InMemorySecureStore(),
+        ) {
     // Cada controlador hijo notifica a este contenedor.
     this.settings.addListener(_onControllerChanged);
     this.lock.addListener(_onControllerChanged);
     entries.addListener(_onControllerChanged);
+    categories.addListener(_onControllerChanged);
   }
 
   /// Crea los controladores con la seguridad real del dispositivo:
@@ -52,10 +58,12 @@ class AppControllers extends ChangeNotifier {
       entries: EntriesController(
         initialStorage: VaultStorage(initialFileSystem: fileSystem),
       ),
+      initialCategories: CategoriesController(store: store),
     );
     await ScreenSecurity.setScreenshotsBlocked(
       controllers.settings.blockScreenshots,
     );
+    await controllers.categories.initialize();
     return controllers;
   }
 
@@ -67,6 +75,9 @@ class AppControllers extends ChangeNotifier {
 
   /// Entradas de la bóveda.
   final EntriesController entries;
+
+  /// Categorías personalizadas.
+  final CategoriesController categories;
 
   void _onControllerChanged() {
     // Si la bóveda se bloquea (candado), también debemos limpiar las
@@ -93,9 +104,11 @@ class AppControllers extends ChangeNotifier {
     settings.removeListener(_onControllerChanged);
     lock.removeListener(_onControllerChanged);
     entries.removeListener(_onControllerChanged);
+    categories.removeListener(_onControllerChanged);
     settings.dispose();
     lock.dispose();
     entries.dispose();
+    categories.dispose();
     super.dispose();
   }
 }

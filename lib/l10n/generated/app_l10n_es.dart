@@ -326,4 +326,52 @@ class L10nEs extends L10n {
   @override
   String get screenshotsIosNote =>
       'En iOS no se pueden bloquear las capturas: la app solo oscurece la pantalla al detectarlas.';
+
+  @override
+  String get categoriesLabel => 'Categorías';
+
+  @override
+  String get newCategoryLabel => 'Nueva categoría';
+
+  @override
+  String get editCategoryLabel => 'Editar categoría';
+
+  @override
+  String get categoryNameLabel => 'Nombre';
+
+  @override
+  String get categoryColorLabel => 'Color';
+
+  @override
+  String get categoryInUse => 'No se puede borrar: hay entradas que la usan.';
+
+  @override
+  String get categoryWifi => 'Wi-Fi';
+
+  @override
+  String get categoryEmail => 'Correo';
+
+  @override
+  String get categoryStreaming => 'Streaming';
+
+  @override
+  String get categoryBanking => 'Banca';
+
+  @override
+  String get categoryPin => 'PIN';
+
+  @override
+  String get categorySocial => 'Redes sociales';
+
+  @override
+  String get categoryDevices => 'Dispositivos';
+
+  @override
+  String get categoryDocuments => 'Documentos';
+
+  @override
+  String get categoryOther => 'Otras';
+
+  @override
+  String get noCustomCategories => 'Todavía no has creado categorías.';
 }

@@ -5,6 +5,7 @@ import '../../core/app_scope.dart';
 import '../../core/routes/app_routes.dart';
 import '../../core/theme/category_colors.dart';
 import '../../core/widgets/app_scaffold.dart';
+import '../shared/category_name.dart';
 import '../../data/models/entry_field.dart';
 import '../../l10n/generated/app_l10n.dart';
 import 'entry_form_screen.dart';
@@ -81,7 +82,13 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
                   backgroundColor: categories?.colorOf(entry.categoryId),
                   child: const Icon(Icons.key_rounded, size: 20),
                 ),
-                title: Text(entry.categoryId),
+                title: Text(
+                  categoryDisplayName(
+                    entry.categoryId,
+                    l10n,
+                    AppScope.of(context).categories,
+                  ),
+                ),
                 subtitle: entry.person == null ? null : Text(entry.person!),
               ),
               const SizedBox(height: 8),

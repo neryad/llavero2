@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../core/app_scope.dart';
+import '../../controllers/categories_controller.dart';
 import '../../core/security/password_generator.dart';
 import '../../core/theme/category_colors.dart';
 import '../../core/widgets/app_scaffold.dart';
+import '../shared/category_name.dart';
 import '../../data/entry_templates.dart';
 import '../../data/models/entry_field.dart';
 import '../../data/models/vault_entry.dart';
@@ -209,17 +211,15 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
                     filled: true,
                   ),
                   items: <String>[
-                    CategoryIds.wifi,
-                    CategoryIds.email,
-                    CategoryIds.streaming,
-                    CategoryIds.banking,
-                    CategoryIds.pinCode,
-                    CategoryIds.social,
-                    CategoryIds.devices,
-                    CategoryIds.documents,
-                    CategoryIds.other,
+                    ...CategoriesController.defaultIds,
+                    for (final c in AppScope.of(context).categories.custom) c.id,
                   ].map(
-                    (id) => DropdownMenuItem<String>(value: id, child: Text(id)),
+                    (id) => DropdownMenuItem<String>(
+                      value: id,
+                      child: Text(
+                        categoryDisplayName(id, l10n, AppScope.of(context).categories),
+                      ),
+                    ),
                   ).toList(),
                   onChanged: (value) {
                     if (value != null) setState(() => _categoryId = value);

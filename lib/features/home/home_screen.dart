@@ -5,6 +5,7 @@ import '../../core/routes/app_routes.dart';
 import '../../core/theme/category_colors.dart';
 import '../../core/widgets/animated_entry_tile.dart';
 import '../../core/widgets/app_scaffold.dart';
+import '../shared/category_name.dart';
 import '../../data/models/vault_entry.dart';
 import '../../l10n/generated/app_l10n.dart';
 
@@ -169,7 +170,14 @@ class _EntryTile extends StatelessWidget {
           ),
         ),
         title: Text(entry.title),
-        subtitle: Text(entry.person ?? entry.categoryId),
+        subtitle: Text(
+          entry.person ??
+              categoryDisplayName(
+                entry.categoryId,
+                l10n,
+                AppScope.of(context).categories,
+              ),
+        ),
         trailing: entry.isFavorite
             ? Icon(Icons.star, color: Colors.amber, semanticLabel: l10n.favoriteLabel)
             : null,

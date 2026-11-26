@@ -514,5 +514,59 @@
   "screenshotsIosNote": "En iOS no se pueden bloquear las capturas: la app solo oscurece la pantalla al detectarlas.",
   "@screenshotsIosNote": {
     "description": "Note shown on iOS explaining that screenshot blocking is an overlay, not a system block."
+  },
+
+  "categoriesLabel": "Categorías",
+  "@categoriesLabel": {
+    "description": "Title of the custom categories screen."
+  },
+
+  "newCategoryLabel": "Nueva categoría",
+  "@newCategoryLabel": {
+    "description": "Title of the dialog to create a category."
+  },
+
+  "editCategoryLabel": "Editar categoría",
+  "@editCategoryLabel": {
+    "description": "Title of the dialog to edit a category."
+  },
+
+  "categoryNameLabel": "Nombre",
+  "@categoryNameLabel": {
+    "description": "Label of the category name field."
+  },
+
+  "categoryColorLabel": "Color",
+  "@categoryColorLabel": {
+    "description": "Label of the category color selector."
+  },
+
+  "categoryInUse": "No se puede borrar: hay entradas que la usan.",
+  "@categoryInUse": {
+    "description": "Message shown when trying to delete a category that is in use."
+  },
+
+  "categoryWifi": "Wi-Fi",
+  "@categoryWifi": { "description": "Default category name." },
+  "categoryEmail": "Correo",
+  "@categoryEmail": { "description": "Default category name." },
+  "categoryStreaming": "Streaming",
+  "@categoryStreaming": { "description": "Default category name." },
+  "categoryBanking": "Banca",
+  "@categoryBanking": { "description": "Default category name." },
+  "categoryPin": "PIN",
+  "@categoryPin": { "description": "Default category name." },
+  "categorySocial": "Redes sociales",
+  "@categorySocial": { "description": "Default category name." },
+  "categoryDevices": "Dispositivos",
+  "@categoryDevices": { "description": "Default category name." },
+  "categoryDocuments": "Documentos",
+  "@categoryDocuments": { "description": "Default category name." },
+  "categoryOther": "Otras",
+  "@categoryOther": { "description": "Default category name." },
+
+  "noCustomCategories": "Todavía no has creado categorías.",
+  "@noCustomCategories": {
+    "description": "Message shown when there are no custom categories."
   }
 }

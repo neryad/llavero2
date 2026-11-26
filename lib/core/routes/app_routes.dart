@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../features/home/home_screen.dart';
 import '../../features/settings/settings_screen.dart';
+import '../../features/settings/categories_screen.dart';
 import '../../features/settings/change_pin_screen.dart';
 import '../../features/export_import/export_import_screen.dart';
 import '../../features/entries/entry_detail_screen.dart';
@@ -47,6 +48,9 @@ abstract final class AppRoutes {
   /// Cambiar el PIN de la bóveda.
   static const String changePin = '/settings/change-pin';
 
+  /// Categorías personalizadas.
+  static const String categories = '/settings/categories';
+
   /// Estado de seguridad de las contraseñas.
   static const String securityHealth = '/security-health';
 
@@ -80,6 +84,8 @@ abstract final class AppRoutes {
         return _build(const ExportImportScreen(), routeSettings);
       case settings:
         return _build(const SettingsScreen(), routeSettings);
+      case categories:
+        return _build(const CategoriesScreen(), routeSettings);
       case changePin:
         return _build(const ChangePinScreen(), routeSettings);
       case securityHealth:
