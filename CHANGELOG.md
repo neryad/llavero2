@@ -8,6 +8,12 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- **Mejora #4 del plan de mejoras: verificación en dispositivo/build nativo.**
+  Guía interactiva `docs/PRUEBAS_DISPOSITIVO.md`, tests de contrato de canales
+  (`local_auth`, `share_plus`), instalación y arranque en emulador sin
+  excepciones, y builds Android e iOS. El build de iOS detectó 3 errores de
+  Swift en el anti-capturas, ya corregidos. 2 tests nuevos.
+
 - **Mejora #3 del plan de mejoras: switch de biometría honesto.** Se
   deshabilita cuando la bóveda está cerrada y muestra una explicación en ES/EN;
   Ajustes escucha ahora los cambios del `LockController`. 2 tests nuevos.

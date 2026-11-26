@@ -26,9 +26,15 @@ este archivo y se hace commit.
   «Disponible solo con la bóveda abierta.» en ES/EN. La pantalla ahora escucha
   también los cambios del `LockController`. 2 tests nuevos.
 
-- [ ] **4. Tests en dispositivo real.** `local_auth`, `file_picker`,
-  `share_plus`, `printing` y escritura en almacenamiento; los bugs reales
-  (como el `PathNotFoundException`) solo aparecen en hardware.
+- [x] **4. Tests en dispositivo real.** ✅ Completada 2026-11-26 —
+  `flutter build apk --debug` compila el Kotlin (FLAG_SECURE), la app se instaló
+  y arrancó en `emulator-5554` sin excepciones en logcat, se añadieron tests de
+  contrato de canales (`local_auth`, `share_plus`) y de escritura real en disco,
+  `docs/PRUEBAS_DISPOSITIVO.md`. El build de iOS detectó y permitió corregir
+  3 errores reales de Swift en el anti-capturas (`primaryWindow` y
+  `autoresizingMask`), y ahora `flutter build ios --no-codesign` compila.
+  Queda pendiente la ejecución manual interactiva de cada plugin (huella real,
+  compartir, imprimir), documentada paso a paso en esa guía.
 
 ---
 
@@ -91,10 +97,10 @@ este archivo y se hace commit.
 
 | Prioridad | Completadas | Totales |
 |---|---|---|
-| 1 | 3 | 4 |
+| 1 | 4 | 4 |
 | 2 | 0 | 5 |
 | 3 | 0 | 8 |
 | 4 | 0 | 3 |
-| **Total** | **3** | **20** |
+| **Total** | **4** | **20** |
 
-Última actualización: 2026-11-26 (mejoras #1, #2 y #3 completadas).
+Última actualización: 2026-11-26 (mejoras #1 a #4 completadas).

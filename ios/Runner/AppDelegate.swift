@@ -44,8 +44,18 @@ import UIKit
   private var screenshotObserver: NSObjectProtocol?
   private var captureObserver: NSObjectProtocol?
 
+  private func keyWindow() -> UIWindow? {
+    if #available(iOS 13.0, *) {
+      return UIApplication.shared.connectedScenes
+        .compactMap { $0 as? UIWindowScene }
+        .flatMap { $0.windows }
+        .first { $0.isKeyWindow }
+    }
+    return UIApplication.shared.keyWindow
+  }
+
   private func setScreenshotsBlocked(_ blocked: Bool) {
-    guard let window = UIApplication.shared.primaryWindow else { return }
+    guard let window = keyWindow() else { return }
 
     if !blocked {
       securityOverlay?.removeFromSuperview()
@@ -61,7 +71,10 @@ import UIKit
 
     let overlay = UIView(frame: window.bounds)
     overlay.backgroundColor = UIColor.black
-    overlay.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+    overlay.autoresizingMask = [
+      UIView.AutoresizingMask.flexibleWidth,
+      UIView.AutoresizingMask.flexibleHeight,
+    ]
     overlay.isHidden = true
     window.addSubview(overlay)
     securityOverlay = overlay
