@@ -8,6 +8,10 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- **Plan de mejoras cerrado.** Se descartó la sincronización entre
+  dispositivos: Llavero es 100 % offline por diseño y la migración se hace con
+  respaldo cifrado. Plan final: 19/19 completadas.
+
 - **Mejoras #19 y #20 del plan de mejoras: rutas resueltas.** Se eliminó el
   fallback relativo (`vaultPath` exige inicialización) y se re-resuelve la
   ruta en cada operación por si cambia tras una actualización. 5 tests nuevos.

@@ -191,8 +191,10 @@ Un test verifica que ambos tienen exactamente las mismas claves.
 Estas son decisiones o carencias reales de la versión actual, no detalles
 menores:
 
-1. **Sin sincronización**: la bóveda vive en un solo dispositivo. Para pasarla
-   a otro, exporta un respaldo cifrado e impórtalo allí.
+1. **Sin sincronización (por diseño)**: Llavero es 100 % offline; la bóveda
+   vive en un solo dispositivo y no se sincroniza con la nube. Para pasarla a
+   otro, exporta un respaldo cifrado e impórtalo allí. No está en el plan de
+   mejoras: sería una contradicción con el propósito de la app.
 2. **La biometría solo se activa con la bóveda abierta**: hace falta la DEK para
    guardar su copia. Si intentas activarla desde Ajustes con la bóveda cerrada,
    no se hace nada.

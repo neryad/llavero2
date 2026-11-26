@@ -72,11 +72,6 @@ este archivo y se hace commit.
 
 ## 🟡 Prioridad 3 — Funcionalidad
 
-- [~] **10. Sincronización entre dispositivos.** ⏸️ Diferida por decisión del
-  usuario 2026-11-26: contradice el principio «100 % offline» de Llavero.
-  El flujo manual exportar/importar con respaldo cifrado ya cubre la
-  migración. No se implementará sin rediseñar el modelo de seguridad.
-
 - [x] **11. Purga automática de la papelera** al abrir la bóveda. ✅ Completada
   2026-11-26 — `EntriesController.open()` carga y llama a `purgeExpiredTrash()`;
   `AppControllers` lo usa al desbloquear. Tests nuevos.
@@ -140,8 +135,10 @@ este archivo y se hace commit.
 |---|---|---|
 | 1 | 4 | 4 |
 | 2 | 3 | 5 |
-| 3 | 7 | 8 |
+| 3 | 7 | 7 |
 | 4 | 3 | 3 |
-| **Total** | **19** | **20** |
+| **Total** | **19** | **19** |
 
-Última actualización: 2026-11-26 (19 completadas, 1 diferida — plan cerrado).
+Última actualización: 2026-11-26 (19/19 completadas — plan cerrado).
+La sincronización entre dispositivos se descartó del plan: Llavero es
+100 % offline por diseño y la migración se hace con respaldo cifrado.
