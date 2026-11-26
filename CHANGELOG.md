@@ -8,6 +8,10 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- **Mejora #18 del plan de mejoras: wiring explícito de desbloqueo.** Los
+  métodos `unlockWithPin`/`unlockWithBiometrics` de `AppControllers` esperan
+  a que las entradas se carguen antes de navegar. 2 tests nuevos.
+
 - **Mejora #17 del plan de mejoras: soporte de escritorio/web.**
   `PlatformCapabilities` deshabilita biometría y anti-capturas fuera de móvil
   y avisa en web del almacén no seguro; macOS exige deployment target 12.0.

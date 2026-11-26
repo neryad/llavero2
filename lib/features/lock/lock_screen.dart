@@ -46,12 +46,13 @@ class _LockScreenState extends State<LockScreen> {
 
   Future<void> _submitPin() async {
     final l10n = L10n.of(context);
-    final lock = AppScope.of(context).lock;
+    final controllers = AppScope.of(context);
     final pin = _pinController.text.trim();
 
     if (pin.isEmpty) return;
 
-    final ok = await lock.submitPin(pin);
+    // Esperamos a que las entradas estén cargadas antes de navegar.
+    final ok = await controllers.unlockWithPin(pin);
     _pinController.clear();
     if (!mounted) return;
 
@@ -64,9 +65,9 @@ class _LockScreenState extends State<LockScreen> {
 
   Future<void> _submitBiometrics() async {
     final l10n = L10n.of(context);
-    final lock = AppScope.of(context).lock;
+    final controllers = AppScope.of(context);
 
-    final ok = await lock.unlockWithBiometrics(
+    final ok = await controllers.unlockWithBiometrics(
       localizedReason: l10n.biometricReason,
     );
     if (!mounted) return;

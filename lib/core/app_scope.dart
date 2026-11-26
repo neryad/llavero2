@@ -83,6 +83,31 @@ class AppControllers extends ChangeNotifier {
   /// Categorías personalizadas.
   final CategoriesController categories;
 
+  /// Desbloqueo en curso (si se ha iniciado desde este contenedor).
+  Future<void>? _pendingUnlock;
+
+  /// Operación de carga de entradas del último desbloqueo.
+  ///
+  /// La interfaz puede esperarla antes de navegar para que la Home no
+  /// aparezca vacía mientras se descifra el archivo.
+  Future<void>? get pendingUnlock => _pendingUnlock;
+
+  /// Desbloquea con PIN y espera a que las entradas estén cargadas.
+  Future<bool> unlockWithPin(String pin) async {
+    final ok = await lock.submitPin(pin);
+    if (ok) await _pendingUnlock;
+    return ok;
+  }
+
+  /// Desbloquea con biometría y espera a que las entradas estén cargadas.
+  Future<bool> unlockWithBiometrics({required String localizedReason}) async {
+    final ok = await lock.unlockWithBiometrics(
+      localizedReason: localizedReason,
+    );
+    if (ok) await _pendingUnlock;
+    return ok;
+  }
+
   void _onControllerChanged() {
     // Si la bóveda se bloquea (candado), también debemos limpiar las
     // entradas en memoria para que los secretos no sigan "rodando".
@@ -90,11 +115,12 @@ class AppControllers extends ChangeNotifier {
     if (lock.isLocked) {
       entries.lock();
       _wasLocked = true;
+      _pendingUnlock = null;
     } else if (_wasLocked) {
       // Desbloqueo reciente: cargar las entradas con la DEK desenvuelta.
       final dek = lock.unlockedDek;
       if (dek != null) {
-        entries.open(dek);
+        _pendingUnlock = entries.open(dek);
       }
       _wasLocked = false;
     }
