@@ -52,7 +52,12 @@ class OnboardingScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: PinLossWarning(message: l10n.pinLossWarning),
+          ),
+          const SizedBox(height: 24),
           FilledButton(
             onPressed: () {
               Navigator.of(context).push(
@@ -64,6 +69,43 @@ class OnboardingScreen extends StatelessWidget {
             child: Text(l10n.createVaultLabel),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Aviso visible antes de crear el PIN: no hay recuperación sin respaldo.
+class PinLossWarning extends StatelessWidget {
+  const PinLossWarning({super.key, required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return Semantics(
+      container: true,
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: colors.errorContainer,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Icon(Icons.warning_amber_rounded, color: colors.onErrorContainer),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                message,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: colors.onErrorContainer,
+                    ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

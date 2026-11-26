@@ -304,4 +304,8 @@ class L10nEn extends L10n {
 
   @override
   String get wrongCurrentPin => 'The current PIN is incorrect.';
+
+  @override
+  String get pinLossWarning =>
+      'If you forget your PIN, it cannot be recovered. You will only be able to restore your data from an encrypted backup.';
 }

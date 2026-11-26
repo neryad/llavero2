@@ -3,9 +3,14 @@
 Todos los cambios notables de Llavero se documentan en este archivo.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+---
+
 ## [Unreleased]
 
 ### Added
+- **Mejora #2 del plan de mejoras: aviso de PIN olvidado.** Banner visible en
+  el onboarding y en la creación del PIN (ES/EN) indicando que solo un respaldo
+  cifrado permite recuperar los datos. 3 tests nuevos.
 - **Mejora #1 del plan de mejoras: cambio de PIN.** Se verifica el PIN actual,
   se valida el nuevo y se re-envuelve la DEK con una KEK nueva y sal nueva, sin
   re-cifrar los datos. Pantalla `/settings/change-pin` y 4 tests nuevos.

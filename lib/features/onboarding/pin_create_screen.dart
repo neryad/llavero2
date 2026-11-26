@@ -4,6 +4,7 @@ import '../../../core/app_scope.dart';
 import '../../../core/widgets/app_scaffold.dart';
 import '../../../core/security/pin_validator.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../features/onboarding/onboarding_screen.dart';
 import '../../../l10n/generated/app_l10n.dart';
 
 /// Paso de creación de PIN dentro del onboarding.
@@ -118,6 +119,9 @@ class _PinCreateScreenState extends State<PinCreateScreen> {
                 filled: true,
               ),
             ),
+            const SizedBox(height: 16),
+            if (_firstPin == null)
+              PinLossWarning(message: l10n.pinLossWarning),
             const SizedBox(height: 16),
             if (_error != null) ...[
               Text(

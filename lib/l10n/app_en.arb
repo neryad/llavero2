@@ -484,5 +484,10 @@
   "wrongCurrentPin": "The current PIN is incorrect.",
   "@wrongCurrentPin": {
     "description": "Error shown when the current PIN is wrong."
+  },
+
+  "pinLossWarning": "If you forget your PIN, it cannot be recovered. You will only be able to restore your data from an encrypted backup.",
+  "@pinLossWarning": {
+    "description": "Warning shown before creating a PIN so the user knows there is no recovery without a backup."
   }
 }

@@ -16,8 +16,10 @@ este archivo y se hace commit.
   PIN actual, el nuevo y su confirmación. El ajuste `pinLength` se actualiza
   con la longitud real del nuevo PIN. 4 tests nuevos.
 
-- [ ] **2. Aviso de PIN olvidado en el onboarding.** Dejar claro, antes de
-  crear la bóveda, que no hay recuperación sin el PIN o un respaldo cifrado.
+- [x] **2. Aviso de PIN olvidado en el onboarding.** ✅ Completada 2026-11-26 —
+  banner `PinLossWarning` en la pantalla de onboarding y en la creación del PIN,
+  en ES/EN, indicando que solo un respaldo cifrado permite recuperar los datos.
+  3 tests nuevos.
 
 - [ ] **3. Switch de biometría honesto.** Deshabilitarlo (o avisar) cuando la
   bóveda esté cerrada: hoy `setBiometricsEnabled(true)` no hace nada y el
@@ -88,10 +90,10 @@ este archivo y se hace commit.
 
 | Prioridad | Completadas | Totales |
 |---|---|---|
-| 1 | 1 | 4 |
+| 1 | 2 | 4 |
 | 2 | 0 | 5 |
 | 3 | 0 | 8 |
 | 4 | 0 | 3 |
-| **Total** | **1** | **20** |
+| **Total** | **2** | **20** |
 
-Última actualización: 2026-11-26 (mejora #1 completada).
+Última actualización: 2026-11-26 (mejoras #1 y #2 completadas).

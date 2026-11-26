@@ -678,6 +678,12 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'The current PIN is incorrect.'**
   String get wrongCurrentPin;
+
+  /// Warning shown before creating a PIN so the user knows there is no recovery without a backup.
+  ///
+  /// In en, this message translates to:
+  /// **'If you forget your PIN, it cannot be recovered. You will only be able to restore your data from an encrypted backup.'**
+  String get pinLossWarning;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {
