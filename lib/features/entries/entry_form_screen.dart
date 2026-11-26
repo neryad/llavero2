@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../app.dart';
 import '../../core/app_scope.dart';
 import '../../controllers/categories_controller.dart';
 import '../../core/security/password_generator.dart';
+import '../../core/routes/app_routes.dart';
 import '../../core/theme/category_colors.dart';
 import '../../core/widgets/app_scaffold.dart';
 import '../shared/category_name.dart';
@@ -162,11 +164,22 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
       updatedAt: now,
     );
 
-    final entries = AppScope.of(context).entries;
-    if (widget.args.entryId == null) {
-      await entries.add(entry);
-    } else {
-      await entries.update(entry);
+    final controllers = AppScope.of(context);
+    final entries = controllers.entries;
+    try {
+      if (widget.args.entryId == null) {
+        await entries.add(entry);
+      } else {
+        await entries.update(entry);
+      }
+    } on StateError {
+      // La bóveda se cerró mientras se rellenaba el formulario (auto-lock).
+      if (!mounted) return;
+      LlaveroApp.navigatorKey.currentState?.pushNamedAndRemoveUntil(
+        AppRoutes.lock,
+        (_) => false,
+      );
+      return;
     }
     if (!mounted) return;
     Navigator.of(context).pop();
