@@ -30,7 +30,12 @@ void main() {
     );
     await tester.pump();
 
-    await tester.drag(find.byType(ListView), const Offset(0, -600));
+    for (var i = 0; i < 10; i++) {
+      if (find.text('Bloquear capturas').evaluate().isNotEmpty) break;
+      await tester.drag(find.byType(ListView), const Offset(0, -400));
+      await tester.pumpAndSettle();
+    }
+    await tester.ensureVisible(find.text('Bloquear capturas'));
     await tester.pumpAndSettle();
 
     // Los tests corren en el host (macOS): no se muestra la nota de iOS.

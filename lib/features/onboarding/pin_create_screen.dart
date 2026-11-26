@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/app_scope.dart';
-import '../../../core/widgets/app_scaffold.dart';
 import '../../../core/security/pin_validator.dart';
-import '../../../core/theme/app_typography.dart';
-import '../../../features/onboarding/onboarding_screen.dart';
+import '../../../core/widgets/app_scaffold.dart';
+import '../../../core/widgets/pin_code_input.dart';
 import '../../../l10n/generated/app_l10n.dart';
+import '../shared/pin_message.dart';
+import 'onboarding_screen.dart';
 
-/// Paso de creación de PIN dentro del onboarding.
+/// Creación de PIN: elige longitud, escribe el PIN y lo confirma.
 ///
-/// Tiene dos fases:
-/// 1. El usuario escribe su primer PIN y se valida con `PinValidator`.
-/// 2. Confirma el mismo PIN; si coincide, se crea la bóveda mediante el
-///    `LockController` (que a su vez usa el `VaultKeyService`).
-///
-/// Si el primer PIN no es válido (secuencia, repetición, común, largo, ...)
-/// se muestra el error y se vuelve a pedir.
+/// No hay botón de confirmar: al escribir el último dígito se avanza
+/// automáticamente a la fase de confirmación y después se crea la bóveda.
 class PinCreateScreen extends StatefulWidget {
   const PinCreateScreen({super.key});
 
@@ -24,58 +20,63 @@ class PinCreateScreen extends StatefulWidget {
 }
 
 class _PinCreateScreenState extends State<PinCreateScreen> {
-  final TextEditingController _pinController = TextEditingController();
-
-  /// Primer PIN escrito por el usuario; `null` mientras se valida.
+  late int _length;
   String? _firstPin;
-
-  /// Error actual (null si el PIN puede escribirse sin avisar).
   String? _error;
+  bool _busy = false;
+
+  bool _initialized = false;
 
   @override
-  void dispose() {
-    _pinController.dispose();
-    super.dispose();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_initialized) return;
+    _initialized = true;
+    final configured = AppScope.of(context).settings.pinLength;
+    _length = (configured == 4 || configured == 8) ? configured : 6;
   }
 
-  Future<void> _submit() async {
-    final pin = _pinController.text.trim();
+  void _onPin(String pin) async {
+    if (_busy) return;
     final l10n = L10n.of(context);
-
-    // Fase 1: validar el primer PIN.
-    if (PinValidator.validate(pin) != PinIssue.ok) {
-      setState(() {
-        _error = l10n.pinInvalidError;
-      });
-      _pinController.clear();
+    final issue = PinValidator.validate(
+      pin,
+      expectedLength: _length,
+      minimumLength: _length,
+      maximumLength: _length,
+    );
+    if (issue != PinIssue.ok) {
+      setState(() => _error = pinIssueMessage(issue, l10n));
       return;
     }
 
     if (_firstPin == null) {
-      // PIN válido: guardarlo y pasar a la fase de confirmación.
       setState(() {
         _firstPin = pin;
         _error = null;
       });
-      _pinController.clear();
       return;
     }
 
-    // Fase 2: confirmar el primer PIN.
     if (pin != _firstPin) {
       setState(() => _error = l10n.pinMismatchError);
-      _pinController.clear();
       return;
     }
 
-    // PIN repetido correctamente: crear la bóveda (y pasar a estado
-    // bloqueado, que es la pantalla que pedirá el PIN en la fase 2).
-    final lock = AppScope.of(context).lock;
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
     try {
-      await lock.createVault(pin);
+      final controllers = AppScope.of(context);
+      await controllers.lock.createVault(pin);
+      controllers.settings.setPinLength(pin.length);
     } catch (_) {
       if (!mounted) return;
-      setState(() => _error = l10n.vaultCreationError);
+      setState(() {
+        _busy = false;
+        _error = l10n.vaultCreationError;
+      });
       return;
     }
     if (!mounted) return;
@@ -87,57 +88,62 @@ class _PinCreateScreenState extends State<PinCreateScreen> {
     final l10n = L10n.of(context);
 
     return AppScaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              _firstPin == null ? l10n.pinLabel : l10n.confirmPinLabel,
-              style: Theme.of(context).textTheme.titleMedium,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _pinController,
-              keyboardType: TextInputType.number,
-              // El rango permitido es 4–8; el ajuste pinLength solo es un
-              // valor por defecto y no debe limitar lo que el usuario puede
-              // escribir aquí (el validador acepta cualquier longitud 4–8).
-              maxLength: 8,
-              obscureText: true,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontFamily: AppTypography.monoFont,
-                    fontFeatures: const <FontFeature>[
-                      FontFeature.tabularFigures(),
-                    ],
-                  ),
-              decoration: InputDecoration(
-                labelText: l10n.pinLabel,
-                hintText: '••••••',
-                filled: true,
-              ),
-            ),
-            const SizedBox(height: 16),
-            if (_firstPin == null)
-              PinLossWarning(message: l10n.pinLossWarning),
-            const SizedBox(height: 16),
-            if (_error != null) ...[
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(vertical: 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
               Text(
-                _error!,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.error,
-                    ),
+                _firstPin == null ? l10n.pinLabel : l10n.confirmPinLabel,
+                style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
+              const SizedBox(height: 8),
+              Text(
+                _firstPin == null ? l10n.pinLengthHelp : l10n.confirmPinHelp,
+                style: Theme.of(context).textTheme.bodyMedium,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              if (_firstPin == null)
+                SegmentedButton<int>(
+                  segments: <ButtonSegment<int>>[
+                    for (final n in <int>[4, 6, 8])
+                      ButtonSegment<int>(value: n, label: Text('$n')),
+                  ],
+                  selected: <int>{_length},
+                  onSelectionChanged: (selection) {
+                    setState(() {
+                      _length = selection.first;
+                      _error = null;
+                    });
+                  },
+                ),
+              const SizedBox(height: 32),
+              if (_busy)
+                const CircularProgressIndicator()
+              else
+                PinCodeInput(
+                  length: _length,
+                  error: _error,
+                  onCompleted: _onPin,
+                  semanticLabel: l10n.pinLabel,
+                ),
               const SizedBox(height: 16),
+              if (_error != null)
+                Text(
+                  _error!,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                  textAlign: TextAlign.center,
+                ),
+              const SizedBox(height: 24),
+              if (_firstPin == null)
+                PinLossWarning(message: l10n.pinLossWarning),
             ],
-            FilledButton(
-              onPressed: _submit,
-              child: Text(l10n.createVaultLabel),
-            ),
-          ],
+          ),
         ),
       ),
     );

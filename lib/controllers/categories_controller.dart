@@ -67,11 +67,13 @@ class CategoriesController extends ChangeNotifier {
   Future<VaultCategory> add({
     required String name,
     String colorId = CategoryIds.other,
+    String? iconName,
   }) async {
     final category = VaultCategory(
       id: 'cat-${const Uuid().v4()}',
       name: name.trim(),
       colorId: colorId,
+      iconName: iconName,
     );
     _custom.add(category);
     await _persist();

@@ -579,5 +579,121 @@
   "exportTempError": "No se pudo preparar el archivo para compartir.",
   "@exportTempError": {
     "description": "exportTempError"
+  },
+  "categoryIconLabel": "Icono",
+  "@categoryIconLabel": {
+    "description": "categoryIconLabel"
+  },
+  "pinLengthHelp": "Elige 4, 6 u 8 dígitos. Más dígitos, más seguridad.",
+  "@pinLengthHelp": {
+    "description": "pinLengthHelp"
+  },
+  "pinTooShort": "El PIN es demasiado corto.",
+  "@pinTooShort": {
+    "description": "pinTooShort"
+  },
+  "pinTooLong": "El PIN es demasiado largo.",
+  "@pinTooLong": {
+    "description": "pinTooLong"
+  },
+  "pinNotDigits": "El PIN solo puede tener dígitos.",
+  "@pinNotDigits": {
+    "description": "pinNotDigits"
+  },
+  "pinRepeated": "El PIN tiene todos los dígitos iguales.",
+  "@pinRepeated": {
+    "description": "pinRepeated"
+  },
+  "pinSequential": "El PIN es una secuencia (123456). Elige otro.",
+  "@pinSequential": {
+    "description": "pinSequential"
+  },
+  "pinTooCommon": "Ese PIN es muy común. Elige otro.",
+  "@pinTooCommon": {
+    "description": "pinTooCommon"
+  },
+  "confirmPinHelp": "Repite el PIN para confirmarlo.",
+  "@confirmPinHelp": {
+    "description": "confirmPinHelp"
+  },
+  "backupReminderTitle": "Haz una copia de seguridad",
+  "@backupReminderTitle": {
+    "description": "backupReminderTitle"
+  },
+  "backupReminderBody": "Tu bóveda solo vive en este dispositivo. Exporta un respaldo cifrado.",
+  "@backupReminderBody": {
+    "description": "backupReminderBody"
+  },
+  "emptyFavorites": "Todavía no tienes favoritas.",
+  "@emptyFavorites": {
+    "description": "emptyFavorites"
+  },
+  "emptyCategories": "Todavía no tienes categorías.",
+  "@emptyCategories": {
+    "description": "emptyCategories"
+  },
+  "emptyHealth": "No hay contraseñas que revisar todavía.",
+  "@emptyHealth": {
+    "description": "emptyHealth"
+  },
+  "emptyAction": "Añadir la primera",
+  "@emptyAction": {
+    "description": "emptyAction"
+  },
+  "favoritesSection": "Favoritas",
+  "@favoritesSection": {
+    "description": "favoritesSection"
+  },
+  "allSection": "Todas",
+  "@allSection": {
+    "description": "allSection"
+  },
+  "aboutLabel": "Acerca de",
+  "@aboutLabel": {
+    "description": "aboutLabel"
+  },
+  "aboutText": "Llavero — bóveda offline y cifrada. Hecho para familias.",
+  "@aboutText": {
+    "description": "aboutText"
+  },
+  "biometricSettingLabel": "Desbloqueo biométrico",
+  "@biometricSettingLabel": {
+    "description": "biometricSettingLabel"
+  },
+  "securityLabel": "Seguridad",
+  "@securityLabel": {
+    "description": "securityLabel"
+  },
+  "toolsLabel": "Herramientas",
+  "@toolsLabel": {
+    "description": "toolsLabel"
+  },
+  "appearanceLabel": "Apariencia",
+  "@appearanceLabel": {
+    "description": "appearanceLabel"
+  },
+  "templateNetflix": "Netflix",
+  "@templateNetflix": {
+    "description": "templateNetflix"
+  },
+  "templateDisney": "Disney+",
+  "@templateDisney": {
+    "description": "templateDisney"
+  },
+  "templateSpotify": "Spotify",
+  "@templateSpotify": {
+    "description": "templateSpotify"
+  },
+  "templateHbo": "HBO Max",
+  "@templateHbo": {
+    "description": "templateHbo"
+  },
+  "moveUp": "Subir",
+  "@moveUp": {
+    "description": "moveUp"
+  },
+  "moveDown": "Bajar",
+  "@moveDown": {
+    "description": "moveDown"
   }
 }

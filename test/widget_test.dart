@@ -42,7 +42,7 @@ void main() {
     await tester.tap(find.text('Continuar'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Desbloquear'), findsOneWidget);
+    expect(find.text('Elige 4, 6 u 8 dígitos. Más dígitos, más seguridad.'), findsOneWidget);
   });
 
   testWidgets('cambiar el idioma a inglés traduce la interfaz al instante',

@@ -11,56 +11,64 @@ import 'package:llavero2/data/vault_storage.dart';
 import 'package:llavero2/features/settings/settings_screen.dart';
 import 'package:llavero2/l10n/generated/app_l10n.dart';
 
-void main() {
-  Future<AppControllers> pumpSettings(WidgetTester tester) async {
-    final controllers = AppControllers(
-      entries: EntriesController(
-        initialStorage: VaultStorage(
-          initialFileSystem: MemoryVaultFileSystem(),
-        ),
+Future<AppControllers> pumpSettings(WidgetTester tester) async {
+  final controllers = AppControllers(
+    entries: EntriesController(
+      initialStorage: VaultStorage(
+        initialFileSystem: MemoryVaultFileSystem(),
       ),
-      lock: LockController(),
-      settings: SettingsController(),
-    );
-    await tester.pumpWidget(
-      MaterialApp(
-        localizationsDelegates: L10n.localizationsDelegates,
-        supportedLocales: L10n.supportedLocales,
-        locale: const Locale('es'),
-        home: AppScope(
-          controllers: controllers,
-          child: const SettingsScreen(),
-        ),
-      ),
-    );
-    await tester.pumpAndSettle();
-    return controllers;
-  }
+    ),
+    lock: LockController(),
+    settings: SettingsController(),
+  );
+  await tester.pumpWidget(
+    MaterialApp(
+      localizationsDelegates: L10n.localizationsDelegates,
+      supportedLocales: L10n.supportedLocales,
+      locale: const Locale('es'),
+      home: AppScope(controllers: controllers, child: const SettingsScreen()),
+    ),
+  );
+  await tester.pumpAndSettle();
+  return controllers;
+}
 
-  group('Task 7 — Ajustes', () {
-    testWidgets('muestra el estado de seguridad y los ajustes', (tester) async {
+
+Future<void> scrollTo(WidgetTester tester, String text) async {
+  for (var i = 0; i < 12; i++) {
+    if (find.text(text).evaluate().isNotEmpty) return;
+    await tester.drag(find.byType(ListView), const Offset(0, -400));
+    await tester.pumpAndSettle();
+  }
+}
+
+void main() {
+  group('Fase C — Ajustes agrupados', () {
+    testWidgets('muestra los cuatro grupos', (tester) async {
       await pumpSettings(tester);
 
       expect(find.text('Ajustes'), findsOneWidget);
-      expect(find.text('Estado de seguridad'), findsOneWidget);
+      expect(find.text('Seguridad'), findsOneWidget);
+      expect(find.text('Herramientas'), findsOneWidget);
+      await scrollTo(tester, 'Apariencia');
+      expect(find.text('Apariencia'), findsOneWidget);
+      await scrollTo(tester, 'Acerca de');
+      expect(find.text('Acerca de'), findsOneWidget);
       expect(find.text('Categorías'), findsOneWidget);
-
-      await tester.drag(find.byType(ListView), const Offset(0, -900));
-      await tester.pumpAndSettle();
-      expect(find.text('Tema'), findsOneWidget);
-      expect(find.text('Idioma'), findsOneWidget);
-      expect(find.text('Bloqueo automático'), findsOneWidget);
-      expect(find.text('Longitud del PIN'), findsOneWidget);
-      expect(find.text('Bloquear capturas'), findsOneWidget);
-      expect(find.text('Exportar / importar'), findsOneWidget);
+      // Volver arriba para comprobar la etiqueta biométrica.
+      for (var i = 0; i < 12; i++) {
+        await tester.drag(find.byType(ListView), const Offset(0, 400));
+        await tester.pumpAndSettle();
+      }
+      expect(find.text('Desbloqueo biométrico'), findsOneWidget);
     });
 
     testWidgets('cambiar el tema actualiza el controlador', (tester) async {
       final controllers = await pumpSettings(tester);
-
-      await tester.drag(find.byType(ListView), const Offset(0, -500));
+      await scrollTo(tester, 'Oscuro');
+      await tester.ensureVisible(find.text('Oscuro').last);
       await tester.pump();
-      await tester.tap(find.text('Oscuro'));
+      await tester.tap(find.text('Oscuro').last);
       await tester.pumpAndSettle();
 
       expect(controllers.settings.themeMode, AppThemeMode.dark);
@@ -68,10 +76,10 @@ void main() {
 
     testWidgets('cambiar el idioma actualiza el controlador', (tester) async {
       final controllers = await pumpSettings(tester);
-
-      await tester.drag(find.byType(ListView), const Offset(0, -400));
+      await scrollTo(tester, 'Inglés');
+      await tester.ensureVisible(find.text('Inglés').last);
       await tester.pump();
-      await tester.tap(find.text('Inglés'));
+      await tester.tap(find.text('Inglés').last);
       await tester.pumpAndSettle();
 
       expect(controllers.settings.language, AppLanguage.english);
@@ -79,8 +87,7 @@ void main() {
 
     testWidgets('el bloqueo de capturas respeta la plataforma', (tester) async {
       final controllers = await pumpSettings(tester);
-      await tester.drag(find.byType(ListView), const Offset(0, -600));
-      await tester.pumpAndSettle();
+      await scrollTo(tester, 'Bloquear capturas');
       final switcher = find.byType(SwitchListTile);
 
       if (PlatformCapabilities.detect().supportsScreenshotBlocking) {

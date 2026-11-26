@@ -2,18 +2,15 @@ import 'package:flutter/material.dart';
 
 import '../../core/app_scope.dart';
 import '../../core/routes/app_routes.dart';
-import '../../core/theme/category_colors.dart';
 import '../../core/widgets/animated_entry_tile.dart';
 import '../../core/widgets/app_scaffold.dart';
+import '../../core/widgets/category_icon_badge.dart';
+import '../../core/widgets/empty_state.dart';
 import '../shared/category_name.dart';
 import '../../data/models/vault_entry.dart';
 import '../../l10n/generated/app_l10n.dart';
 
-/// Pantalla principal: listado de entradas con búsqueda y filtros.
-///
-/// En pantallas anchas (tablets) muestra una rejilla de dos columnas; en
-/// móvil mantiene una lista. Cada tarjeta lleva etiquetas semánticas y una
-/// animación de entrada que respeta la preferencia de reducir movimiento.
+/// Pantalla principal: secciones Favoritas/Todas, búsqueda y filtros.
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -23,7 +20,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _searchController = TextEditingController();
-  bool _onlyFavorites = false;
+  String? _categoryFilter;
+  String? _personFilter;
 
   @override
   void dispose() {
@@ -34,7 +32,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = L10n.of(context);
-    final entries = AppScope.of(context).entries;
+    final controllers = AppScope.of(context);
+    final entries = controllers.entries;
 
     return AppScaffold(
       appBar: AppBar(
@@ -45,10 +44,10 @@ class _HomeScreenState extends State<HomeScreen> {
             tooltip: l10n.settingsLabel,
             onPressed: () => Navigator.of(context).pushNamed(AppRoutes.settings),
           ),
-          IconButton(
-            icon: const Icon(Icons.delete_sweep_outlined),
-            tooltip: l10n.trashLabel,
+          TextButton.icon(
             onPressed: () => Navigator.of(context).pushNamed(AppRoutes.trash),
+            icon: const Icon(Icons.delete_sweep_outlined),
+            label: Text(l10n.trashLabel),
           ),
         ],
       ),
@@ -61,9 +60,16 @@ class _HomeScreenState extends State<HomeScreen> {
         listenable: entries,
         builder: (context, _) {
           var visible = entries.search(_searchController.text);
-          if (_onlyFavorites) {
-            visible = visible.where((e) => e.isFavorite).toList();
+          if (_categoryFilter != null) {
+            visible = visible
+                .where((e) => e.categoryId == _categoryFilter)
+                .toList();
           }
+          if (_personFilter != null) {
+            visible = visible.where((e) => e.person == _personFilter).toList();
+          }
+          final favorites = visible.where((e) => e.isFavorite).toList();
+          final all = visible;
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -81,55 +87,73 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-              SegmentedButton<bool>(
-                segments: <ButtonSegment<bool>>[
-                  ButtonSegment<bool>(
-                    value: false,
-                    label: Text(l10n.allEntriesLabel),
-                  ),
-                  ButtonSegment<bool>(
-                    value: true,
-                    label: Text(l10n.favoritesFilterLabel),
-                  ),
+              Wrap(
+                spacing: 8,
+                children: <Widget>[
+                  for (final id in entries.categoryIds)
+                    FilterChip(
+                      label: Text(
+                        categoryDisplayName(
+                          id,
+                          l10n,
+                          controllers.categories,
+                        ),
+                      ),
+                      selected: _categoryFilter == id,
+                      onSelected: (selected) => setState(() {
+                        _categoryFilter = selected ? id : null;
+                      }),
+                    ),
+                  for (final person in entries.persons)
+                    FilterChip(
+                      label: Text(person),
+                      selected: _personFilter == person,
+                      onSelected: (selected) => setState(() {
+                        _personFilter = selected ? person : null;
+                      }),
+                    ),
                 ],
-                selected: <bool>{_onlyFavorites},
-                onSelectionChanged: (selection) {
-                  setState(() => _onlyFavorites = selection.first);
-                },
               ),
               const SizedBox(height: 8),
+              Card(
+                child: ListTile(
+                  leading: const Icon(Icons.backup_outlined),
+                  title: Text(l10n.backupReminderTitle),
+                  subtitle: Text(l10n.backupReminderBody),
+                  onTap: () =>
+                      Navigator.of(context).pushNamed(AppRoutes.exportImport),
+                ),
+              ),
               Expanded(
-                child: visible.isEmpty
-                    ? Center(child: Text(l10n.emptyVaultMessage))
-                    : LayoutBuilder(
-                        builder: (context, constraints) {
-                          // En tablets (≥600dp) usamos dos columnas.
-                          final tablet = constraints.maxWidth >= 600;
-                          return tablet
-                              ? GridView.builder(
-                                  padding: const EdgeInsets.only(bottom: 88),
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    mainAxisSpacing: 8,
-                                    crossAxisSpacing: 8,
-                                    childAspectRatio: 3.2,
-                                  ),
-                                  itemCount: visible.length,
-                                  itemBuilder: (context, index) => _animatedTile(
-                                    entry: visible[index],
-                                    index: index,
-                                  ),
-                                )
-                              : ListView.builder(
-                                  padding: const EdgeInsets.only(bottom: 88),
-                                  itemCount: visible.length,
-                                  itemBuilder: (context, index) => _animatedTile(
-                                    entry: visible[index],
-                                    index: index,
-                                  ),
-                                );
-                        },
+                child: all.isEmpty
+                    ? EmptyState(
+                        icon: Icons.key_outlined,
+                        message: l10n.emptyVaultMessage,
+                        actionLabel: l10n.emptyAction,
+                        onAction: () => Navigator.of(context)
+                            .pushNamed(AppRoutes.entryForm),
+                      )
+                    : ListView(
+                        padding: const EdgeInsets.only(bottom: 88),
+                        children: <Widget>[
+                          if (favorites.isNotEmpty) ...[
+                            Text(
+                              l10n.favoritesSection,
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            const SizedBox(height: 8),
+                            for (final entry in favorites)
+                              _animatedTile(entry: entry, index: 0),
+                            const SizedBox(height: 16),
+                          ],
+                          Text(
+                            l10n.allSection,
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          const SizedBox(height: 8),
+                          for (final entry in all)
+                            _animatedTile(entry: entry, index: 1),
+                        ],
                       ),
               ),
             ],
@@ -159,27 +183,26 @@ class _EntryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = L10n.of(context);
-    final categories = Theme.of(context).extension<CategoryColors>();
-
     return Card(
       child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: categories?.colorOf(entry.categoryId),
-          child: ExcludeSemantics(
-            child: const Icon(Icons.key_rounded, size: 20),
-          ),
-        ),
+        leading: CategoryIconBadge(categoryId: entry.categoryId),
         title: Text(entry.title),
         subtitle: Text(
-          entry.person ??
-              categoryDisplayName(
-                entry.categoryId,
-                l10n,
-                AppScope.of(context).categories,
-              ),
+          <String>[
+            if (entry.person != null) entry.person!,
+            categoryDisplayName(
+              entry.categoryId,
+              l10n,
+              AppScope.of(context).categories,
+            ),
+          ].join(' · '),
         ),
         trailing: entry.isFavorite
-            ? Icon(Icons.star, color: Colors.amber, semanticLabel: l10n.favoriteLabel)
+            ? Icon(
+                Icons.star,
+                color: Colors.amber,
+                semanticLabel: l10n.favoriteLabel,
+              )
             : null,
         onTap: () => Navigator.of(context).pushNamed(
           AppRoutes.entryDetail,

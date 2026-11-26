@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/app_scope.dart';
 import '../../core/widgets/app_scaffold.dart';
+import '../../core/widgets/empty_state.dart';
 import '../../data/models/vault_entry.dart';
 import '../../l10n/generated/app_l10n.dart';
 
@@ -30,7 +31,10 @@ class TrashScreen extends StatelessWidget {
         builder: (context, _) {
           final trashed = entries.trashed;
           if (trashed.isEmpty) {
-            return Center(child: Text(l10n.emptyTrashMessage));
+            return EmptyState(
+              icon: Icons.delete_outline,
+              message: l10n.emptyTrashMessage,
+            );
           }
           return ListView.builder(
             padding: const EdgeInsets.all(16),

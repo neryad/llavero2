@@ -463,4 +463,94 @@ class L10nEn extends L10n {
 
   @override
   String get exportTempError => 'Could not prepare the file to share.';
+
+  @override
+  String get categoryIconLabel => 'Icon';
+
+  @override
+  String get pinLengthHelp =>
+      'Choose 4, 6 or 8 digits. More digits, more security.';
+
+  @override
+  String get pinTooShort => 'The PIN is too short.';
+
+  @override
+  String get pinTooLong => 'The PIN is too long.';
+
+  @override
+  String get pinNotDigits => 'The PIN can only contain digits.';
+
+  @override
+  String get pinRepeated => 'All digits are the same. Choose another PIN.';
+
+  @override
+  String get pinSequential => 'The PIN is a sequence (123456). Choose another.';
+
+  @override
+  String get pinTooCommon => 'That PIN is very common. Choose another.';
+
+  @override
+  String get confirmPinHelp => 'Enter the PIN again to confirm it.';
+
+  @override
+  String get backupReminderTitle => 'Back up your vault';
+
+  @override
+  String get backupReminderBody =>
+      'Your vault only lives on this device. Export an encrypted backup.';
+
+  @override
+  String get emptyFavorites => 'No favorites yet.';
+
+  @override
+  String get emptyCategories => 'No categories yet.';
+
+  @override
+  String get emptyHealth => 'No passwords to check yet.';
+
+  @override
+  String get emptyAction => 'Add the first one';
+
+  @override
+  String get favoritesSection => 'Favorites';
+
+  @override
+  String get allSection => 'All';
+
+  @override
+  String get aboutLabel => 'About';
+
+  @override
+  String get aboutText =>
+      'Llavero — offline encrypted vault. Made for families.';
+
+  @override
+  String get biometricSettingLabel => 'Biometric unlock';
+
+  @override
+  String get securityLabel => 'Security';
+
+  @override
+  String get toolsLabel => 'Tools';
+
+  @override
+  String get appearanceLabel => 'Appearance';
+
+  @override
+  String get templateNetflix => 'Netflix';
+
+  @override
+  String get templateDisney => 'Disney+';
+
+  @override
+  String get templateSpotify => 'Spotify';
+
+  @override
+  String get templateHbo => 'HBO Max';
+
+  @override
+  String get moveUp => 'Move up';
+
+  @override
+  String get moveDown => 'Move down';
 }

@@ -115,7 +115,6 @@ Future<void> main() async {
 
       await tester.enterText(find.byType(TextField), '482913');
       await tester.pump();
-      await tester.tap(find.text('Desbloquear'));
       await tester.pumpAndSettle();
 
       expect(service.pinAttempts, 1);
@@ -131,7 +130,6 @@ Future<void> main() async {
 
       await tester.enterText(find.byType(TextField), '111111');
       await tester.pump();
-      await tester.tap(find.text('Desbloquear'));
       await tester.pumpAndSettle();
 
       expect(find.text('PIN incorrecto. Inténtalo de nuevo.'), findsOneWidget);
@@ -162,8 +160,7 @@ Future<void> main() async {
       for (var i = 0; i < 5; i++) {
         await tester.enterText(find.byType(TextField), '111111');
         await tester.pump();
-        await tester.tap(find.text('Desbloquear'));
-        await tester.pumpAndSettle();
+          await tester.pumpAndSettle();
       }
 
       // El controlador está bloqueado: aunque escribamos el PIN correcto

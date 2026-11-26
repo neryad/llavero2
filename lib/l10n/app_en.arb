@@ -579,5 +579,121 @@
   "exportTempError": "Could not prepare the file to share.",
   "@exportTempError": {
     "description": "exportTempError"
+  },
+  "categoryIconLabel": "Icon",
+  "@categoryIconLabel": {
+    "description": "categoryIconLabel"
+  },
+  "pinLengthHelp": "Choose 4, 6 or 8 digits. More digits, more security.",
+  "@pinLengthHelp": {
+    "description": "pinLengthHelp"
+  },
+  "pinTooShort": "The PIN is too short.",
+  "@pinTooShort": {
+    "description": "pinTooShort"
+  },
+  "pinTooLong": "The PIN is too long.",
+  "@pinTooLong": {
+    "description": "pinTooLong"
+  },
+  "pinNotDigits": "The PIN can only contain digits.",
+  "@pinNotDigits": {
+    "description": "pinNotDigits"
+  },
+  "pinRepeated": "All digits are the same. Choose another PIN.",
+  "@pinRepeated": {
+    "description": "pinRepeated"
+  },
+  "pinSequential": "The PIN is a sequence (123456). Choose another.",
+  "@pinSequential": {
+    "description": "pinSequential"
+  },
+  "pinTooCommon": "That PIN is very common. Choose another.",
+  "@pinTooCommon": {
+    "description": "pinTooCommon"
+  },
+  "confirmPinHelp": "Enter the PIN again to confirm it.",
+  "@confirmPinHelp": {
+    "description": "confirmPinHelp"
+  },
+  "backupReminderTitle": "Back up your vault",
+  "@backupReminderTitle": {
+    "description": "backupReminderTitle"
+  },
+  "backupReminderBody": "Your vault only lives on this device. Export an encrypted backup.",
+  "@backupReminderBody": {
+    "description": "backupReminderBody"
+  },
+  "emptyFavorites": "No favorites yet.",
+  "@emptyFavorites": {
+    "description": "emptyFavorites"
+  },
+  "emptyCategories": "No categories yet.",
+  "@emptyCategories": {
+    "description": "emptyCategories"
+  },
+  "emptyHealth": "No passwords to check yet.",
+  "@emptyHealth": {
+    "description": "emptyHealth"
+  },
+  "emptyAction": "Add the first one",
+  "@emptyAction": {
+    "description": "emptyAction"
+  },
+  "favoritesSection": "Favorites",
+  "@favoritesSection": {
+    "description": "favoritesSection"
+  },
+  "allSection": "All",
+  "@allSection": {
+    "description": "allSection"
+  },
+  "aboutLabel": "About",
+  "@aboutLabel": {
+    "description": "aboutLabel"
+  },
+  "aboutText": "Llavero — offline encrypted vault. Made for families.",
+  "@aboutText": {
+    "description": "aboutText"
+  },
+  "biometricSettingLabel": "Biometric unlock",
+  "@biometricSettingLabel": {
+    "description": "biometricSettingLabel"
+  },
+  "securityLabel": "Security",
+  "@securityLabel": {
+    "description": "securityLabel"
+  },
+  "toolsLabel": "Tools",
+  "@toolsLabel": {
+    "description": "toolsLabel"
+  },
+  "appearanceLabel": "Appearance",
+  "@appearanceLabel": {
+    "description": "appearanceLabel"
+  },
+  "templateNetflix": "Netflix",
+  "@templateNetflix": {
+    "description": "templateNetflix"
+  },
+  "templateDisney": "Disney+",
+  "@templateDisney": {
+    "description": "templateDisney"
+  },
+  "templateSpotify": "Spotify",
+  "@templateSpotify": {
+    "description": "templateSpotify"
+  },
+  "templateHbo": "HBO Max",
+  "@templateHbo": {
+    "description": "templateHbo"
+  },
+  "moveUp": "Move up",
+  "@moveUp": {
+    "description": "moveUp"
+  },
+  "moveDown": "Move down",
+  "@moveDown": {
+    "description": "moveDown"
   }
 }

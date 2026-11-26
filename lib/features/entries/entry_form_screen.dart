@@ -8,24 +8,20 @@ import '../../core/security/password_generator.dart';
 import '../../core/routes/app_routes.dart';
 import '../../core/theme/category_colors.dart';
 import '../../core/widgets/app_scaffold.dart';
+import '../../core/widgets/category_icon_badge.dart';
 import '../shared/category_name.dart';
 import '../../data/entry_templates.dart';
 import '../../data/models/entry_field.dart';
 import '../../data/models/vault_entry.dart';
 import '../../l10n/generated/app_l10n.dart';
 
-/// Argumentos de la ruta del formulario de entrada.
 class EntryFormArgs {
   const EntryFormArgs({this.entryId, this.templateId});
 
-  /// ID de la entrada a editar (null si se crea una nueva).
   final String? entryId;
-
-  /// ID de la plantilla a usar (null si no se usa plantilla).
   final String? templateId;
 }
 
-/// Formulario para crear o editar una entrada.
 class EntryFormScreen extends StatefulWidget {
   const EntryFormScreen({super.key, required this.args});
 
@@ -73,7 +69,6 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
   bool _loading = true;
   String? _saveError;
   bool _dirty = false;
-
   bool _loaded = false;
 
   @override
@@ -92,13 +87,14 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
           .where((e) => e.id == widget.args.entryId)
           .firstOrNull;
     }
-
     final template = widget.args.templateId == null
         ? null
         : EntryTemplates.byId(widget.args.templateId!);
 
     _id = original?.id ?? const Uuid().v4();
-    _categoryId = original?.categoryId ?? template?.categoryId ?? CategoryIds.other;
+    _categoryId = original?.categoryId ??
+        template?.categoryId ??
+        CategoryIds.other;
     _isFavorite = original?.isFavorite ?? false;
     _title.text = original?.title ?? template?.title ?? '';
     _person.text = original?.person ?? '';
@@ -115,7 +111,6 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
         ),
       );
     }
-
     setState(() => _loading = false);
   }
 
@@ -140,6 +135,35 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
           isSecret: false,
         ),
       );
+      _dirty = true;
+    });
+  }
+
+  void _moveField(int index, int delta) {
+    final target = index + delta;
+    if (target < 0 || target >= _fields.length) return;
+    setState(() {
+      final field = _fields.removeAt(index);
+      _fields.insert(target, field);
+      _dirty = true;
+    });
+  }
+
+  void _applyStreamingTemplate(String title) {
+    setState(() {
+      _title.text = title;
+      _categoryId = CategoryIds.streaming;
+      _fields
+        ..clear()
+        ..add(
+          _FieldEditor(
+            label: TextEditingController(text: 'Contraseña'),
+            value: TextEditingController(),
+            type: EntryFieldType.secret,
+            isSecret: true,
+          ),
+        );
+      _dirty = true;
     });
   }
 
@@ -149,6 +173,7 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
       field.value.text = field.type == EntryFieldType.pin
           ? generator.generatePin(6)
           : generator.generate();
+      _dirty = true;
     });
   }
 
@@ -174,8 +199,7 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
       updatedAt: now,
     );
 
-    final controllers = AppScope.of(context);
-    final entries = controllers.entries;
+    final entries = AppScope.of(context).entries;
     try {
       if (widget.args.entryId == null) {
         await entries.add(entry);
@@ -183,7 +207,6 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
         await entries.update(entry);
       }
     } on StateError {
-      // La bóveda se cerró mientras se rellenaba el formulario (auto-lock).
       if (!mounted) return;
       LlaveroApp.navigatorKey.currentState?.pushNamedAndRemoveUntil(
         AppRoutes.lock,
@@ -219,6 +242,137 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
     return discard ?? false;
   }
 
+  List<Widget> _fieldWidgets(L10n l10n) {
+    final widgets = <Widget>[];
+    for (final item in _fields.asMap().entries) {
+      final index = item.key;
+      final field = item.value;
+      widgets.add(
+        TextField(
+          controller: field.label,
+          decoration: InputDecoration(
+            labelText: l10n.labelFieldLabel,
+            filled: true,
+          ),
+          onChanged: (_) => setState(() => _dirty = true),
+        ),
+      );
+      widgets.add(const SizedBox(height: 8));
+      widgets.add(
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: TextField(
+                controller: field.value,
+                obscureText: field.isSecret,
+                decoration: InputDecoration(
+                  labelText: l10n.valueFieldLabel,
+                  filled: true,
+                ),
+                onChanged: (_) => setState(() => _dirty = true),
+              ),
+            ),
+            Semantics(
+              button: true,
+              label: l10n.generateLabel,
+              child: IconButton(
+                icon: const Icon(Icons.casino),
+                tooltip: l10n.generateLabel,
+                onPressed: () => _generate(field),
+              ),
+            ),
+          ],
+        ),
+      );
+      widgets.add(
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: SwitchListTile(
+                value: field.isSecret,
+                title: Text(l10n.secretFieldLabel),
+                onChanged: (value) {
+                  setState(() {
+                    field.isSecret = value;
+                    _dirty = true;
+                  });
+                },
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.arrow_upward),
+              tooltip: l10n.moveUp,
+              onPressed: () => _moveField(index, -1),
+            ),
+            IconButton(
+              icon: const Icon(Icons.arrow_downward),
+              tooltip: l10n.moveDown,
+              onPressed: () => _moveField(index, 1),
+            ),
+          ],
+        ),
+      );
+      widgets.add(const Divider());
+    }
+    return widgets;
+  }
+
+  Widget _categoryGrid(L10n l10n) {
+    final custom = AppScope.of(context).categories.custom;
+    final ids = <String>[...CategoriesController.defaultIds, ...custom.map((c) => c.id)];
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        mainAxisSpacing: 8,
+        crossAxisSpacing: 8,
+        childAspectRatio: 3.4,
+      ),
+      itemCount: ids.length,
+      itemBuilder: (context, index) {
+        final id = ids[index];
+        final isCustom = index >= CategoriesController.defaultIds.length;
+        final category = isCustom ? custom[index - CategoriesController.defaultIds.length] : null;
+        final selected = id == _categoryId;
+        return InkWell(
+          onTap: () => setState(() {
+            _categoryId = id;
+            _dirty = true;
+          }),
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: selected
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).colorScheme.outline,
+              ),
+            ),
+            child: Row(
+              children: <Widget>[
+                CategoryIconBadge(
+                  categoryId: category?.colorId ?? id,
+                  customIconName: category?.iconName,
+                  size: 32,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    category?.name ??
+                        categoryDisplayName(id, l10n, AppScope.of(context).categories),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = L10n.of(context);
@@ -233,129 +387,120 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
         }
       },
       child: AppScaffold(
-      appBar: AppBar(
-        title: Text(isNew ? l10n.newEntryLabel : l10n.editEntryLabel),
-      ),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
+        appBar: AppBar(
+          title: Text(isNew ? l10n.newEntryLabel : l10n.editEntryLabel),
+        ),
+        body: _loading
+            ? const Center(child: CircularProgressIndicator())
+            : Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                TextField(
-                  controller: _title,
-                  onChanged: (_) => setState(() => _dirty = true),
-                  decoration: InputDecoration(
-                    labelText: l10n.titleFieldLabel,
-                    filled: true,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _person,
-                  decoration: InputDecoration(
-                    labelText: l10n.personFieldLabel,
-                    filled: true,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                DropdownButtonFormField<String>(
-                  initialValue: _categoryId,
-                  decoration: InputDecoration(
-                    labelText: l10n.categoryFieldLabel,
-                    filled: true,
-                  ),
-                  items: <String>[
-                    ...CategoriesController.defaultIds,
-                    for (final c in AppScope.of(context).categories.custom) c.id,
-                  ].map(
-                    (id) => DropdownMenuItem<String>(
-                      value: id,
-                      child: Text(
-                        categoryDisplayName(id, l10n, AppScope.of(context).categories),
-                      ),
-                    ),
-                  ).toList(),
-                  onChanged: (value) {
-                    if (value != null) setState(() => _categoryId = value);
-                  },
-                ),
-                const SizedBox(height: 16),
-                Text(l10n.fieldsLabel, style: Theme.of(context).textTheme.titleMedium),
-                const SizedBox(height: 8),
-                for (final field in _fields) ...[
-                  TextField(
-                    controller: field.label,
-                    decoration: InputDecoration(
-                      labelText: l10n.labelFieldLabel,
-                      filled: true,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                          controller: field.value,
-                          obscureText: field.isSecret,
-                          decoration: InputDecoration(
-                            labelText: l10n.valueFieldLabel,
-                            filled: true,
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          TextField(
+                            controller: _title,
+                            onChanged: (_) => setState(() => _dirty = true),
+                            decoration: InputDecoration(
+                              labelText: l10n.titleFieldLabel,
+                              filled: true,
+                            ),
                           ),
-                        ),
+                          const SizedBox(height: 16),
+                          TextField(
+                            controller: _person,
+                            onChanged: (_) => setState(() => _dirty = true),
+                            decoration: InputDecoration(
+                              labelText: l10n.personFieldLabel,
+                              filled: true,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            l10n.categoryFieldLabel,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                          const SizedBox(height: 8),
+                          _categoryGrid(l10n),
+                          if (_categoryId == CategoryIds.streaming) ...[
+                            const SizedBox(height: 16),
+                            Wrap(
+                              spacing: 8,
+                              children: <Widget>[
+                                for (final t in <String>[
+                                  l10n.templateNetflix,
+                                  l10n.templateDisney,
+                                  l10n.templateSpotify,
+                                  l10n.templateHbo,
+                                ])
+                                  ActionChip(
+                                    label: Text(t),
+                                    onPressed: () => _applyStreamingTemplate(t),
+                                  ),
+                              ],
+                            ),
+                          ],
+                          const SizedBox(height: 16),
+                          Text(
+                            l10n.fieldsLabel,
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          const SizedBox(height: 8),
+                          ..._fieldWidgets(l10n),
+                          TextButton.icon(
+                            onPressed: _addField,
+                            icon: const Icon(Icons.add),
+                            label: Text(l10n.addFieldLabel),
+                          ),
+                          const SizedBox(height: 16),
+                          TextField(
+                            controller: _notes,
+                            maxLines: 3,
+                            onChanged: (_) => setState(() => _dirty = true),
+                            decoration: InputDecoration(
+                              labelText: l10n.notesFieldLabel,
+                              filled: true,
+                            ),
+                          ),
+                          SwitchListTile(
+                            value: _isFavorite,
+                            title: Text(l10n.favoriteLabel),
+                            onChanged: (value) {
+                              setState(() {
+                                _isFavorite = value;
+                                _dirty = true;
+                              });
+                            },
+                          ),
+                          if (_saveError != null)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 16),
+                              child: Text(
+                                _saveError!,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      color: Theme.of(context).colorScheme.error,
+                                    ),
+                              ),
+                            ),
+                        ],
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.casino),
-                        tooltip: l10n.generateLabel,
-                        onPressed: () => _generate(field),
-                      ),
-                    ],
-                  ),
-                  CheckboxListTile(
-                    value: field.isSecret,
-                    title: Text(l10n.secretFieldLabel),
-                    onChanged: (value) {
-                      setState(() => field.isSecret = value ?? false);
-                    },
-                  ),
-                  const Divider(),
-                ],
-                TextButton.icon(
-                  onPressed: _addField,
-                  icon: const Icon(Icons.add),
-                  label: Text(l10n.addFieldLabel),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _notes,
-                  maxLines: 3,
-                  decoration: InputDecoration(
-                    labelText: l10n.notesFieldLabel,
-                    filled: true,
-                  ),
-                ),
-                SwitchListTile(
-                  value: _isFavorite,
-                  title: Text(l10n.favoriteLabel),
-                  onChanged: (value) => setState(() => _isFavorite = value),
-                ),
-                const SizedBox(height: 16),
-                if (_saveError != null)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: Text(
-                      _saveError!,
-                      style: TextStyle(color: Theme.of(context).colorScheme.error),
                     ),
                   ),
-                FilledButton(
-                  onPressed: _save,
-                  child: Text(l10n.saveLabel),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: FilledButton(
+                      onPressed: _save,
+                      child: Text(l10n.saveLabel),
+                    ),
+                  ),
                 ],
               ),
-            ),
       ),
     );
   }

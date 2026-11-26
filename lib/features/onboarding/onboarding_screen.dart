@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/app_scope.dart';
+import '../../../controllers/settings_controller.dart';
 import '../../../core/widgets/app_scaffold.dart';
 import '../../../features/onboarding/pin_create_screen.dart';
 import '../../../l10n/generated/app_l10n.dart';
@@ -19,9 +21,12 @@ class OnboardingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = L10n.of(context);
+    final settings = AppScope.of(context).settings;
 
     return AppScaffold(
-      body: Column(
+      body: ListenableBuilder(
+        listenable: settings,
+        builder: (context, _) => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
@@ -57,18 +62,34 @@ class OnboardingScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 32),
             child: PinLossWarning(message: l10n.pinLossWarning),
           ),
+          const SizedBox(height: 16),
+          SegmentedButton<AppLanguage>(
+            segments: <ButtonSegment<AppLanguage>>[
+              ButtonSegment(value: AppLanguage.spanish, label: Text(l10n.languageSpanish)),
+              ButtonSegment(value: AppLanguage.english, label: Text(l10n.languageEnglish)),
+            ],
+            selected: <AppLanguage>{
+              settings.language == AppLanguage.english
+                  ? AppLanguage.english
+                  : AppLanguage.spanish,
+            },
+            onSelectionChanged: (s) => settings.setLanguage(s.first),
+          ),
           const SizedBox(height: 24),
-          FilledButton(
-            onPressed: () {
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute<void>(
                   builder: (_) => const PinCreateScreen(),
                 ),
-              );
-            },
-            child: Text(l10n.createVaultLabel),
+                );
+              },
+              child: Text(l10n.createVaultLabel),
+            ),
           ),
-        ],
+        ]),
       ),
     );
   }

@@ -459,6 +459,31 @@ test/l10n_completeness_test.dart                  ← 3 tests
 
 ---
 
+## FASE C — Diseño completado ✅
+
+- **PIN**: longitud 4/6/8 con segmentado, puntos exactos (sin contador),
+  auto-avance y auto-envío, texto de ayuda localizado, mensajes concretos y
+  sacudida al error. Cambiar longitud en Ajustes pide re-autenticación.
+- **Categorías**: iconos Material por defecto y 24 iconos para personalizadas,
+  badge de 40dp con color al 20 % y radio 12; presente en tarjetas, detalle,
+  selector y pantalla de categorías.
+- **Formulario**: rejilla visual de 3 columnas, chips de plantillas Streaming,
+  etiquetas separadas del borde, reordenación con flechas al lado, Switch para
+  «Secreto», semántica en el dado y Guardar siempre visible abajo.
+- **Home**: secciones Favoritas/Todas, chips de categoría y persona, papelera
+  con etiqueta, banner de respaldo y estado vacío con ilustración y CTA.
+- **Ajustes**: grupos Seguridad / Herramientas / Apariencia / Acerca de.
+- **Bienvenida**: selector ES/EN y botón a ancho completo.
+- **Fuentes**: Plus Jakarta Sans aplicada en todo el tema y JetBrains Mono en
+  secretos/PIN (antes se veía Roboto).
+- **Espaciado**: margen horizontal 24dp en todas las pantallas.
+- **Estados vacíos** con ilustración y acción en Home, Papelera, Categorías y
+  Salud de contraseñas.
+
+Sin paquetes nuevos. `flutter analyze` limpio; **206 pruebas**.
+
+---
+
 ## FASE B — Critical y Bug corregidos ✅
 
 Todos los ítems Critical (C1–C7) y Bug (B1–B12) de `AUDIT.md` están arreglados

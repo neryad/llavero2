@@ -115,13 +115,6 @@ void main() {
 
         final pinField = find.byType(TextField);
         await tester.enterText(pinField, '482913');
-        await tester.pump();
-        await tester.tap(
-          find.descendant(
-            of: find.byType(PinCreateScreen),
-            matching: find.text('Crear bóveda'),
-          ),
-        );
         await tester.pumpAndSettle();
 
         // Tras el primer PIN válido pasamos a confirmar el mismo PIN.
@@ -134,13 +127,6 @@ void main() {
         );
 
         await tester.enterText(pinField, '482913');
-        await tester.pump();
-        await tester.tap(
-          find.descendant(
-            of: find.byType(PinCreateScreen),
-            matching: find.text('Crear bóveda'),
-          ),
-        );
         await tester.pumpAndSettle();
 
         // La bóveda se creó y el controlador quedó en estado bloqueado.
@@ -182,15 +168,10 @@ void main() {
       // Secuencia inválida (123456).
       await tester.enterText(find.byType(TextField), '123456');
       await tester.pump();
-      await tester.tap(
-        find.descendant(
-          of: find.byType(PinCreateScreen),
-          matching: find.text('Crear bóveda'),
-        ),
-      );
+      await tester.enterText(find.byType(TextField), '123456');
       await tester.pumpAndSettle();
 
-      expect(find.textContaining('El PIN no es válido'), findsOneWidget);
+      expect(find.textContaining('secuencia'), findsOneWidget);
       expect(await service.hasVault(), isFalse);
       expect(controllers.lock.hasPin, isFalse);
     });

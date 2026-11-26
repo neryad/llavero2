@@ -966,6 +966,180 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Could not prepare the file to share.'**
   String get exportTempError;
+
+  /// categoryIconLabel
+  ///
+  /// In en, this message translates to:
+  /// **'Icon'**
+  String get categoryIconLabel;
+
+  /// pinLengthHelp
+  ///
+  /// In en, this message translates to:
+  /// **'Choose 4, 6 or 8 digits. More digits, more security.'**
+  String get pinLengthHelp;
+
+  /// pinTooShort
+  ///
+  /// In en, this message translates to:
+  /// **'The PIN is too short.'**
+  String get pinTooShort;
+
+  /// pinTooLong
+  ///
+  /// In en, this message translates to:
+  /// **'The PIN is too long.'**
+  String get pinTooLong;
+
+  /// pinNotDigits
+  ///
+  /// In en, this message translates to:
+  /// **'The PIN can only contain digits.'**
+  String get pinNotDigits;
+
+  /// pinRepeated
+  ///
+  /// In en, this message translates to:
+  /// **'All digits are the same. Choose another PIN.'**
+  String get pinRepeated;
+
+  /// pinSequential
+  ///
+  /// In en, this message translates to:
+  /// **'The PIN is a sequence (123456). Choose another.'**
+  String get pinSequential;
+
+  /// pinTooCommon
+  ///
+  /// In en, this message translates to:
+  /// **'That PIN is very common. Choose another.'**
+  String get pinTooCommon;
+
+  /// confirmPinHelp
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the PIN again to confirm it.'**
+  String get confirmPinHelp;
+
+  /// backupReminderTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Back up your vault'**
+  String get backupReminderTitle;
+
+  /// backupReminderBody
+  ///
+  /// In en, this message translates to:
+  /// **'Your vault only lives on this device. Export an encrypted backup.'**
+  String get backupReminderBody;
+
+  /// emptyFavorites
+  ///
+  /// In en, this message translates to:
+  /// **'No favorites yet.'**
+  String get emptyFavorites;
+
+  /// emptyCategories
+  ///
+  /// In en, this message translates to:
+  /// **'No categories yet.'**
+  String get emptyCategories;
+
+  /// emptyHealth
+  ///
+  /// In en, this message translates to:
+  /// **'No passwords to check yet.'**
+  String get emptyHealth;
+
+  /// emptyAction
+  ///
+  /// In en, this message translates to:
+  /// **'Add the first one'**
+  String get emptyAction;
+
+  /// favoritesSection
+  ///
+  /// In en, this message translates to:
+  /// **'Favorites'**
+  String get favoritesSection;
+
+  /// allSection
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get allSection;
+
+  /// aboutLabel
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get aboutLabel;
+
+  /// aboutText
+  ///
+  /// In en, this message translates to:
+  /// **'Llavero — offline encrypted vault. Made for families.'**
+  String get aboutText;
+
+  /// biometricSettingLabel
+  ///
+  /// In en, this message translates to:
+  /// **'Biometric unlock'**
+  String get biometricSettingLabel;
+
+  /// securityLabel
+  ///
+  /// In en, this message translates to:
+  /// **'Security'**
+  String get securityLabel;
+
+  /// toolsLabel
+  ///
+  /// In en, this message translates to:
+  /// **'Tools'**
+  String get toolsLabel;
+
+  /// appearanceLabel
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get appearanceLabel;
+
+  /// templateNetflix
+  ///
+  /// In en, this message translates to:
+  /// **'Netflix'**
+  String get templateNetflix;
+
+  /// templateDisney
+  ///
+  /// In en, this message translates to:
+  /// **'Disney+'**
+  String get templateDisney;
+
+  /// templateSpotify
+  ///
+  /// In en, this message translates to:
+  /// **'Spotify'**
+  String get templateSpotify;
+
+  /// templateHbo
+  ///
+  /// In en, this message translates to:
+  /// **'HBO Max'**
+  String get templateHbo;
+
+  /// moveUp
+  ///
+  /// In en, this message translates to:
+  /// **'Move up'**
+  String get moveUp;
+
+  /// moveDown
+  ///
+  /// In en, this message translates to:
+  /// **'Move down'**
+  String get moveDown;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

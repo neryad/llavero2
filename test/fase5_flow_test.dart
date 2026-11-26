@@ -83,7 +83,6 @@ Future<void> main() async {
       await tester.pumpAndSettle();
       await tester.enterText(find.byType(TextField), '482913');
       await tester.pump();
-      await tester.tap(find.text('Desbloquear'));
       await tester.pumpAndSettle();
       expect(find.byType(HomeScreen), findsOneWidget);
 
@@ -96,8 +95,8 @@ Future<void> main() async {
       await tester.enterText(_field('Título'), 'Wi-Fi de casa');
       await tester.tap(find.text('Añadir campo'));
       await tester.pumpAndSettle();
-      await tester.enterText(_field('Etiqueta').last, 'Contraseña');
-      await tester.enterText(_field('Valor').last, 'secreto-unicornio');
+      await tester.enterText(_field('Etiqueta'), 'Contraseña');
+      await tester.enterText(_field('Valor'), 'secreto-unicornio');
       await tester.tap(find.text('Secreto'));
       await tester.pumpAndSettle();
       await tester.drag(

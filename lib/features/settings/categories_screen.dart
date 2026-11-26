@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import '../../core/app_scope.dart';
 import '../../controllers/categories_controller.dart';
 import '../../core/theme/category_colors.dart';
+import '../../core/theme/category_icons.dart';
+import '../../core/widgets/category_icon_badge.dart';
 import '../../core/widgets/app_scaffold.dart';
+import '../../core/widgets/empty_state.dart';
 import '../../data/models/vault_category.dart';
 import '../../l10n/generated/app_l10n.dart';
 import '../shared/category_name.dart';
@@ -22,6 +25,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     final controllers = AppScope.of(context);
     final nameController = TextEditingController(text: editing?.name ?? '');
     var colorId = editing?.colorId ?? CategoryIds.other;
+    var iconName = editing?.iconName;
 
     final saved = await showDialog<bool>(
       context: context,
@@ -67,6 +71,29 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   );
                 }).toList(),
               ),
+              const SizedBox(height: 16),
+              Text(l10n.categoryIconLabel),
+              const SizedBox(height: 8),
+              SizedBox(
+                height: 120,
+                child: SingleChildScrollView(
+                  child: Wrap(
+                    children: <Widget>[
+                      for (final icon in CategoryIcons.curated)
+                        IconButton(
+                          icon: Icon(icon),
+                          color: iconName == CategoryIcons.nameOf(icon)
+                              ? Theme.of(context).colorScheme.primary
+                              : null,
+                          tooltip: l10n.categoryIconLabel,
+                          onPressed: () => setDialogState(
+                            () => iconName = CategoryIcons.nameOf(icon),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
           actions: <Widget>[
@@ -88,10 +115,14 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     if (name.isEmpty) return;
 
     if (editing == null) {
-      await controllers.categories.add(name: name, colorId: colorId);
+      await controllers.categories.add(
+        name: name,
+        colorId: colorId,
+        iconName: iconName,
+      );
     } else {
       await controllers.categories.update(
-        editing.copyWith(name: name, colorId: colorId),
+        editing.copyWith(name: name, colorId: colorId, iconName: iconName),
       );
     }
   }
@@ -134,11 +165,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               const SizedBox(height: 8),
               for (final id in CategoriesController.defaultIds)
                 ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Theme.of(context)
-                        .extension<CategoryColors>()
-                        ?.colorOf(id),
-                  ),
+                  leading: CategoryIconBadge(categoryId: id),
                   title: Text(categoryDisplayName(id, l10n, categories)),
                 ),
               const Divider(height: 32),
@@ -148,20 +175,18 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               ),
               const SizedBox(height: 8),
               if (categories.custom.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Text(
-                    l10n.noCustomCategories,
-                    textAlign: TextAlign.center,
-                  ),
+                EmptyState(
+                  icon: Icons.category_outlined,
+                  message: l10n.noCustomCategories,
+                  actionLabel: l10n.newCategoryLabel,
+                  onAction: () => _showDialog(),
                 )
               else
                 for (final category in categories.custom)
                   ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: Theme.of(context)
-                          .extension<CategoryColors>()
-                          ?.colorOf(category.colorId),
+                    leading: CategoryIconBadge(
+                      categoryId: category.colorId,
+                      customIconName: category.iconName,
                     ),
                     title: Text(category.name),
                     trailing: Row(

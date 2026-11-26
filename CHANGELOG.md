@@ -5,6 +5,19 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
 ---
 
+## [FASE C] — 2026-11-26
+
+### Added
+- PIN con longitud 4/6/8, puntos exactos, auto-envío y sacudida al error.
+- Iconos Material por categoría y selector de 24 iconos para categorías propias.
+- Rejilla visual de categorías, chips de plantillas Streaming y reordenación.
+- Home con secciones, chips de filtro, banner de respaldo y estados vacíos.
+- Ajustes agrupados en Seguridad / Herramientas / Apariencia / Acerca de.
+- Selector de idioma en la bienvenida y botón a ancho completo.
+- Plus Jakarta Sans y JetBrains Mono aplicadas realmente; margen 24dp.
+
+---
+
 ## [FASE B] — 2026-11-26
 
 ### Fixed

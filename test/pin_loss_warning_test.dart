@@ -1,20 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:llavero2/controllers/entries_controller.dart';
+import 'package:llavero2/core/app_scope.dart';
+import 'package:llavero2/data/vault_file_system.dart';
+import 'package:llavero2/data/vault_storage.dart';
 import 'package:llavero2/l10n/generated/app_l10n.dart';
 import 'package:llavero2/features/onboarding/onboarding_screen.dart';
 import 'package:llavero2/features/onboarding/pin_create_screen.dart';
 
-Future<void> pumpWithLocale(WidgetTester tester, Widget child) async {
+Future<void> pumpWithLocale(
+  WidgetTester tester,
+  Widget child, {
+  Locale locale = const Locale('es'),
+}) async {
+  final controllers = AppControllers(
+    entries: EntriesController(
+      initialStorage: VaultStorage(
+        initialFileSystem: MemoryVaultFileSystem(),
+      ),
+    ),
+  );
   await tester.pumpWidget(
     MaterialApp(
       localizationsDelegates: L10n.localizationsDelegates,
       supportedLocales: L10n.supportedLocales,
-      locale: const Locale('es'),
-      home: Scaffold(body: child),
+      locale: locale,
+      home: AppScope(controllers: controllers, child: child),
     ),
   );
-  await tester.pump();
+  await tester.pumpAndSettle();
 }
 
 const warning =
@@ -38,15 +53,11 @@ void main() {
     });
 
     testWidgets('se traduce al inglés', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          localizationsDelegates: L10n.localizationsDelegates,
-          supportedLocales: L10n.supportedLocales,
-          locale: const Locale('en'),
-          home: const Scaffold(body: OnboardingScreen()),
-        ),
+      await pumpWithLocale(
+        tester,
+        const OnboardingScreen(),
+        locale: const Locale('en'),
       );
-      await tester.pump();
 
       expect(
         find.text(

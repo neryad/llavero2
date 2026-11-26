@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/app_scope.dart';
 import '../../core/security/password_health.dart';
 import '../../core/widgets/app_scaffold.dart';
+import '../../core/widgets/empty_state.dart';
 import '../../data/models/vault_entry.dart';
 import '../../l10n/generated/app_l10n.dart';
 import '../shared/category_name.dart';
@@ -37,12 +38,9 @@ class SecurityHealthScreen extends StatelessWidget {
                 ),
               ),
               if (report.total == 0)
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Text(
-                    l10n.noSecretsToCheck,
-                    textAlign: TextAlign.center,
-                  ),
+                EmptyState(
+                  icon: Icons.health_and_safety_outlined,
+                  message: l10n.noSecretsToCheck,
                 )
               else if (report.weak.isEmpty && report.reused.isEmpty)
                 Padding(

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../../core/platform/clipboard_service.dart';
 import '../../core/app_scope.dart';
 import '../../core/routes/app_routes.dart';
-import '../../core/theme/category_colors.dart';
+import '../../core/widgets/category_icon_badge.dart';
 import '../../core/widgets/app_scaffold.dart';
 import '../../core/security/secret_detector.dart';
 import '../shared/category_name.dart';
@@ -68,8 +68,7 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
           );
         }
 
-        final categories = Theme.of(context).extension<CategoryColors>();
-
+    
         return AppScaffold(
           appBar: AppBar(
             title: Text(entry.title),
@@ -95,10 +94,7 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
             padding: const EdgeInsets.all(16),
             children: <Widget>[
               ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: categories?.colorOf(entry.categoryId),
-                  child: const Icon(Icons.key_rounded, size: 20),
-                ),
+                leading: CategoryIconBadge(categoryId: entry.categoryId),
                 title: Text(
                   categoryDisplayName(
                     entry.categoryId,

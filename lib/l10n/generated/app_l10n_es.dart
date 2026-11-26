@@ -466,4 +466,94 @@ class L10nEs extends L10n {
   @override
   String get exportTempError =>
       'No se pudo preparar el archivo para compartir.';
+
+  @override
+  String get categoryIconLabel => 'Icono';
+
+  @override
+  String get pinLengthHelp =>
+      'Elige 4, 6 u 8 dígitos. Más dígitos, más seguridad.';
+
+  @override
+  String get pinTooShort => 'El PIN es demasiado corto.';
+
+  @override
+  String get pinTooLong => 'El PIN es demasiado largo.';
+
+  @override
+  String get pinNotDigits => 'El PIN solo puede tener dígitos.';
+
+  @override
+  String get pinRepeated => 'El PIN tiene todos los dígitos iguales.';
+
+  @override
+  String get pinSequential => 'El PIN es una secuencia (123456). Elige otro.';
+
+  @override
+  String get pinTooCommon => 'Ese PIN es muy común. Elige otro.';
+
+  @override
+  String get confirmPinHelp => 'Repite el PIN para confirmarlo.';
+
+  @override
+  String get backupReminderTitle => 'Haz una copia de seguridad';
+
+  @override
+  String get backupReminderBody =>
+      'Tu bóveda solo vive en este dispositivo. Exporta un respaldo cifrado.';
+
+  @override
+  String get emptyFavorites => 'Todavía no tienes favoritas.';
+
+  @override
+  String get emptyCategories => 'Todavía no tienes categorías.';
+
+  @override
+  String get emptyHealth => 'No hay contraseñas que revisar todavía.';
+
+  @override
+  String get emptyAction => 'Añadir la primera';
+
+  @override
+  String get favoritesSection => 'Favoritas';
+
+  @override
+  String get allSection => 'Todas';
+
+  @override
+  String get aboutLabel => 'Acerca de';
+
+  @override
+  String get aboutText =>
+      'Llavero — bóveda offline y cifrada. Hecho para familias.';
+
+  @override
+  String get biometricSettingLabel => 'Desbloqueo biométrico';
+
+  @override
+  String get securityLabel => 'Seguridad';
+
+  @override
+  String get toolsLabel => 'Herramientas';
+
+  @override
+  String get appearanceLabel => 'Apariencia';
+
+  @override
+  String get templateNetflix => 'Netflix';
+
+  @override
+  String get templateDisney => 'Disney+';
+
+  @override
+  String get templateSpotify => 'Spotify';
+
+  @override
+  String get templateHbo => 'HBO Max';
+
+  @override
+  String get moveUp => 'Subir';
+
+  @override
+  String get moveDown => 'Bajar';
 }

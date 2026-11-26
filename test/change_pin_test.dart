@@ -128,20 +128,26 @@ void main() {
           ),
         ),
       );
-      await tester.pump();
+      await tester.pumpAndSettle();
 
-      final fields = find.byType(TextField);
-      await tester.enterText(fields.at(0), '482913');
-      await tester.enterText(fields.at(1), '739264');
-      await tester.enterText(fields.at(2), '739264');
-      await tester.pump();
-      await tester.tap(find.text('Guardar'));
-      await tester.pump(const Duration(milliseconds: 200));
+      // Paso 1: PIN actual (auto-envío al completar 6 dígitos).
+      await tester.enterText(find.byType(TextField), '482913');
+      await tester.pumpAndSettle();
+      expect(find.text('Nuevo PIN'), findsOneWidget);
+
+      // Paso 2: PIN nuevo.
+      await tester.enterText(find.byType(TextField), '739264');
+      await tester.pumpAndSettle();
+      expect(find.text('Confirmar nuevo PIN'), findsOneWidget);
+
+      // Paso 3: confirmación.
+      await tester.enterText(find.byType(TextField), '739264');
+      await tester.pumpAndSettle();
 
       expect(service.changeCalls, 1);
       expect(service.correctPin, '739264');
       expect(controllers.settings.pinLength, 6);
-      expect(find.text('PIN cambiado correctamente.'), findsOneWidget);
+      expect(find.byType(ChangePinScreen), findsNothing);
     });
   });
 }
