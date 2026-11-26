@@ -46,7 +46,11 @@ este archivo y se hace commit.
   32 MiB → 168 ms, 16 MiB → 87 ms (todos <2 s), así que se mantiene 64 MiB por
   defecto. 4 tests nuevos + `tool/bench_kdf_device.dart`.
 
-- [ ] **6. Detección de root/jailbreak** conadvertencia opcional.
+- [x] **6. Detección de root/jailbreak.** ✅ Completada 2026-11-26 — canal
+  `llavero/device_integrity` con heurísticas en Kotlin (rutas `su`, build tags)
+  y Swift (Cydia, MobileSubstrate, sandbox roto). Aviso informativo en Ajustes,
+  en ES/EN. 3 tests nuevos y builds nativos verificados. Es solo una señal,
+  nunca una barrera.
 
 - [ ] **7. Ofuscación del binario** (`flutter build --obfuscate`).
 
@@ -101,9 +105,9 @@ este archivo y se hace commit.
 | Prioridad | Completadas | Totales |
 |---|---|---|
 | 1 | 4 | 4 |
-| 2 | 1 | 5 |
+| 2 | 2 | 5 |
 | 3 | 0 | 8 |
 | 4 | 0 | 3 |
-| **Total** | **5** | **20** |
+| **Total** | **6** | **20** |
 
-Última actualización: 2026-11-26 (mejoras #1 a #5 completadas).
+Última actualización: 2026-11-26 (mejoras #1 a #6 completadas).

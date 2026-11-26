@@ -312,4 +312,14 @@ class L10nEs extends L10n {
 
   @override
   String get biometricsNeedsUnlock => 'Disponible solo con la bóveda abierta.';
+
+  @override
+  String get deviceIntegrityLabel => 'Integridad del dispositivo';
+
+  @override
+  String get deviceOkStatus => 'Dispositivo íntegro';
+
+  @override
+  String get compromisedDeviceWarning =>
+      'Este dispositivo parece estar rooteado o jailbreakeado. Tus secretos pueden estar en riesgo.';
 }

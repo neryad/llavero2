@@ -690,6 +690,24 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Only available while the vault is unlocked.'**
   String get biometricsNeedsUnlock;
+
+  /// Label of the device integrity check in settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Device integrity'**
+  String get deviceIntegrityLabel;
+
+  /// Status shown when no root/jailbreak signals were found.
+  ///
+  /// In en, this message translates to:
+  /// **'Device intact'**
+  String get deviceOkStatus;
+
+  /// Warning shown when root or jailbreak signals are detected.
+  ///
+  /// In en, this message translates to:
+  /// **'This device appears to be rooted or jailbroken. Your secrets may be at risk.'**
+  String get compromisedDeviceWarning;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

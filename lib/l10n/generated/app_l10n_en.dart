@@ -312,4 +312,14 @@ class L10nEn extends L10n {
   @override
   String get biometricsNeedsUnlock =>
       'Only available while the vault is unlocked.';
+
+  @override
+  String get deviceIntegrityLabel => 'Device integrity';
+
+  @override
+  String get deviceOkStatus => 'Device intact';
+
+  @override
+  String get compromisedDeviceWarning =>
+      'This device appears to be rooted or jailbroken. Your secrets may be at risk.';
 }

@@ -8,6 +8,10 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- **Mejora #6 del plan de mejoras: detección de root/jailbreak.** Canal
+  `llavero/device_integrity` con heurísticas nativas y aviso informativo en
+  Ajustes (ES/EN). 3 tests nuevos; builds Android e iOS verificados.
+
 - **Mejora #5 del plan de mejoras: memoria de Argon2id configurable y medida.**
   `--dart-define=LLAVERO_KDF_MEMORY_KIB=32768` permite bajar a 32 MiB sin
   cambiar el formato. Benchmark real en emulador: 64 MiB → 766 ms, 32 MiB →

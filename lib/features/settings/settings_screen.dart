@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/app_scope.dart';
+import '../../core/platform/device_integrity.dart';
 import '../../core/platform/screen_security.dart';
 import '../../core/routes/app_routes.dart';
 import '../../core/widgets/app_scaffold.dart';
@@ -16,12 +17,18 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  DeviceIntegrity _integrity = DeviceIntegrity.intact;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     ScreenSecurity.setScreenshotsBlocked(
       AppScope.of(context).settings.blockScreenshots,
     );
+    DeviceIntegrityChecker.check().then((result) {
+      if (!mounted) return;
+      setState(() => _integrity = result);
+    });
   }
 
   void _setScreenshots(bool value) {
@@ -59,6 +66,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
               title: Text(
                 lock.hasPin ? l10n.vaultCreatedStatus : l10n.noVaultStatus,
               ),
+            ),
+            ListTile(
+              leading: Icon(
+                _integrity.isCompromised
+                    ? Icons.warning_amber_rounded
+                    : Icons.verified_user_outlined,
+                color: _integrity.isCompromised
+                    ? Theme.of(context).colorScheme.error
+                    : null,
+              ),
+              title: Text(
+                _integrity.isCompromised
+                    ? l10n.compromisedDeviceWarning
+                    : l10n.deviceOkStatus,
+              ),
+              subtitle: Text(l10n.deviceIntegrityLabel),
             ),
             ListTile(
               leading: const Icon(Icons.password_outlined),

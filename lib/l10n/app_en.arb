@@ -494,5 +494,20 @@
   "biometricsNeedsUnlock": "Only available while the vault is unlocked.",
   "@biometricsNeedsUnlock": {
     "description": "Explanation shown when the biometrics switch is disabled because the vault is locked."
+  },
+
+  "deviceIntegrityLabel": "Device integrity",
+  "@deviceIntegrityLabel": {
+    "description": "Label of the device integrity check in settings."
+  },
+
+  "deviceOkStatus": "Device intact",
+  "@deviceOkStatus": {
+    "description": "Status shown when no root/jailbreak signals were found."
+  },
+
+  "compromisedDeviceWarning": "This device appears to be rooted or jailbroken. Your secrets may be at risk.",
+  "@compromisedDeviceWarning": {
+    "description": "Warning shown when root or jailbreak signals are detected."
   }
 }

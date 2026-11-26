@@ -494,5 +494,20 @@
   "biometricsNeedsUnlock": "Disponible solo con la bóveda abierta.",
   "@biometricsNeedsUnlock": {
     "description": "Explanation shown when the biometrics switch is disabled because the vault is locked."
+  },
+
+  "deviceIntegrityLabel": "Integridad del dispositivo",
+  "@deviceIntegrityLabel": {
+    "description": "Label of the device integrity check in settings."
+  },
+
+  "deviceOkStatus": "Dispositivo íntegro",
+  "@deviceOkStatus": {
+    "description": "Status shown when no root/jailbreak signals were found."
+  },
+
+  "compromisedDeviceWarning": "Este dispositivo parece estar rooteado o jailbreakeado. Tus secretos pueden estar en riesgo.",
+  "@compromisedDeviceWarning": {
+    "description": "Warning shown when root or jailbreak signals are detected."
   }
 }
