@@ -10,6 +10,25 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
 ---
 
+## [Fase 8] — 2026-11-26
+
+### Added
+- **Animaciones accesibles**: `AnimatedEntryTile` con fundido y desplazamiento
+  escalonado, desactivado si el sistema pide reducir movimiento.
+- **Accesibilidad**: etiquetas semánticas en tarjetas y búsqueda, iconos
+  decorativos excluidos de semántica y tooltips en los botones icono.
+- **Revisión ES/EN**: test que verifica que ambos archivos `.arb` tienen las
+  mismas claves, textos no vacíos y sus metadatos.
+- **Tablets**: el listado usa una rejilla de dos columnas en pantallas anchas;
+  el contenido sigue limitado a 720dp.
+- **8 tests nuevos** (animación, tablets y localización).
+
+### Verification
+- `flutter analyze` → sin problemas.
+- `flutter test` → **139 pruebas, todas correctas**.
+
+---
+
 ## [Fase 7] — 2026-11-26
 
 ### Added

@@ -306,7 +306,7 @@ flutter test test/entries_controller_test.dart test/vault_storage_test.dart test
 | 5 | Inicio, CRUD de entradas, plantillas, generador de contraseñas, papelera | ✅ Hecho |
 | 6 | Exportar/importar (backup cifrado, CSV/JSON, PDF) | ✅ Hecho |
 | 7 | Ajustes, estado de seguridad, bloqueo automático, capturas bloqueadas | ✅ Hecho |
-| 8 | Animaciones, accesibilidad, iconos, revisión ES/EN, tablets | Pendiente |
+| 8 | Animaciones, accesibilidad, iconos, revisión ES/EN, tablets | ✅ Hecho |
 | 9 | README y lista honesta de limitaciones | Pendiente |
 
 ## Fase 4 — Completada ✅
@@ -428,6 +428,34 @@ test/settings_screen_test.dart                ← 4 tests
 ### Pruebas
 
 `flutter analyze` → sin problemas. `flutter test` → **131 pruebas, todas correctas**.
+
+---
+
+## Fase 8 — Completada ✅
+
+### Qué se construyó
+
+| Área | Detalle |
+|---|---|
+| **Animaciones** | `AnimatedEntryTile` (fundido + desplazamiento escalonado) que respeta `MediaQuery.disableAnimations`. |
+| **Accesibilidad** | Semántica en tarjetas y campos de búsqueda, iconos decorativos excluidos, tooltips en botones y estrella con etiqueta. |
+| **Iconos** | Uso consistente de Material Icons en todas las pantallas. |
+| **ES/EN** | Test que garantiza que ambos ARB tienen las mismas claves, textos no vacíos y metadatos `@`. |
+| **Tablets** | `LayoutBuilder` en Home: rejilla de dos columnas desde 600dp; el contenido sigue limitado a 720dp. |
+
+### Archivos creados/modificados
+
+```
+lib/core/widgets/animated_entry_tile.dart         ← animación accesible
+lib/features/home/home_screen.dart                ← Semantics + layout adaptable
+test/animated_entry_tile_test.dart                ← 2 tests
+test/tablet_layout_test.dart                      ← 3 tests
+test/l10n_completeness_test.dart                  ← 3 tests
+```
+
+### Pruebas
+
+`flutter analyze` → sin problemas. `flutter test` → **139 pruebas, todas correctas**.
 
 ---
 
