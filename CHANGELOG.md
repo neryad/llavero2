@@ -8,6 +8,10 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- **Mejora #12 del plan de mejoras: búsqueda en notas.** `search()` incluye el
+  texto de las notas sin buscar nunca en valores secretos ni en la papelera.
+  4 tests nuevos.
+
 - **Mejora #11 del plan de mejoras: purga automática de la papelera.** Al abrir
   la bóveda se eliminan las entradas caducadas (>30 días) y se persiste el
   cambio. 1 test nuevo.

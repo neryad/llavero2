@@ -81,7 +81,9 @@ este archivo y se hace commit.
   2026-11-26 — `EntriesController.open()` carga y llama a `purgeExpiredTrash()`;
   `AppControllers` lo usa al desbloquear. Tests nuevos.
 
-- [ ] **12. Búsqueda en notas** (sin incluir secretos).
+- [x] **12. Búsqueda en notas** (sin incluir secretos). ✅ Completada
+  2026-11-26 — `search()` incluye las notas; se mantiene la regla de no buscar
+  en valores secretos ni en la papelera. 4 tests nuevos.
 
 - [ ] **13. Categorías personalizadas** (los IDs ya son cadenas).
 
@@ -118,8 +120,8 @@ este archivo y se hace commit.
 |---|---|---|
 | 1 | 4 | 4 |
 | 2 | 3 | 5 |
-| 3 | 3 | 8 |
+| 3 | 4 | 8 |
 | 4 | 0 | 3 |
-| **Total** | **10** | **20** |
+| **Total** | **11** | **20** |
 
-Última actualización: 2026-11-26 (mejoras #1–#9 y #11 completadas; #10 diferida).
+Última actualización: 2026-11-26 (11 completadas, 1 diferida).

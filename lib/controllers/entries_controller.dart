@@ -305,7 +305,10 @@ class EntriesController extends ChangeNotifier {
     await _saveToStorage();
   }
 
-  /// Buscar entradas por término (título, persona o etiqueta de campo).
+  /// Buscar entradas por término (título, persona, etiqueta de campo o notas).
+  ///
+  /// **Nunca** busca en el valor de un campo secreto: la búsqueda no debe
+  /// convertirse en una puerta trasera para leer secretos.
   List<VaultEntry> search(String term) {
     final active = entries;
     if (term.trim().isEmpty) return active;
@@ -323,6 +326,12 @@ class EntriesController extends ChangeNotifier {
       // Buscar en persona.
       if (entry.person != null &&
           entry.person!.toLowerCase().contains(lowerTerm)) {
+        results.add(entry);
+        continue;
+      }
+
+      // Buscar en notas (nunca secretas, son texto libre del usuario).
+      if (entry.notes.toLowerCase().contains(lowerTerm)) {
         results.add(entry);
         continue;
       }
