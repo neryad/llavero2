@@ -246,21 +246,6 @@ class L10nEn extends L10n {
   String get securityStatusLabel => 'Security status';
 
   @override
-  String get vaultCreatedStatus => 'Vault created';
-
-  @override
-  String get noVaultStatus => 'No vault';
-
-  @override
-  String get biometricsStatusOn => 'Biometrics enabled';
-
-  @override
-  String get biometricsStatusOff => 'Biometrics disabled';
-
-  @override
-  String get failedAttemptsLabel => 'Failed attempts';
-
-  @override
   String get pinLengthSettingLabel => 'PIN length';
 
   @override
@@ -312,16 +297,6 @@ class L10nEn extends L10n {
   @override
   String get biometricsNeedsUnlock =>
       'Only available while the vault is unlocked.';
-
-  @override
-  String get deviceIntegrityLabel => 'Device integrity';
-
-  @override
-  String get deviceOkStatus => 'Device intact';
-
-  @override
-  String get compromisedDeviceWarning =>
-      'This device appears to be rooted or jailbroken. Your secrets may be at risk.';
 
   @override
   String get screenshotsIosNote =>
@@ -407,18 +382,6 @@ class L10nEn extends L10n {
   String get allGood => 'All good: no warnings.';
 
   @override
-  String get historyLabel => 'Vault history';
-
-  @override
-  String get historyEmpty => 'No saved versions yet.';
-
-  @override
-  String get restoreVersionLabel => 'Restore this version';
-
-  @override
-  String get versionRestored => 'Version restored.';
-
-  @override
   String get biometricsNotSupported =>
       'Biometrics is only available on mobile.';
 
@@ -440,12 +403,64 @@ class L10nEn extends L10n {
   }
 
   @override
-  String get historyHint =>
-      'A copy is saved before each change. Make a change to an entry to see the first version.';
-
-  @override
   String get defaultCategoriesLabel => 'Default categories';
 
   @override
   String get customCategoriesLabel => 'Your categories';
+
+  @override
+  String get vaultCorruptedMessage =>
+      'Could not read the vault. It may be damaged. Import a backup to recover your data.';
+
+  @override
+  String get reauthTitle => 'Confirm your identity';
+
+  @override
+  String get reauthPinLabel => 'PIN';
+
+  @override
+  String get reauthBiometricLabel => 'Use biometrics';
+
+  @override
+  String get reauthFailed => 'Could not confirm.';
+
+  @override
+  String get importModeTitle => 'How do you want to import?';
+
+  @override
+  String get mergeLabel => 'Merge';
+
+  @override
+  String get replaceLabel => 'Replace everything';
+
+  @override
+  String get importConfirm => 'This may overwrite your current data.';
+
+  @override
+  String get titleRequired => 'Enter a title.';
+
+  @override
+  String get fieldsRequired => 'Add at least one field.';
+
+  @override
+  String get unsavedChangesTitle => 'Discard changes?';
+
+  @override
+  String get unsavedChangesMessage => 'You have unsaved changes.';
+
+  @override
+  String get discardLabel => 'Discard';
+
+  @override
+  String get invalidBackupFile => 'The backup file is invalid or damaged.';
+
+  @override
+  String get invalidBackupPassword => 'The backup password is incorrect.';
+
+  @override
+  String get unsupportedBackupVersion =>
+      'The backup was created with a newer version.';
+
+  @override
+  String get exportTempError => 'Could not prepare the file to share.';
 }

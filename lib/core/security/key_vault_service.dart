@@ -84,14 +84,38 @@ class SecureStoreVaultKeyService implements VaultKeyService {
     // 3. Envolvemos la DEK con la KEK y guardamos solo lo envuelto.
     final wrappedDek = await _crypto.wrapDek(dek, kek);
 
-    await _store.write(
-      SecureStoreKeys.kdfParameters,
-      jsonEncode(params.toJson()),
-    );
-    await _store.write(
-      SecureStoreKeys.wrappedDek,
-      base64Encode(wrappedDek),
-    );
+    await _writeKeyEnvelope(params, wrappedDek);
+  }
+
+  /// Escribe parámetros + DEK envuelta de forma atómica.
+  ///
+  /// 1. Escribe las dos claves temporales.
+  /// 2. Solo si ambas funcionaron, copia a las claves definitivas.
+  /// 3. Borra las temporales.
+  /// Si falla cualquier paso intermedio, las claves definitivas siguen
+  /// intactas y la bóveda se puede abrir con el PIN anterior.
+  Future<void> _writeKeyEnvelope(
+    KdfParameters params,
+    List<int> wrappedDek,
+  ) async {
+    final paramsJson = jsonEncode(params.toJson());
+    final wrappedBase64 = base64Encode(wrappedDek);
+
+    await _store.write(SecureStoreKeys.kdfParametersTemp, paramsJson);
+    await _store.write(SecureStoreKeys.wrappedDekTemp, wrappedBase64);
+
+    // Intercambio: solo se tocan las definitivas cuando las dos temporales
+    // se escribieron bien.
+    final tempParams = await _store.read(SecureStoreKeys.kdfParametersTemp);
+    final tempWrapped = await _store.read(SecureStoreKeys.wrappedDekTemp);
+    if (tempParams == null || tempWrapped == null) {
+      throw const CryptoFailure('No se pudo guardar la clave de la bóveda.');
+    }
+    await _store.write(SecureStoreKeys.kdfParameters, tempParams);
+    await _store.write(SecureStoreKeys.wrappedDek, tempWrapped);
+
+    await _store.delete(SecureStoreKeys.kdfParametersTemp);
+    await _store.delete(SecureStoreKeys.wrappedDekTemp);
   }
 
   @override
@@ -130,16 +154,8 @@ class SecureStoreVaultKeyService implements VaultKeyService {
     final newKek = await newParams.deriveKey(newPin);
     final newWrapped = await _crypto.wrapDek(dek, newKek);
 
-    // 3. Guardar los parámetros y la DEK envuelta. Se escriben los dos juntos
-    //    porque cualquier combinación mixta dejaría la bóveda inabierta.
-    await _store.write(
-      SecureStoreKeys.kdfParameters,
-      jsonEncode(newParams.toJson()),
-    );
-    await _store.write(
-      SecureStoreKeys.wrappedDek,
-      base64Encode(newWrapped),
-    );
+    // 3. Intercambio atómico: si falla algo, el PIN anterior sigue vigente.
+    await _writeKeyEnvelope(newParams, newWrapped);
   }
 
   @override

@@ -459,6 +459,41 @@ test/l10n_completeness_test.dart                  ← 3 tests
 
 ---
 
+## FASE B — Critical y Bug corregidos ✅
+
+Todos los ítems Critical (C1–C7) y Bug (B1–B12) de `AUDIT.md` están arreglados
+y cubiertos por tests (`test/phase_b_security_test.dart` y
+`test/phase_b_data_test.dart`). Cambios principales: exclusión iCloud llamada
+siempre, portapapeles con temporizador, re-auth para exportar, bloqueo
+monótono, cambio de PIN atómico, detector de secretos compartido, IDs UUID,
+persistencia de ajustes, validaciones y merge/replace en importación.
+
+Se eliminaron las funciones no solicitadas: integridad del dispositivo,
+historial de bóveda y las filas «Bóveda creada» / «Intentos fallidos»,
+junto con sus pantallas, canales nativos y textos.
+
+Builds Android e iOS compilan. `flutter analyze` limpio; **202 pruebas**.
+Siguiente: FASE C (diseño) y FASE D (limpieza final).
+
+---
+
+## Auditoría — FASE A (solo lectura) ✅
+
+Se escribió `AUDIT.md` sin cambiar código. Hallazgos: **7 Critical**,
+**12 Bug**, **11 UX**, **5 Cleanup**. Los más graves: la exclusión de iCloud en
+iOS está implementada pero nunca se llama; el portapapeles no se limpia; no
+hay re-auth antes de exportar; el bloqueo se salta cambiando la hora del
+dispositivo; el cambio de PIN no es atómico; la exportación «sin secretos»
+puede dejar campos secretos en claro; y `duplicate()` genera IDs repetidos.
+
+Base verificada: `flutter analyze` → sin problemas; `flutter test` → **191
+pruebas, todas correctas**. La maqueta `design/llavero-maqueta.html` no existe
+en el repositorio.
+
+Siguiente: FASE B (corregir Critical + Bug).
+
+---
+
 ## Decisiones y notas
 
 - **Idioma por defecto**: si el móvil está en un idioma que no es es/en, se

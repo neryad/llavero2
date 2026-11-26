@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 
 import '../app_scope.dart';
+import '../platform/clipboard_service.dart';
 import '../../controllers/settings_controller.dart';
 
 /// Bloquea la bóveda automáticamente cuando la app pasa a segundo plano.
@@ -37,7 +38,7 @@ class _AppLifecycleLockState extends State<AppLifecycleLock>
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
     final controllers = AppScope.of(context);
     final delay = controllers.settings.autoLockDelay;
 
@@ -54,8 +55,13 @@ class _AppLifecycleLockState extends State<AppLifecycleLock>
 
     if (delay == AutoLockDelay.immediately) {
       controllers.lock.lock();
+      // Best effort: limpiar el portapapeles al salir a segundo plano.
+      await ClipboardService.instance.onBackground();
       return;
     }
+
+    // Best effort en retardos: limpiar el portapapeles al salir.
+    await ClipboardService.instance.onBackground();
 
     _timer?.cancel();
     _timer = Timer(delay.duration, () {

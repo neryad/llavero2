@@ -43,8 +43,6 @@ void main() {
 
       expect(find.text('Ajustes'), findsOneWidget);
       expect(find.text('Estado de seguridad'), findsOneWidget);
-      expect(find.text('Sin bóveda'), findsOneWidget);
-      expect(find.text('Integridad del dispositivo'), findsOneWidget);
       expect(find.text('Categorías'), findsOneWidget);
 
       await tester.drag(find.byType(ListView), const Offset(0, -900));

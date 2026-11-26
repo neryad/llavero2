@@ -559,36 +559,6 @@ abstract class L10n {
   /// **'Security status'**
   String get securityStatusLabel;
 
-  /// Status shown when the vault exists.
-  ///
-  /// In en, this message translates to:
-  /// **'Vault created'**
-  String get vaultCreatedStatus;
-
-  /// Status shown when there is no vault yet.
-  ///
-  /// In en, this message translates to:
-  /// **'No vault'**
-  String get noVaultStatus;
-
-  /// Status shown when biometrics is enabled.
-  ///
-  /// In en, this message translates to:
-  /// **'Biometrics enabled'**
-  String get biometricsStatusOn;
-
-  /// Status shown when biometrics is disabled.
-  ///
-  /// In en, this message translates to:
-  /// **'Biometrics disabled'**
-  String get biometricsStatusOff;
-
-  /// Label of the failed PIN attempts counter.
-  ///
-  /// In en, this message translates to:
-  /// **'Failed attempts'**
-  String get failedAttemptsLabel;
-
   /// Setting that controls how many digits the PIN has.
   ///
   /// In en, this message translates to:
@@ -690,24 +660,6 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Only available while the vault is unlocked.'**
   String get biometricsNeedsUnlock;
-
-  /// Label of the device integrity check in settings.
-  ///
-  /// In en, this message translates to:
-  /// **'Device integrity'**
-  String get deviceIntegrityLabel;
-
-  /// Status shown when no root/jailbreak signals were found.
-  ///
-  /// In en, this message translates to:
-  /// **'Device intact'**
-  String get deviceOkStatus;
-
-  /// Warning shown when root or jailbreak signals are detected.
-  ///
-  /// In en, this message translates to:
-  /// **'This device appears to be rooted or jailbroken. Your secrets may be at risk.'**
-  String get compromisedDeviceWarning;
 
   /// Note shown on iOS explaining that screenshot blocking is an overlay, not a system block.
   ///
@@ -865,30 +817,6 @@ abstract class L10n {
   /// **'All good: no warnings.'**
   String get allGood;
 
-  /// Title of the vault history screen.
-  ///
-  /// In en, this message translates to:
-  /// **'Vault history'**
-  String get historyLabel;
-
-  /// Message shown when the vault history is empty.
-  ///
-  /// In en, this message translates to:
-  /// **'No saved versions yet.'**
-  String get historyEmpty;
-
-  /// Button that restores an older version of the vault.
-  ///
-  /// In en, this message translates to:
-  /// **'Restore this version'**
-  String get restoreVersionLabel;
-
-  /// Message shown after restoring a vault version.
-  ///
-  /// In en, this message translates to:
-  /// **'Version restored.'**
-  String get versionRestored;
-
   /// Explanation shown when biometrics is unavailable on this platform.
   ///
   /// In en, this message translates to:
@@ -919,12 +847,6 @@ abstract class L10n {
   /// **'{count} passwords checked, no warnings.'**
   String healthAllGood(Object count);
 
-  /// Hint shown when the vault history is empty.
-  ///
-  /// In en, this message translates to:
-  /// **'A copy is saved before each change. Make a change to an entry to see the first version.'**
-  String get historyHint;
-
   /// Section title for the built-in read-only categories.
   ///
   /// In en, this message translates to:
@@ -936,6 +858,114 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Your categories'**
   String get customCategoriesLabel;
+
+  /// vaultCorruptedMessage
+  ///
+  /// In en, this message translates to:
+  /// **'Could not read the vault. It may be damaged. Import a backup to recover your data.'**
+  String get vaultCorruptedMessage;
+
+  /// reauthTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm your identity'**
+  String get reauthTitle;
+
+  /// reauthPinLabel
+  ///
+  /// In en, this message translates to:
+  /// **'PIN'**
+  String get reauthPinLabel;
+
+  /// reauthBiometricLabel
+  ///
+  /// In en, this message translates to:
+  /// **'Use biometrics'**
+  String get reauthBiometricLabel;
+
+  /// reauthFailed
+  ///
+  /// In en, this message translates to:
+  /// **'Could not confirm.'**
+  String get reauthFailed;
+
+  /// importModeTitle
+  ///
+  /// In en, this message translates to:
+  /// **'How do you want to import?'**
+  String get importModeTitle;
+
+  /// mergeLabel
+  ///
+  /// In en, this message translates to:
+  /// **'Merge'**
+  String get mergeLabel;
+
+  /// replaceLabel
+  ///
+  /// In en, this message translates to:
+  /// **'Replace everything'**
+  String get replaceLabel;
+
+  /// importConfirm
+  ///
+  /// In en, this message translates to:
+  /// **'This may overwrite your current data.'**
+  String get importConfirm;
+
+  /// titleRequired
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a title.'**
+  String get titleRequired;
+
+  /// fieldsRequired
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least one field.'**
+  String get fieldsRequired;
+
+  /// unsavedChangesTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Discard changes?'**
+  String get unsavedChangesTitle;
+
+  /// unsavedChangesMessage
+  ///
+  /// In en, this message translates to:
+  /// **'You have unsaved changes.'**
+  String get unsavedChangesMessage;
+
+  /// discardLabel
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get discardLabel;
+
+  /// invalidBackupFile
+  ///
+  /// In en, this message translates to:
+  /// **'The backup file is invalid or damaged.'**
+  String get invalidBackupFile;
+
+  /// invalidBackupPassword
+  ///
+  /// In en, this message translates to:
+  /// **'The backup password is incorrect.'**
+  String get invalidBackupPassword;
+
+  /// unsupportedBackupVersion
+  ///
+  /// In en, this message translates to:
+  /// **'The backup was created with a newer version.'**
+  String get unsupportedBackupVersion;
+
+  /// exportTempError
+  ///
+  /// In en, this message translates to:
+  /// **'Could not prepare the file to share.'**
+  String get exportTempError;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

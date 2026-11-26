@@ -14,50 +14,6 @@ import UIKit
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
     registerSecureFileChannel(with: engineBridge.pluginRegistry)
     registerScreenSecurityChannel(with: engineBridge.pluginRegistry)
-    registerDeviceIntegrityChannel(with: engineBridge.pluginRegistry)
-  }
-
-  /// Señales informativas de jailbreak. Un atacante puede ocultarlas,
-  /// así que solo sirve para avisar al usuario, nunca como barrera.
-  private func registerDeviceIntegrityChannel(with registry: FlutterPluginRegistry) {
-    guard let registrar = registry.registrar(forPlugin: "LlaveroDeviceIntegrity") else {
-      return
-    }
-    let channel = FlutterMethodChannel(
-      name: "llavero/device_integrity",
-      binaryMessenger: registrar.messenger()
-    )
-    channel.setMethodCallHandler { call, result in
-      switch call.method {
-      case "isCompromised":
-        result(Self.isJailbroken())
-      default:
-        result(FlutterMethodNotImplemented)
-      }
-    }
-  }
-
-  private static func isJailbroken() -> Bool {
-    let suspiciousPaths = [
-      "/Applications/Cydia.app",
-      "/Library/MobileSubstrate/MobileSubstrate.dylib",
-      "/bin/bash",
-      "/usr/sbin/sshd",
-      "/etc/apt",
-      "/private/var/lib/apt/"
-    ]
-    for path in suspiciousPaths where FileManager.default.fileExists(atPath: path) {
-      return true
-    }
-    // Si la app puede escribir fuera de su sandbox, el sandbox está roto.
-    let probe = "/private/llavero_jb_probe_\(UUID().uuidString)"
-    do {
-      try "probe".write(toFile: probe, atomically: true, encoding: .utf8)
-      try FileManager.default.removeItem(atPath: probe)
-      return true
-    } catch {
-      return false
-    }
   }
 
   /// Canal nativo que oculta la interfaz cuando se detecta una captura o una
@@ -175,6 +131,8 @@ import UIKit
         }
         do {
           try Self.excludeFromBackup(path: path)
+          // No es un secreto: solo la ruta. Sirve para verificar en consola.
+          print("Llavero: vault excluida de iCloud -> \(path)")
           result(nil)
         } catch {
           result(

@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:cryptography/cryptography.dart';
 
+import '../core/platform/backup_exclusion.dart';
 import '../core/security/crypto/crypto_errors.dart';
 import '../core/security/crypto/vault_crypto.dart';
 import '../data/models/vault_document.dart';
 import '../data/vault_file_system.dart';
-import '../data/vault_history.dart';
 
 /// Almacena y gestiona el archivo cifrado de la bóveda.
 ///
@@ -15,13 +15,8 @@ import '../data/vault_history.dart';
 /// - El contenido cifrado en base64.
 abstract class VaultStorage {
   /// Crea un nuevo almacenamiento de bóveda.
-  factory VaultStorage({
-    required VaultFileSystem initialFileSystem,
-    VaultHistory? history,
-  }) = _VaultStorage;
-
-  /// Historial de versiones (null si no se usa, por ejemplo en tests).
-  VaultHistory? get history;
+  factory VaultStorage({required VaultFileSystem initialFileSystem}) =
+      _VaultStorage;
 
   /// El sistema de archivos usado (permite inyectar uno en memoria para tests).
   VaultFileSystem get fileSystem;
@@ -40,20 +35,17 @@ abstract class VaultStorage {
 
   /// Borra el archivo de la bóveda.
   Future<void> delete();
+
+  /// Pide al sistema que el archivo no se copie a la nube (iOS).
+  Future<void> excludeFromBackup();
 }
 
 /// Implementación real sobre [VaultFileSystem].
 class _VaultStorage implements VaultStorage {
-  _VaultStorage({
-    required VaultFileSystem initialFileSystem,
-    this._history,
-  })  : _fileSystem = initialFileSystem;
+  _VaultStorage({required VaultFileSystem initialFileSystem})
+      : _fileSystem = initialFileSystem;
 
   final VaultFileSystem _fileSystem;
-  final VaultHistory? _history;
-
-  @override
-  VaultHistory? get history => _history;
 
   @override
   VaultFileSystem get fileSystem => _fileSystem;
@@ -66,8 +58,6 @@ class _VaultStorage implements VaultStorage {
   @override
   Future<void> save(VaultDocument document, SecretKey key) async {
     final path = await _fileSystem.resolveVaultPath();
-    // Antes de sobrescribir, guardamos la versión buena como histórico.
-    await _history?.snapshot();
     final plainJson = utf8.encode(jsonEncode(document.toJson()));
     final blob = await _crypto.encryptVault(plainJson, key);
     final envelope = <String, Object?>{
@@ -76,7 +66,10 @@ class _VaultStorage implements VaultStorage {
       'createdAt': DateTime.now().toUtc().toIso8601String(),
       'payload': base64Encode(blob),
     };
-    await _fileSystem.writeAtomic(path, utf8.encode(jsonEncode(envelope)));
+    final bytes = utf8.encode(jsonEncode(envelope));
+    await _fileSystem.writeAtomic(path, bytes);
+    // iOS: excluir de iCloud siempre tras crear/sobrescribir/restaurar.
+    await BackupExclusion.excludeFromBackup(path);
   }
 
   @override
@@ -134,5 +127,10 @@ class _VaultStorage implements VaultStorage {
   @override
   Future<void> delete() async {
     await _fileSystem.deleteVault();
+  }
+
+  @override
+  Future<void> excludeFromBackup() async {
+    await BackupExclusion.excludeFromBackup(await _fileSystem.resolveVaultPath());
   }
 }

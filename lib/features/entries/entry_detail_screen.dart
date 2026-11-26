@@ -1,10 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'dart:async';
 
+import 'package:flutter/material.dart';
+
+import '../../core/platform/clipboard_service.dart';
 import '../../core/app_scope.dart';
 import '../../core/routes/app_routes.dart';
 import '../../core/theme/category_colors.dart';
 import '../../core/widgets/app_scaffold.dart';
+import '../../core/security/secret_detector.dart';
 import '../shared/category_name.dart';
 import '../../data/models/entry_field.dart';
 import '../../l10n/generated/app_l10n.dart';
@@ -21,16 +24,30 @@ class EntryDetailScreen extends StatefulWidget {
 }
 
 class _EntryDetailScreenState extends State<EntryDetailScreen> {
-  final Set<String> _revealed = <String>{};
+  final Set<int> _revealed = <int>{};
+  final ClipboardService _clipboard = ClipboardService.instance;
+  Timer? _revealTimer;
 
-  void _toggleReveal(String label) {
+  void _toggleReveal(int index) {
     setState(() {
-      if (_revealed.contains(label)) {
-        _revealed.remove(label);
+      if (_revealed.contains(index)) {
+        _revealed.remove(index);
       } else {
-        _revealed.add(label);
+        _revealed.add(index);
       }
     });
+    _revealTimer?.cancel();
+    _revealTimer = Timer(const Duration(seconds: 30), () {
+      if (!mounted) return;
+      setState(() => _revealed.clear());
+    });
+  }
+
+  @override
+  void dispose() {
+    _revealTimer?.cancel();
+    _clipboard.dispose();
+    super.dispose();
   }
 
   @override
@@ -97,11 +114,14 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
               for (final field in entry.fields)
                 _FieldRow(
                   field: field,
-                  revealed: _revealed.contains(field.label),
-                  onToggle: () => _toggleReveal(field.label),
-                  onCopy: () {
-                    Clipboard.setData(ClipboardData(text: field.value));
-                  },
+                  revealed: _revealed.contains(entry.fields.indexOf(field)),
+                  onToggle: () => _toggleReveal(entry.fields.indexOf(field)),
+                  onCopy: () => _clipboard.copySecret(
+                    field.value,
+                    Duration(
+                      seconds: AppScope.of(context).settings.clipboardTimeoutSeconds,
+                    ),
+                  ),
                 ),
               if (entry.notes.isNotEmpty) ...[
                 const SizedBox(height: 16),
@@ -169,13 +189,15 @@ class _FieldRow extends StatelessWidget {
                   Text(field.label, style: Theme.of(context).textTheme.labelLarge),
                   const SizedBox(height: 4),
                   Text(
-                    field.isSecret && !revealed ? '••••••••' : field.value,
+                    SecretDetector.isSecret(field) && !revealed
+                        ? '••••••••'
+                        : field.value,
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ],
               ),
             ),
-            if (field.isSecret)
+            if (SecretDetector.isSecret(field))
               IconButton(
                 icon: Icon(revealed ? Icons.visibility_off : Icons.visibility),
                 tooltip: revealed ? l10n.hideLabel : l10n.revealLabel,

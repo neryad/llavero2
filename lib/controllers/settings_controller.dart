@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import 'settings_store.dart';
+
 /// Tema que elige el usuario.
 ///
 /// Lo guardamos como enum propio (y no como `ThemeMode` de Material) para que
@@ -69,6 +71,7 @@ class SettingsController extends ChangeNotifier {
     bool initialBlockScreenshots = true,
     int initialClipboardTimeoutSeconds = 30,
     int initialPinLength = 6,
+    this._store,
   })  : _themeMode = initialThemeMode,
         _language = initialLanguage,
         _autoLockDelay = initialAutoLockDelay,
@@ -76,6 +79,7 @@ class SettingsController extends ChangeNotifier {
         _clipboardTimeoutSeconds = initialClipboardTimeoutSeconds,
         _pinLength = initialPinLength;
 
+  final SettingsStore? _store;
   AppThemeMode _themeMode;
   AppLanguage _language;
   AutoLockDelay _autoLockDelay;
@@ -101,39 +105,80 @@ class SettingsController extends ChangeNotifier {
   /// Número de dígitos del PIN (4 a 8).
   int get pinLength => _pinLength;
 
+  /// Carga los ajustes guardados (llamado al arrancar).
+  Future<void> initialize() async {
+    final values = await _store?.load();
+    if (values == null) return;
+    _themeMode = _read(values['themeMode'], AppThemeMode.values, _themeMode);
+    _language = _read(values['language'], AppLanguage.values, _language);
+    _autoLockDelay = _read(
+      values['autoLockDelay'],
+      AutoLockDelay.values,
+      _autoLockDelay,
+    );
+    _blockScreenshots = values['blockScreenshots'] as bool? ?? _blockScreenshots;
+    _clipboardTimeoutSeconds =
+        values['clipboardTimeoutSeconds'] as int? ?? _clipboardTimeoutSeconds;
+    _pinLength = values['pinLength'] as int? ?? _pinLength;
+    notifyListeners();
+  }
+
+  static T _read<T>(Object? value, List<T> values, T fallback) {
+    final index = value as int?;
+    if (index == null || index < 0 || index >= values.length) return fallback;
+    return values[index];
+  }
+
+  Future<void> _persist() async {
+    await _store?.save(<String, Object?>{
+      'themeMode': _themeMode.index,
+      'language': _language.index,
+      'autoLockDelay': _autoLockDelay.index,
+      'blockScreenshots': _blockScreenshots,
+      'clipboardTimeoutSeconds': _clipboardTimeoutSeconds,
+      'pinLength': _pinLength,
+    });
+  }
+
   void setThemeMode(AppThemeMode value) {
     if (_themeMode == value) return;
     _themeMode = value;
+    _persist();
     notifyListeners();
   }
 
   void setLanguage(AppLanguage value) {
     if (_language == value) return;
     _language = value;
+    _persist();
     notifyListeners();
   }
 
   void setAutoLockDelay(AutoLockDelay value) {
     if (_autoLockDelay == value) return;
     _autoLockDelay = value;
+    _persist();
     notifyListeners();
   }
 
   void setBlockScreenshots(bool value) {
     if (_blockScreenshots == value) return;
     _blockScreenshots = value;
+    _persist();
     notifyListeners();
   }
 
   void setClipboardTimeoutSeconds(int value) {
     if (_clipboardTimeoutSeconds == value) return;
     _clipboardTimeoutSeconds = value;
+    _persist();
     notifyListeners();
   }
 
   void setPinLength(int value) {
     if (_pinLength == value) return;
     _pinLength = value;
+    _persist();
     notifyListeners();
   }
 }

@@ -73,6 +73,8 @@ void main() {
       await tester.pumpAndSettle();
 
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
       await tester.pumpAndSettle();
 
       expect(controllers.lock.isLocked, isTrue);

@@ -104,6 +104,11 @@ class VaultEntry {
 
   /// Lee una entrada desde JSON.
   factory VaultEntry.fromJson(Map<String, Object?> json) {
+    final id = json['id'] as String?;
+    final title = json['title'] as String?;
+    if (id == null || id.isEmpty || title == null || title.isEmpty) {
+      throw const FormatException('Entrada sin id o título.');
+    }
     final rawFields = json['fields'] as List<Object?>? ?? const <Object?>[];
     return VaultEntry(
       id: json['id'] as String? ?? '',

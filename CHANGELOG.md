@@ -5,6 +5,21 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
 ---
 
+## [FASE B] — 2026-11-26
+
+### Fixed
+- Critical C1–C7 y Bug B1–B12 de `AUDIT.md`, con tests por cada ítem.
+- Exclusión iCloud al crear/sobrescribir/restaurar; portapapeles con temporizador.
+- Re-auth antes de exportar y al desactivar biometría; bloqueo monótono.
+- Cambio de PIN atómico con test de fallo intermedio.
+- Export claro oculta secretos por tipo/etiqueta; IDs UUID al duplicar.
+- Ajustes persistidos; merge/replace al importar; temporales borrados siempre.
+
+### Removed
+- Integridad del dispositivo, historial de bóveda y filas de estado en Ajustes.
+
+---
+
 ## [Unreleased]
 
 ### Added

@@ -98,6 +98,10 @@ abstract final class SecureStoreKeys {
   /// Parámetros del KDF usados para envolver la DEK (JSON).
   static const String kdfParameters = 'llavero.kdf_params';
 
+  /// Copias temporales para el cambio atómico de PIN.
+  static const String kdfParametersTemp = 'llavero.kdf_params.tmp';
+  static const String wrappedDekTemp = 'llavero.wrapped_dek.tmp';
+
   /// Copia de la DEK protegida con biometría (opcional).
   static const String biometricDek = 'llavero.biometric_dek';
 

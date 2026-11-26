@@ -5,7 +5,6 @@ import '../data/models/entry_field.dart';
 import '../data/models/vault_entry.dart';
 import '../data/models/vault_document.dart';
 import '../data/vault_storage.dart';
-import '../data/vault_history.dart';
 
 /// Controlador que gestiona las entradas de la bóveda.
 ///
@@ -75,6 +74,20 @@ class EntriesController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Fusiona entradas importadas por ID: las del respaldo mandan en conflictos.
+  Future<void> merge(VaultDocument document) async {
+    if (!_isOpen) throw StateError('La bóveda está cerrada.');
+    for (final incoming in document.entries) {
+      final index = _entries.indexWhere((e) => e.id == incoming.id);
+      if (index == -1) {
+        _entries.add(incoming);
+      } else {
+        _entries[index] = incoming;
+      }
+    }
+    await _saveToStorage();
+  }
+
   /// Reemplaza todas las entradas por las de un documento importado.
   Future<void> replaceAll(VaultDocument document) async {
     if (!_isOpen) {
@@ -85,9 +98,6 @@ class EntriesController extends ChangeNotifier {
       ..addAll(document.entries);
     await _saveToStorage();
   }
-
-  /// Historial de versiones del archivo (puede ser null en tests).
-  VaultHistory? get history => _storage.history;
 
   /// Obtiene las entradas activas.
   List<VaultEntry> get entries {
@@ -140,6 +150,7 @@ class EntriesController extends ChangeNotifier {
     final updated = entry.copyWith(
       id: current.id,
       createdAt: current.createdAt,
+      clearPerson: entry.person == null,
     ).copyWith(
       title: entry.title,
       categoryId: entry.categoryId,

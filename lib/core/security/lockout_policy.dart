@@ -1,23 +1,7 @@
 /// Política de bloqueo por intentos fallidos.
-///
-/// Después de [attemptsBeforeLockout] PIN incorrectos, la app se bloquea un
-/// rato. Cada intento fallido siguiente aumenta el castigo:
-///
-/// | Intento fallido | Bloqueo |
-/// |---|---|
-/// | 5 | 30 s |
-/// | 6 | 1 min |
-/// | 7 | 5 min |
-/// | 8 | 15 min |
-/// | 9 o más | 1 h |
-///
-/// El estado (intentos fallidos y hasta cuándo está bloqueada) se guarda
-/// en el dispositivo, así que reiniciar la app no "reinicia" la castigo.
 abstract final class LockoutPolicy {
-  /// Número de intentos fallidos antes del primer bloqueo.
   static const int attemptsBeforeLockout = 5;
 
-  /// Castigos escalonados, del más corto al más largo.
   static const List<Duration> escalatingDurations = <Duration>[
     Duration(seconds: 30),
     Duration(minutes: 1),
@@ -26,9 +10,6 @@ abstract final class LockoutPolicy {
     Duration(hours: 1),
   ];
 
-  /// Duración del bloqueo tras [failedAttempts] fallos.
-  ///
-  /// Devuelve `null` si todavía no toca bloquear.
   static Duration? lockoutFor(int failedAttempts) {
     if (failedAttempts < attemptsBeforeLockout) return null;
     final index = failedAttempts - attemptsBeforeLockout;
@@ -39,37 +20,64 @@ abstract final class LockoutPolicy {
   }
 }
 
-/// Estado del bloqueo: cuántos intentos han fallado y hasta cuándo.
+/// Estado del bloqueo.
 ///
-/// Es una clase suelta de datos (sin Flutter) para poder guardarla y
-/// recuperarla fácilmente, y testearla sin montar nada.
+/// Guardamos el **tiempo restante** y la última marca de tiempo vista, en vez
+/// de una fecha absoluta de fin. Si el reloj del dispositivo se mueve hacia
+/// atrás, el tiempo transcurrido se considera cero y el castigo no se acorta.
+/// Es una mitigación, no una garantía: sin servidor nadie puede demostrar la
+/// hora real, y un atacante con root o que reinstale la app puede borrar el
+/// estado.
 class LockoutState {
-  const LockoutState({this.failedAttempts = 0, this.lockedUntil});
+  const LockoutState({
+    this.failedAttempts = 0,
+    this.remainingMicros = 0,
+    this.lastSeenMicros = 0,
+  });
 
-  /// Número de PIN incorrectos seguidos.
   final int failedAttempts;
 
-  /// Momento (UTC) hasta el que la app está bloqueada, si lo está.
-  final DateTime? lockedUntil;
+  /// Microsegundos de castigo que aún quedan.
+  final int remainingMicros;
 
-  /// `true` si la app está bloqueada en este momento.
-  bool isLockedOut([DateTime? now]) {
-    final until = lockedUntil;
-    if (until == null) return false;
-    final reference = now ?? DateTime.now();
-    return reference.isBefore(until);
-  }
+  /// Microsegundos (reloj del dispositivo) de la última actualización.
+  final int lastSeenMicros;
 
-  /// Tiempo que queda de bloqueo (cero si no está bloqueada).
+  /// Fecha estimada de fin (solo para compatibilidad con la UI anterior).
+  DateTime? get lockedUntil => remainingMicros > 0
+      ? DateTime.fromMicrosecondsSinceEpoch(
+          lastSeenMicros + remainingMicros,
+        ).toUtc()
+      : null;
+
+  /// Tiempo restante tras aplicar el reloj actual.
   Duration remaining([DateTime? now]) {
-    final until = lockedUntil;
-    if (until == null) return Duration.zero;
-    final reference = now ?? DateTime.now();
-    final left = until.difference(reference);
-    return left.isNegative ? Duration.zero : left;
+    if (remainingMicros <= 0) return Duration.zero;
+    final current = (now ?? DateTime.now()).microsecondsSinceEpoch;
+    final wallElapsed = current - lastSeenMicros;
+    // Reloj hacia atrás => no avanza el castigo.
+    final effectiveElapsed = wallElapsed > 0 ? wallElapsed : 0;
+    final left = remainingMicros - effectiveElapsed;
+    return left > 0 ? Duration(microseconds: left) : Duration.zero;
   }
 
-  /// Registra un PIN incorrecto y devuelve el nuevo estado.
+  bool isLockedOut([DateTime? now]) => remaining(now) > Duration.zero;
+
+  /// Avanza el castigo y devuelve el estado resultante (para persistir).
+  LockoutState tick([DateTime? now]) {
+    final current = (now ?? DateTime.now()).microsecondsSinceEpoch;
+    if (remainingMicros <= 0) return this;
+    final wallElapsed = current - lastSeenMicros;
+    final effectiveElapsed = wallElapsed > 0 ? wallElapsed : 0;
+    final left = remainingMicros - effectiveElapsed;
+    if (left <= 0) return LockoutState(failedAttempts: failedAttempts);
+    return LockoutState(
+      failedAttempts: failedAttempts,
+      remainingMicros: left,
+      lastSeenMicros: current,
+    );
+  }
+
   LockoutState registerFailure(DateTime now) {
     final attempts = failedAttempts + 1;
     final duration = LockoutPolicy.lockoutFor(attempts);
@@ -78,30 +86,39 @@ class LockoutState {
     }
     return LockoutState(
       failedAttempts: attempts,
-      lockedUntil: now.add(duration).toUtc(),
+      remainingMicros: duration.inMicroseconds,
+      lastSeenMicros: now.microsecondsSinceEpoch,
     );
   }
 
-  /// Registra un acierto: se borran los intentos anteriores.
   LockoutState registerSuccess() => const LockoutState();
 
-  /// Estado inicial (sin intentos fallidos).
   static const LockoutState initial = LockoutState();
 
-  /// Convierte el estado a JSON para guardarlo.
-  Map<String, Object?> toJson() {
-    return <String, Object?>{
-      'failedAttempts': failedAttempts,
-      'lockedUntil': lockedUntil?.toUtc().toIso8601String(),
-    };
-  }
+  Map<String, Object?> toJson() => <String, Object?>{
+        'failedAttempts': failedAttempts,
+        'remainingMicros': remainingMicros,
+        'lastSeenMicros': lastSeenMicros,
+      };
 
-  /// Lee el estado desde JSON.
   factory LockoutState.fromJson(Map<String, Object?> json) {
-    final rawDate = json['lockedUntil'] as String?;
+    // Migración del formato antiguo con fecha absoluta.
+    final oldDate = json['lockedUntil'] as String?;
+    if (oldDate != null) {
+      final until = DateTime.tryParse(oldDate);
+      if (until != null) {
+        final left = until.difference(DateTime.now()).inMicroseconds;
+        return LockoutState(
+          failedAttempts: (json['failedAttempts'] as int?) ?? 0,
+          remainingMicros: left > 0 ? left : 0,
+          lastSeenMicros: DateTime.now().microsecondsSinceEpoch,
+        );
+      }
+    }
     return LockoutState(
       failedAttempts: (json['failedAttempts'] as int?) ?? 0,
-      lockedUntil: rawDate == null ? null : DateTime.parse(rawDate),
+      remainingMicros: (json['remainingMicros'] as int?) ?? 0,
+      lastSeenMicros: (json['lastSeenMicros'] as int?) ?? 0,
     );
   }
 }

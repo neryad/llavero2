@@ -29,7 +29,9 @@ class _LockScreenState extends State<LockScreen> {
     super.initState();
     // Actualizamos la cuenta atrás cada segundo mientras haya bloqueo.
     _lockoutTimer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (mounted) setState(() {});
+      if (!mounted) return;
+      setState(() {});
+      AppScope.of(context).lock.tickLockout();
     });
   }
 
@@ -84,6 +86,31 @@ class _LockScreenState extends State<LockScreen> {
     final l10n = L10n.of(context);
     final lock = AppScope.of(context).lock;
     final lockedOut = lock.isLockedOut;
+
+    if (lock.vaultCorrupted) {
+      return AppScaffold(
+        appBar: AppBar(title: Text(l10n.appTitle)),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                const Icon(Icons.warning_amber_rounded, size: 48),
+                const SizedBox(height: 16),
+                Text(l10n.vaultCorruptedMessage, textAlign: TextAlign.center),
+                const SizedBox(height: 24),
+                FilledButton(
+                  onPressed: () => Navigator.of(context)
+                      .pushNamed(AppRoutes.exportImport),
+                  child: Text(l10n.importBackupLabel),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
 
     return AppScaffold(
       body: Column(

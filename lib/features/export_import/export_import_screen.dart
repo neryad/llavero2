@@ -3,14 +3,16 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:printing/printing.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../core/app_scope.dart';
 import '../../core/widgets/app_scaffold.dart';
+import '../../core/widgets/reauth_dialog.dart';
 import '../../data/export_service.dart';
+import '../../data/export_temp_file.dart';
 import '../../data/models/vault_document.dart';
+import '../../core/security/crypto/crypto_errors.dart';
 import '../../l10n/generated/app_l10n.dart';
 
 /// Pantalla para exportar e importar la bóveda.
@@ -36,23 +38,24 @@ class _ExportImportScreenState extends State<ExportImportScreen> {
     return VaultDocument(entries: AppScope.of(context).entries.allEntries);
   }
 
-  Future<File> _temporaryFile(String extension, List<int> bytes) async {
-    final dir = await getTemporaryDirectory();
-    final name = 'llavero-${DateTime.now().millisecondsSinceEpoch}.$extension';
-    final file = File('${dir.path}/$name');
-    await file.writeAsBytes(bytes);
-    return file;
+  /// Todas las exportaciones exigen re-autenticación.
+  Future<void> _withReauth(Future<void> Function() action) async {
+    if (!await requireReauth(context)) return;
+    await action();
   }
 
   Future<void> _exportBackup() async {
-    final map = await _service.createEncryptedBackup(
-      _document(),
-      _password.text,
-    );
-    final file = await _temporaryFile('llavero', utf8.encode(jsonEncode(map)));
-    await SharePlus.instance.share(
-      ShareParams(files: <XFile>[XFile(file.path)]),
-    );
+    await _withReauth(() async {
+      final map = await _service.createEncryptedBackup(
+        _document(),
+        _password.text,
+      );
+      await ExportTempFile.use(utf8.encode(jsonEncode(map)), 'llavero', (file) async {
+        await SharePlus.instance.share(
+          ShareParams(files: <XFile>[XFile(file.path)]),
+        );
+      });
+    });
   }
 
   Future<void> _importBackup() async {
@@ -71,9 +74,64 @@ class _ExportImportScreenState extends State<ExportImportScreen> {
         backup,
         _password.text,
       );
-      await entries.replaceAll(document);
+      if (!mounted || !context.mounted) return;
+      final merge = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(l10n.importModeTitle),
+          content: Text(l10n.importConfirm),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(l10n.cancelLabel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(l10n.mergeLabel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(l10n.replaceLabel),
+            ),
+          ],
+        ),
+      );
+      if (!context.mounted || merge == null) return;
+      if (merge) {
+        await entries.merge(document);
+      } else {
+        if (!mounted || !context.mounted) return;
+        final confirm = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text(l10n.replaceLabel),
+            content: Text(l10n.importConfirm),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(l10n.cancelLabel),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text(l10n.okLabel),
+              ),
+            ],
+          ),
+        );
+        if (confirm != true) return;
+        await entries.replaceAll(document);
+      }
       if (!mounted) return;
       setState(() => _message = l10n.importSuccess);
+    } on InvalidBackupFileException {
+      if (!mounted) return;
+      setState(() => _message = l10n.invalidBackupFile);
+    } on InvalidBackupPasswordException {
+      if (!mounted) return;
+      setState(() => _message = l10n.invalidBackupPassword);
+    } on UnsupportedBackupVersionException {
+      if (!mounted) return;
+      setState(() => _message = l10n.unsupportedBackupVersion);
     } catch (_) {
       if (!mounted) return;
       setState(() => _message = l10n.importError);
@@ -135,20 +193,26 @@ class _ExportImportScreenState extends State<ExportImportScreen> {
 
   Future<void> _exportPdf() async {
     await _guarded(() async {
-      final bytes = await _service.toPdf(
-        _document(),
-        includeSecrets: _includeSecrets,
-      );
-      final file = await _temporaryFile('pdf', bytes);
-      await Printing.layoutPdf(onLayout: (_) async => await file.readAsBytes());
+      await _withReauth(() async {
+        final bytes = await _service.toPdf(
+          _document(),
+          includeSecrets: _includeSecrets,
+        );
+        await ExportTempFile.use(bytes, 'pdf', (file) async {
+          await Printing.layoutPdf(onLayout: (_) async => await file.readAsBytes());
+        });
+      });
     });
   }
 
   Future<void> _exportText(String extension, String content) async {
-    final file = await _temporaryFile(extension, utf8.encode(content));
-    await SharePlus.instance.share(
-      ShareParams(files: <XFile>[XFile(file.path)]),
-    );
+    await _withReauth(() async {
+      await ExportTempFile.use(utf8.encode(content), extension, (file) async {
+        await SharePlus.instance.share(
+          ShareParams(files: <XFile>[XFile(file.path)]),
+        );
+      });
+    });
   }
 
   @override

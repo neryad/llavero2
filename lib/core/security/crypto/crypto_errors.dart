@@ -43,3 +43,17 @@ class InvalidBackupPasswordException extends CryptoFailure {
     super.message = 'La contraseña del archivo de respaldo no es correcta.',
   ]);
 }
+
+/// El archivo de respaldo está dañado o no es un respaldo de Llavero.
+class InvalidBackupFileException extends CryptoFailure {
+  const InvalidBackupFileException([
+    super.message = 'El archivo de respaldo no es válido o está dañado.',
+  ]);
+}
+
+/// El respaldo se creó con una versión que esta app no entiende.
+class UnsupportedBackupVersionException extends CryptoFailure {
+  const UnsupportedBackupVersionException([
+    super.message = 'Este respaldo se creó con una versión más nueva de Llavero.',
+  ]);
+}

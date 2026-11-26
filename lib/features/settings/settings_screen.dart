@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import '../../core/app_scope.dart';
-import '../../core/platform/device_integrity.dart';
 import '../../core/platform/platform_capabilities.dart';
 import '../../core/platform/screen_security.dart';
 import '../../core/routes/app_routes.dart';
 import '../../core/widgets/app_scaffold.dart';
+import '../../core/widgets/reauth_dialog.dart';
 import '../../controllers/settings_controller.dart';
 import '../../l10n/generated/app_l10n.dart';
 
@@ -20,18 +20,12 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  DeviceIntegrity _integrity = DeviceIntegrity.intact;
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     ScreenSecurity.setScreenshotsBlocked(
       AppScope.of(context).settings.blockScreenshots,
     );
-    DeviceIntegrityChecker.check().then((result) {
-      if (!mounted) return;
-      setState(() => _integrity = result);
-    });
   }
 
   void _setScreenshots(bool value) {
@@ -68,33 +62,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             const SizedBox(height: 8),
             ListTile(
-              leading: const Icon(Icons.vpn_key_outlined),
-              title: Text(
-                lock.hasPin ? l10n.vaultCreatedStatus : l10n.noVaultStatus,
-              ),
-            ),
-            ListTile(
-              leading: Icon(
-                _integrity.isCompromised
-                    ? Icons.warning_amber_rounded
-                    : Icons.verified_user_outlined,
-                color: _integrity.isCompromised
-                    ? Theme.of(context).colorScheme.error
-                    : null,
-              ),
-              title: Text(
-                _integrity.isCompromised
-                    ? l10n.compromisedDeviceWarning
-                    : l10n.deviceOkStatus,
-              ),
-              subtitle: Text(l10n.deviceIntegrityLabel),
-            ),
-            ListTile(
-              leading: const Icon(Icons.history),
-              title: Text(l10n.historyLabel),
-              onTap: () => Navigator.of(context).pushNamed(AppRoutes.vaultHistory),
-            ),
-            ListTile(
               leading: const Icon(Icons.health_and_safety_outlined),
               title: Text(l10n.securityHealthLabel),
               onTap: () =>
@@ -112,11 +79,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.fingerprint),
-              title: Text(
-                lock.biometricsEnabled
-                    ? l10n.biometricsStatusOn
-                    : l10n.biometricsStatusOff,
-              ),
+              title: Text(l10n.biometricUnlockLabel),
               subtitle: !capabilities.supportsBiometrics
                   ? Text(l10n.biometricsNotSupported)
                   : (canToggleBiometrics
@@ -125,14 +88,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
               trailing: Switch(
                 value: lock.biometricsEnabled,
                 onChanged: canToggleBiometrics
-                    ? (value) => lock.setBiometricsEnabled(value)
+                    ? (value) async {
+                        // Desactivar exige confirmar identidad de nuevo.
+                        if (!value && !await requireReauth(context)) return;
+                        await lock.setBiometricsEnabled(
+                          value,
+                          reauthenticated: !value,
+                        );
+                      }
                     : null,
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.error_outline),
-              title: Text(
-                '${l10n.failedAttemptsLabel}: ${lock.failedAttempts}',
               ),
             ),
             ListTile(

@@ -1,16 +1,17 @@
 import 'package:flutter/widgets.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:uuid/uuid.dart';
 
 import '../controllers/entries_controller.dart';
 import '../controllers/categories_controller.dart';
 import '../controllers/lock_controller.dart';
 import '../controllers/settings_controller.dart';
-import '../core/security/key_vault_service.dart';
+import '../controllers/settings_store.dart';
 import '../core/security/biometric_auth.dart';
+import '../core/security/key_vault_service.dart';
 import '../core/security/lockout_store.dart';
 import '../core/security/secure_store.dart';
 import '../data/vault_file_system.dart';
-import '../data/vault_history.dart';
 import '../data/vault_storage.dart';
 import 'platform/screen_security.dart';
 
@@ -50,22 +51,22 @@ class AppControllers extends ChangeNotifier {
     // Resolver la ruta privada y crear el directorio base antes de cualquier
     // escritura (si no, el primer guardado falla con PathNotFoundException).
     await fileSystem.initialize();
+    final storage = VaultStorage(initialFileSystem: fileSystem);
     final controllers = AppControllers(
       lock: LockController(
         initialKeyService: SecureStoreVaultKeyService(initialStore: store),
         initialLockoutStore: SecureStoreLockoutStore(store),
         initialBiometricAuth: DeviceBiometricAuth(),
       ),
+      settings: SettingsController(store: SecureSettingsStore(store)),
       entries: EntriesController(
-        initialStorage: VaultStorage(
-          initialFileSystem: fileSystem,
-          history: VaultHistory(
-            pathProvider: fileSystem.resolveVaultPath,
-          ),
-        ),
+        initialStorage: storage,
+        idGenerator: () => const Uuid().v4(),
       ),
       initialCategories: CategoriesController(store: store),
     );
+    await controllers.settings.initialize();
+    await storage.excludeFromBackup();
     await ScreenSecurity.setScreenshotsBlocked(
       controllers.settings.blockScreenshots,
     );
@@ -97,18 +98,33 @@ class AppControllers extends ChangeNotifier {
   /// Desbloquea con PIN y espera a que las entradas estén cargadas.
   Future<bool> unlockWithPin(String pin) async {
     final ok = await lock.submitPin(pin);
-    if (ok) await _pendingUnlock;
+    if (ok) {
+      try {
+        await _pendingUnlock;
+      } on Object {
+        lock.markVaultCorrupted();
+        return false;
+      }
+    }
     return ok;
   }
 
-  /// Desbloquea con biometría y espera a que las entradas estén cargadas.
   Future<bool> unlockWithBiometrics({required String localizedReason}) async {
     final ok = await lock.unlockWithBiometrics(
       localizedReason: localizedReason,
     );
-    if (ok) await _pendingUnlock;
+    if (ok) {
+      try {
+        await _pendingUnlock;
+      } on Object {
+        lock.markVaultCorrupted();
+        return false;
+      }
+    }
     return ok;
   }
+
+  bool get vaultCorrupted => lock.vaultCorrupted;
 
   void _onControllerChanged() {
     // Si la bóveda se bloquea (candado), también debemos limpiar las

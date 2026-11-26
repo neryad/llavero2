@@ -1,5 +1,6 @@
 import '../../data/models/entry_field.dart';
 import '../../data/models/vault_entry.dart';
+import 'secret_detector.dart';
 
 /// Nivel de salud de una contraseña.
 enum PasswordHealthLevel {
@@ -45,19 +46,6 @@ abstract final class PasswordHealth {
     'welcome',
   };
 
-  /// Etiquetas que indican que un campo guarda un secreto aunque no se haya
-  /// marcado la casilla «Secreto».
-  static const Set<String> secretLabelHints = <String>{
-    'contraseña',
-    'contrasena',
-    'password',
-    'clave',
-    'pin',
-    'pass',
-    'pwd',
-    'secret',
-  };
-
   /// Analiza las entradas activas de la bóveda.
   static PasswordHealthReport analyze(Iterable<VaultEntry> entries) {
     final active = entries.where((e) => !e.isDeleted).toList();
@@ -65,7 +53,7 @@ abstract final class PasswordHealth {
 
     for (final entry in active) {
       final values = entry.fields
-          .where((f) => f.value.isNotEmpty && _isSecret(f))
+          .where((f) => f.value.isNotEmpty && SecretDetector.isSecret(f))
           .toList();
       if (values.isNotEmpty) secrets[entry] = values;
     }
@@ -95,12 +83,6 @@ abstract final class PasswordHealth {
       reused: reused,
       total: secrets.length,
     );
-  }
-
-  static bool _isSecret(EntryField field) {
-    if (field.isSecret || field.type.hidesValueByDefault) return true;
-    final label = field.label.toLowerCase().trim();
-    return secretLabelHints.any(label.contains);
   }
 
   static bool _isWeak(EntryField field) {

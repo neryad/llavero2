@@ -71,6 +71,8 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
   late String _categoryId;
   bool _isFavorite = false;
   bool _loading = true;
+  String? _saveError;
+  bool _dirty = false;
 
   bool _loaded = false;
 
@@ -151,6 +153,14 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
   }
 
   Future<void> _save() async {
+    final l10n = L10n.of(context);
+    String? validation;
+    if (_title.text.trim().isEmpty) validation = l10n.titleRequired;
+    if (_fields.isEmpty) validation ??= l10n.fieldsRequired;
+    if (validation != null) {
+      setState(() => _saveError = validation);
+      return;
+    }
     final now = DateTime.now().toUtc();
     final entry = VaultEntry(
       id: _id,
@@ -182,7 +192,31 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
       return;
     }
     if (!mounted) return;
+    _dirty = false;
     Navigator.of(context).pop();
+  }
+
+  Future<bool> _confirmDiscard() async {
+    if (!_dirty) return true;
+    final l10n = L10n.of(context);
+    final discard = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.unsavedChangesTitle),
+        content: Text(l10n.unsavedChangesMessage),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.cancelLabel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.discardLabel),
+          ),
+        ],
+      ),
+    );
+    return discard ?? false;
   }
 
   @override
@@ -190,7 +224,15 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
     final l10n = L10n.of(context);
     final isNew = widget.args.entryId == null;
 
-    return AppScaffold(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) async {
+        if (didPop) return;
+        if (await _confirmDiscard() && context.mounted) {
+          Navigator.of(context).pop();
+        }
+      },
+      child: AppScaffold(
       appBar: AppBar(
         title: Text(isNew ? l10n.newEntryLabel : l10n.editEntryLabel),
       ),
@@ -203,6 +245,7 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
                 children: <Widget>[
                 TextField(
                   controller: _title,
+                  onChanged: (_) => setState(() => _dirty = true),
                   decoration: InputDecoration(
                     labelText: l10n.titleFieldLabel,
                     filled: true,
@@ -298,6 +341,14 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
                   onChanged: (value) => setState(() => _isFavorite = value),
                 ),
                 const SizedBox(height: 16),
+                if (_saveError != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: Text(
+                      _saveError!,
+                      style: TextStyle(color: Theme.of(context).colorScheme.error),
+                    ),
+                  ),
                 FilledButton(
                   onPressed: _save,
                   child: Text(l10n.saveLabel),
@@ -305,6 +356,7 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
                 ],
               ),
             ),
+      ),
     );
   }
 }

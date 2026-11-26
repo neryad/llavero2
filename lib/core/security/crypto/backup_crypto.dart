@@ -58,21 +58,29 @@ class BackupCrypto {
   ) async {
     final format = backup['format'];
     if (format != formatId) {
-      throw const TamperedDataException(
-        'Este archivo no es un respaldo de Llavero.',
-      );
+      throw const InvalidBackupFileException();
+    }
+    final version = backup['version'];
+    if (version is! int || version < 1 || version > formatVersion) {
+      throw const UnsupportedBackupVersionException();
     }
     final kdfJson = backup['kdf'];
     final data = backup['data'];
     if (kdfJson is! Map || data is! String) {
-      throw const TamperedDataException();
+      throw const InvalidBackupFileException();
     }
 
-    final params = KdfParameters.fromJson(
-      kdfJson.cast<String, Object?>(),
-    );
+    final KdfParameters params;
+    final List<int> blob;
+    try {
+      params = KdfParameters.fromJson(kdfJson.cast<String, Object?>());
+      blob = base64Decode(data);
+    } on FormatException {
+      throw const InvalidBackupFileException();
+    } on TypeError {
+      throw const InvalidBackupFileException();
+    }
     final key = await params.deriveKey(backupPassword);
-    final blob = base64Decode(data);
     try {
       return await _vaultCrypto.decrypt(
         blob,

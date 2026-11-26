@@ -1,677 +1,583 @@
 {
   "@@locale": "es",
-
   "appTitle": "Llavero",
   "@appTitle": {
     "description": "Application name shown in the launcher and app bars."
   },
-
   "appTagline": "Todo offline, todo tuyo",
   "@appTagline": {
     "description": "Short tagline used on the splash and welcome screens."
   },
-
   "splashLoading": "Preparando tu bóveda…",
   "@splashLoading": {
     "description": "Message shown while the app checks if a PIN already exists."
   },
-
   "continueLabel": "Continuar",
   "@continueLabel": {
     "description": "Generic continue button."
   },
-
   "cancelLabel": "Cancelar",
   "@cancelLabel": {
     "description": "Generic cancel button."
   },
-
   "okLabel": "Aceptar",
   "@okLabel": {
     "description": "Generic confirm button."
   },
-
   "backLabel": "Atrás",
   "@backLabel": {
     "description": "Generic back button."
   },
-
   "phase1Title": "Llavero ya está vivo",
   "@phase1Title": {
     "description": "Title of the placeholder screen shown in phase 1."
   },
-
   "phase1Message": "La fase 1 está lista: tema, fuentes empaquetadas, idiomas ES/EN y rutas con nombre.",
   "@phase1Message": {
     "description": "Body of the placeholder screen shown in phase 1."
   },
-
   "notReadyYet": "Esta pantalla llega en una fase posterior",
   "@notReadyYet": {
     "description": "Placeholder for screens that are not implemented yet."
   },
-
   "themeLabel": "Tema",
   "@themeLabel": {
     "description": "Label of the theme setting."
   },
-
   "themeSystem": "Sistema",
   "@themeSystem": {
     "description": "Theme option that follows the device setting."
   },
-
   "themeLight": "Claro",
   "@themeLight": {
     "description": "Light theme option."
   },
-
   "themeDark": "Oscuro",
   "@themeDark": {
     "description": "Dark theme option."
   },
-
   "languageLabel": "Idioma",
   "@languageLabel": {
     "description": "Label of the language setting."
   },
-
   "languageSystem": "Sistema",
   "@languageSystem": {
     "description": "Language option that follows the device setting."
   },
-
   "languageSpanish": "Español",
   "@languageSpanish": {
     "description": "Spanish language option."
   },
-
   "languageEnglish": "Inglés",
   "@languageEnglish": {
     "description": "English language option."
   },
-
   "settingsLabel": "Ajustes",
   "@settingsLabel": {
     "description": "Title of the settings screen."
   },
-
   "homeLabel": "Inicio",
   "@homeLabel": {
     "description": "Title of the home screen."
   },
-
   "onboardingTitle": "Crea tu bóveda",
   "@onboardingTitle": {
     "description": "Title of the first-run onboarding screen."
   },
-
   "onboardingMessage": "Elige un PIN de 4 a 8 dígitos para proteger tus contraseñas. Lo usarás cada vez que abras la app.",
   "@onboardingMessage": {
     "description": "Body of the first-run onboarding screen."
   },
-
   "createVaultLabel": "Crear bóveda",
   "@createVaultLabel": {
     "description": "Button that starts the first-run PIN creation flow."
   },
-
   "pinLabel": "PIN",
   "@pinLabel": {
     "description": "Label of the PIN entry field."
   },
-
   "confirmPinLabel": "Confirmar PIN",
   "@confirmPinLabel": {
     "description": "Label shown on the confirm PIN step."
   },
-
   "pinMismatchError": "Los dos PINs no coinciden. Inténtalo de nuevo.",
   "@pinMismatchError": {
     "description": "Error shown when the create and confirm PINs differ."
   },
-
   "pinInvalidError": "El PIN no es válido. Usa 4 a 8 dígitos, sin secuencias, repeticiones ni PINs comunes.",
   "@pinInvalidError": {
     "description": "Error shown when the PIN does not pass the validation rules."
   },
-
   "vaultCreationError": "No se pudo crear la bóveda. Inténtalo de nuevo.",
   "@vaultCreationError": {
     "description": "Error shown when creating the vault fails during onboarding."
   },
-
   "unlockLabel": "Desbloquear",
   "@unlockLabel": {
     "description": "Button that submits the PIN on the lock screen."
   },
-
   "biometricUnlockLabel": "Desbloquear con biometría",
   "@biometricUnlockLabel": {
     "description": "Button that starts biometric unlock on the lock screen."
   },
-
   "wrongPinError": "PIN incorrecto. Inténtalo de nuevo.",
   "@wrongPinError": {
     "description": "Error shown after a wrong PIN on the lock screen."
   },
-
   "lockedOutMessage": "Demasiados intentos fallidos. Espera antes de volver a intentarlo.",
   "@lockedOutMessage": {
     "description": "Message shown while the app is locked out after failed PIN attempts."
   },
-
   "biometricReason": "Usa tu huella o rostro para abrir Llavero.",
   "@biometricReason": {
     "description": "Reason shown by the system biometric prompt when unlocking the vault."
   },
-
   "searchHint": "Buscar",
   "@searchHint": {
     "description": "Hint of the search field on the home screen."
   },
-
   "allEntriesLabel": "Todas",
   "@allEntriesLabel": {
     "description": "Filter option that shows all entries."
   },
-
   "favoritesFilterLabel": "Favoritas",
   "@favoritesFilterLabel": {
     "description": "Filter option that shows only favorite entries."
   },
-
   "addEntryLabel": "Añadir entrada",
   "@addEntryLabel": {
     "description": "Label of the button that creates a new entry."
   },
-
   "emptyVaultMessage": "Tu bóveda está vacía. Añade tu primera entrada.",
   "@emptyVaultMessage": {
     "description": "Message shown when the vault has no entries."
   },
-
   "trashLabel": "Papelera",
   "@trashLabel": {
     "description": "Title of the trash screen and its button on home."
   },
-
   "newEntryLabel": "Nueva entrada",
   "@newEntryLabel": {
     "description": "Title of the form when creating an entry."
   },
-
   "editEntryLabel": "Editar entrada",
   "@editEntryLabel": {
     "description": "Title of the form when editing an entry."
   },
-
   "titleFieldLabel": "Título",
   "@titleFieldLabel": {
     "description": "Label of the entry title field."
   },
-
   "categoryFieldLabel": "Categoría",
   "@categoryFieldLabel": {
     "description": "Label of the entry category field."
   },
-
   "personFieldLabel": "Persona",
   "@personFieldLabel": {
     "description": "Label of the entry person field."
   },
-
   "notesFieldLabel": "Notas",
   "@notesFieldLabel": {
     "description": "Label of the entry notes field."
   },
-
   "fieldsLabel": "Campos",
   "@fieldsLabel": {
     "description": "Section title of the entry fields."
   },
-
   "addFieldLabel": "Añadir campo",
   "@addFieldLabel": {
     "description": "Button that adds a field to an entry."
   },
-
   "labelFieldLabel": "Etiqueta",
   "@labelFieldLabel": {
     "description": "Label of a field's label."
   },
-
   "valueFieldLabel": "Valor",
   "@valueFieldLabel": {
     "description": "Label of a field's value."
   },
-
   "secretFieldLabel": "Secreto",
   "@secretFieldLabel": {
     "description": "Checkbox label that hides a field value."
   },
-
   "templateFieldLabel": "Plantilla",
   "@templateFieldLabel": {
     "description": "Label of the template selector."
   },
-
   "generateLabel": "Generar",
   "@generateLabel": {
     "description": "Button that generates a random password or PIN."
   },
-
   "saveLabel": "Guardar",
   "@saveLabel": {
     "description": "Button that saves an entry."
   },
-
   "favoriteLabel": "Favorita",
   "@favoriteLabel": {
     "description": "Checkbox label that marks an entry as favorite."
   },
-
   "revealLabel": "Mostrar",
   "@revealLabel": {
     "description": "Button that temporarily reveals a secret value."
   },
-
   "hideLabel": "Ocultar",
   "@hideLabel": {
     "description": "Button that hides a revealed secret value."
   },
-
   "copyLabel": "Copiar",
   "@copyLabel": {
     "description": "Button that copies a value to the clipboard."
   },
-
   "moveToTrashLabel": "Mover a papelera",
   "@moveToTrashLabel": {
     "description": "Button that moves an entry to the trash."
   },
-
   "duplicateLabel": "Duplicar",
   "@duplicateLabel": {
     "description": "Button that duplicates an entry."
   },
-
   "entryNotFound": "Entrada no encontrada",
   "@entryNotFound": {
     "description": "Message shown when an entry cannot be found."
   },
-
   "emptyTrashMessage": "La papelera está vacía.",
   "@emptyTrashMessage": {
     "description": "Message shown when the trash has no entries."
   },
-
   "restoreLabel": "Restaurar",
   "@restoreLabel": {
     "description": "Button that restores an entry from the trash."
   },
-
   "deleteForeverLabel": "Borrar para siempre",
   "@deleteForeverLabel": {
     "description": "Button that permanently deletes an entry."
   },
-
   "purgeTrashLabel": "Vaciar papelera",
   "@purgeTrashLabel": {
     "description": "Button that empties the trash."
   },
-
   "exportImportTitle": "Exportar / importar",
   "@exportImportTitle": {
     "description": "Title of the export and import screen."
   },
-
   "backupPasswordLabel": "Contraseña del respaldo",
   "@backupPasswordLabel": {
     "description": "Label of the backup password field."
   },
-
   "backupWarning": "Guarda esta contraseña: no se puede recuperar.",
   "@backupWarning": {
     "description": "Warning shown when exporting an encrypted backup."
   },
-
   "exportBackupLabel": "Exportar respaldo (.llavero)",
   "@exportBackupLabel": {
     "description": "Button that exports an encrypted backup file."
   },
-
   "importBackupLabel": "Importar respaldo",
   "@importBackupLabel": {
     "description": "Button that imports an encrypted backup file."
   },
-
   "exportPdfLabel": "Exportar PDF",
   "@exportPdfLabel": {
     "description": "Button that exports the vault as a PDF."
   },
-
   "exportJsonLabel": "Exportar JSON",
   "@exportJsonLabel": {
     "description": "Button that exports the vault as JSON."
   },
-
   "exportCsvLabel": "Exportar CSV",
   "@exportCsvLabel": {
     "description": "Button that exports the vault as CSV."
   },
-
   "shareLabel": "Compartir",
   "@shareLabel": {
     "description": "Button that shares an exported file."
   },
-
   "printLabel": "Imprimir",
   "@printLabel": {
     "description": "Button that prints the PDF."
   },
-
   "importSuccess": "Respaldo importado correctamente.",
   "@importSuccess": {
     "description": "Message shown after a successful backup import."
   },
-
   "importError": "No se pudo importar el respaldo.",
   "@importError": {
     "description": "Message shown when a backup import fails."
   },
-
   "securityStatusLabel": "Estado de seguridad",
   "@securityStatusLabel": {
     "description": "Section title of the security status on settings."
   },
-
-  "vaultCreatedStatus": "Bóveda creada",
-  "@vaultCreatedStatus": {
-    "description": "Status shown when the vault exists."
-  },
-
-  "noVaultStatus": "Sin bóveda",
-  "@noVaultStatus": {
-    "description": "Status shown when there is no vault yet."
-  },
-
-  "biometricsStatusOn": "Biometría activada",
-  "@biometricsStatusOn": {
-    "description": "Status shown when biometrics is enabled."
-  },
-
-  "biometricsStatusOff": "Biometría desactivada",
-  "@biometricsStatusOff": {
-    "description": "Status shown when biometrics is disabled."
-  },
-
-  "failedAttemptsLabel": "Intentos fallidos",
-  "@failedAttemptsLabel": {
-    "description": "Label of the failed PIN attempts counter."
-  },
-
   "pinLengthSettingLabel": "Longitud del PIN",
   "@pinLengthSettingLabel": {
     "description": "Setting that controls how many digits the PIN has."
   },
-
   "autoLockSettingLabel": "Bloqueo automático",
   "@autoLockSettingLabel": {
     "description": "Setting that controls when the vault locks itself."
   },
-
   "autoLockImmediately": "Inmediato",
   "@autoLockImmediately": {
     "description": "Auto-lock option: lock when the app goes to background."
   },
-
   "autoLock30Seconds": "30 segundos",
   "@autoLock30Seconds": {
     "description": "Auto-lock option: 30 seconds."
   },
-
   "autoLock1Minute": "1 minuto",
   "@autoLock1Minute": {
     "description": "Auto-lock option: 1 minute."
   },
-
   "autoLock5Minutes": "5 minutos",
   "@autoLock5Minutes": {
     "description": "Auto-lock option: 5 minutes."
   },
-
   "blockScreenshotsSettingLabel": "Bloquear capturas",
   "@blockScreenshotsSettingLabel": {
     "description": "Setting that blocks screenshots and screen recording."
   },
-
   "clipboardTimeoutSettingLabel": "Tiempo en el portapapeles",
   "@clipboardTimeoutSettingLabel": {
     "description": "Setting that controls how long copied secrets stay in the clipboard."
   },
-
   "lockNowLabel": "Bloquear ahora",
   "@lockNowLabel": {
     "description": "Button that locks the vault immediately."
   },
-
   "changePinLabel": "Cambiar PIN",
   "@changePinLabel": {
     "description": "Button and title of the change PIN screen."
   },
-
   "currentPinLabel": "PIN actual",
   "@currentPinLabel": {
     "description": "Label of the current PIN field when changing it."
   },
-
   "newPinLabel": "Nuevo PIN",
   "@newPinLabel": {
     "description": "Label of the new PIN field."
   },
-
   "confirmNewPinLabel": "Confirmar nuevo PIN",
   "@confirmNewPinLabel": {
     "description": "Label of the new PIN confirmation field."
   },
-
   "pinChangedSuccess": "PIN cambiado correctamente.",
   "@pinChangedSuccess": {
     "description": "Message shown after changing the PIN."
   },
-
   "wrongCurrentPin": "El PIN actual no es correcto.",
   "@wrongCurrentPin": {
     "description": "Error shown when the current PIN is wrong."
   },
-
   "pinLossWarning": "Si olvidas el PIN, no hay forma de recuperarlo. Solo podrás restaurar tus datos desde un respaldo cifrado.",
   "@pinLossWarning": {
     "description": "Warning shown before creating a PIN so the user knows there is no recovery without a backup."
   },
-
   "biometricsNeedsUnlock": "Disponible solo con la bóveda abierta.",
   "@biometricsNeedsUnlock": {
     "description": "Explanation shown when the biometrics switch is disabled because the vault is locked."
   },
-
-  "deviceIntegrityLabel": "Integridad del dispositivo",
-  "@deviceIntegrityLabel": {
-    "description": "Label of the device integrity check in settings."
-  },
-
-  "deviceOkStatus": "Dispositivo íntegro",
-  "@deviceOkStatus": {
-    "description": "Status shown when no root/jailbreak signals were found."
-  },
-
-  "compromisedDeviceWarning": "Este dispositivo parece estar rooteado o jailbreakeado. Tus secretos pueden estar en riesgo.",
-  "@compromisedDeviceWarning": {
-    "description": "Warning shown when root or jailbreak signals are detected."
-  },
-
   "screenshotsIosNote": "En iOS no se pueden bloquear las capturas: la app solo oscurece la pantalla al detectarlas.",
   "@screenshotsIosNote": {
     "description": "Note shown on iOS explaining that screenshot blocking is an overlay, not a system block."
   },
-
   "categoriesLabel": "Categorías",
   "@categoriesLabel": {
     "description": "Title of the custom categories screen."
   },
-
   "newCategoryLabel": "Nueva categoría",
   "@newCategoryLabel": {
     "description": "Title of the dialog to create a category."
   },
-
   "editCategoryLabel": "Editar categoría",
   "@editCategoryLabel": {
     "description": "Title of the dialog to edit a category."
   },
-
   "categoryNameLabel": "Nombre",
   "@categoryNameLabel": {
     "description": "Label of the category name field."
   },
-
   "categoryColorLabel": "Color",
   "@categoryColorLabel": {
     "description": "Label of the category color selector."
   },
-
   "categoryInUse": "No se puede borrar: hay entradas que la usan.",
   "@categoryInUse": {
     "description": "Message shown when trying to delete a category that is in use."
   },
-
   "categoryWifi": "Wi-Fi",
-  "@categoryWifi": { "description": "Default category name." },
+  "@categoryWifi": {
+    "description": "Default category name."
+  },
   "categoryEmail": "Correo",
-  "@categoryEmail": { "description": "Default category name." },
+  "@categoryEmail": {
+    "description": "Default category name."
+  },
   "categoryStreaming": "Streaming",
-  "@categoryStreaming": { "description": "Default category name." },
+  "@categoryStreaming": {
+    "description": "Default category name."
+  },
   "categoryBanking": "Banca",
-  "@categoryBanking": { "description": "Default category name." },
+  "@categoryBanking": {
+    "description": "Default category name."
+  },
   "categoryPin": "PIN",
-  "@categoryPin": { "description": "Default category name." },
+  "@categoryPin": {
+    "description": "Default category name."
+  },
   "categorySocial": "Redes sociales",
-  "@categorySocial": { "description": "Default category name." },
+  "@categorySocial": {
+    "description": "Default category name."
+  },
   "categoryDevices": "Dispositivos",
-  "@categoryDevices": { "description": "Default category name." },
+  "@categoryDevices": {
+    "description": "Default category name."
+  },
   "categoryDocuments": "Documentos",
-  "@categoryDocuments": { "description": "Default category name." },
+  "@categoryDocuments": {
+    "description": "Default category name."
+  },
   "categoryOther": "Otras",
-  "@categoryOther": { "description": "Default category name." },
-
+  "@categoryOther": {
+    "description": "Default category name."
+  },
   "noCustomCategories": "Todavía no has creado categorías.",
   "@noCustomCategories": {
     "description": "Message shown when there are no custom categories."
   },
-
   "includeSecretsLabel": "Incluir secretos en claro",
   "@includeSecretsLabel": {
     "description": "Switch that enables exporting secret values without hiding them."
   },
-
   "secretsExportWarning": "Los secretos se guardarán sin cifrar. Cualquiera que lea el archivo podrá verlos.",
   "@secretsExportWarning": {
     "description": "First confirmation warning when exporting secrets in plain text."
   },
-
   "secretsExportConfirm": "¿Confirmas que quieres exportar los secretos en claro?",
   "@secretsExportConfirm": {
     "description": "Second confirmation when exporting secrets in plain text."
   },
-
   "exportAnywayLabel": "Sí, exportar",
   "@exportAnywayLabel": {
     "description": "Final confirmation button to export secrets in plain text."
   },
-
   "securityHealthLabel": "Salud de contraseñas",
   "@securityHealthLabel": {
     "description": "Title of the password health screen."
   },
-
   "healthSummary": "Contraseñas revisadas: {count}",
   "@healthSummary": {
     "description": "Summary of how many passwords were analyzed."
   },
-
   "weakPasswords": "Contraseñas débiles",
   "@weakPasswords": {
     "description": "Section title for entries with weak passwords."
   },
-
   "reusedPasswords": "Contraseñas repetidas",
   "@reusedPasswords": {
     "description": "Section title for entries sharing a password."
   },
-
   "allGood": "Todo en orden: no hay avisos.",
   "@allGood": {
     "description": "Message shown when no password issues were found."
   },
-
-  "historyLabel": "Historial de la bóveda",
-  "@historyLabel": {
-    "description": "Title of the vault history screen."
-  },
-
-  "historyEmpty": "Todavía no hay versiones guardadas.",
-  "@historyEmpty": {
-    "description": "Message shown when the vault history is empty."
-  },
-
-  "restoreVersionLabel": "Restaurar esta versión",
-  "@restoreVersionLabel": {
-    "description": "Button that restores an older version of the vault."
-  },
-
-  "versionRestored": "Versión restaurada.",
-  "@versionRestored": {
-    "description": "Message shown after restoring a vault version."
-  },
-
   "biometricsNotSupported": "La biometría solo está disponible en móvil.",
   "@biometricsNotSupported": {
     "description": "Explanation shown when biometrics is unavailable on this platform."
   },
-
   "screenshotsNotSupported": "El bloqueo de capturas solo está disponible en móvil.",
   "@screenshotsNotSupported": {
     "description": "Explanation shown when screenshot blocking is unavailable on this platform."
   },
-
   "webStorageWarning": "En la web los datos se guardan en el navegador, no en un almacén seguro del sistema. Usa la app móvil para mayor seguridad.",
   "@webStorageWarning": {
     "description": "Warning shown on web about less secure local storage."
   },
-
   "noSecretsToCheck": "No hay campos secretos todavía. Marca la casilla «Secreto» en los campos de tus entradas para que se revisen.",
   "@noSecretsToCheck": {
     "description": "Message shown when no secret fields exist to analyze."
   },
-
   "healthAllGood": "{count} contraseñas revisadas, sin avisos.",
   "@healthAllGood": {
     "description": "Message shown when all passwords passed the health checks."
   },
-
-  "historyHint": "Se guarda una copia antes de cada cambio. Haz un cambio en una entrada para ver la primera versión.",
-  "@historyHint": {
-    "description": "Hint shown when the vault history is empty."
-  },
-
   "defaultCategoriesLabel": "Categorías por defecto",
   "@defaultCategoriesLabel": {
     "description": "Section title for the built-in read-only categories."
   },
-
   "customCategoriesLabel": "Tus categorías",
   "@customCategoriesLabel": {
     "description": "Section title for user-created categories."
+  },
+  "vaultCorruptedMessage": "No se pudo leer la bóveda. Puede estar dañada. Importa un respaldo para recuperar tus datos.",
+  "@vaultCorruptedMessage": {
+    "description": "vaultCorruptedMessage"
+  },
+  "reauthTitle": "Confirma tu identidad",
+  "@reauthTitle": {
+    "description": "reauthTitle"
+  },
+  "reauthPinLabel": "PIN",
+  "@reauthPinLabel": {
+    "description": "reauthPinLabel"
+  },
+  "reauthBiometricLabel": "Usar biometría",
+  "@reauthBiometricLabel": {
+    "description": "reauthBiometricLabel"
+  },
+  "reauthFailed": "No se pudo confirmar.",
+  "@reauthFailed": {
+    "description": "reauthFailed"
+  },
+  "importModeTitle": "¿Cómo quieres importar?",
+  "@importModeTitle": {
+    "description": "importModeTitle"
+  },
+  "mergeLabel": "Fusionar",
+  "@mergeLabel": {
+    "description": "mergeLabel"
+  },
+  "replaceLabel": "Reemplazar todo",
+  "@replaceLabel": {
+    "description": "replaceLabel"
+  },
+  "importConfirm": "Esto puede sobrescribir tus datos actuales.",
+  "@importConfirm": {
+    "description": "importConfirm"
+  },
+  "titleRequired": "Escribe un título.",
+  "@titleRequired": {
+    "description": "titleRequired"
+  },
+  "fieldsRequired": "Añade al menos un campo.",
+  "@fieldsRequired": {
+    "description": "fieldsRequired"
+  },
+  "unsavedChangesTitle": "¿Descartar los cambios?",
+  "@unsavedChangesTitle": {
+    "description": "unsavedChangesTitle"
+  },
+  "unsavedChangesMessage": "Tienes cambios sin guardar.",
+  "@unsavedChangesMessage": {
+    "description": "unsavedChangesMessage"
+  },
+  "discardLabel": "Descartar",
+  "@discardLabel": {
+    "description": "discardLabel"
+  },
+  "invalidBackupFile": "El archivo de respaldo no es válido o está dañado.",
+  "@invalidBackupFile": {
+    "description": "invalidBackupFile"
+  },
+  "invalidBackupPassword": "La contraseña del respaldo no es correcta.",
+  "@invalidBackupPassword": {
+    "description": "invalidBackupPassword"
+  },
+  "unsupportedBackupVersion": "El respaldo es de una versión más nueva.",
+  "@unsupportedBackupVersion": {
+    "description": "unsupportedBackupVersion"
+  },
+  "exportTempError": "No se pudo preparar el archivo para compartir.",
+  "@exportTempError": {
+    "description": "exportTempError"
   }
 }

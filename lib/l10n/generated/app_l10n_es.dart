@@ -247,21 +247,6 @@ class L10nEs extends L10n {
   String get securityStatusLabel => 'Estado de seguridad';
 
   @override
-  String get vaultCreatedStatus => 'Bóveda creada';
-
-  @override
-  String get noVaultStatus => 'Sin bóveda';
-
-  @override
-  String get biometricsStatusOn => 'Biometría activada';
-
-  @override
-  String get biometricsStatusOff => 'Biometría desactivada';
-
-  @override
-  String get failedAttemptsLabel => 'Intentos fallidos';
-
-  @override
   String get pinLengthSettingLabel => 'Longitud del PIN';
 
   @override
@@ -312,16 +297,6 @@ class L10nEs extends L10n {
 
   @override
   String get biometricsNeedsUnlock => 'Disponible solo con la bóveda abierta.';
-
-  @override
-  String get deviceIntegrityLabel => 'Integridad del dispositivo';
-
-  @override
-  String get deviceOkStatus => 'Dispositivo íntegro';
-
-  @override
-  String get compromisedDeviceWarning =>
-      'Este dispositivo parece estar rooteado o jailbreakeado. Tus secretos pueden estar en riesgo.';
 
   @override
   String get screenshotsIosNote =>
@@ -407,18 +382,6 @@ class L10nEs extends L10n {
   String get allGood => 'Todo en orden: no hay avisos.';
 
   @override
-  String get historyLabel => 'Historial de la bóveda';
-
-  @override
-  String get historyEmpty => 'Todavía no hay versiones guardadas.';
-
-  @override
-  String get restoreVersionLabel => 'Restaurar esta versión';
-
-  @override
-  String get versionRestored => 'Versión restaurada.';
-
-  @override
   String get biometricsNotSupported =>
       'La biometría solo está disponible en móvil.';
 
@@ -440,12 +403,67 @@ class L10nEs extends L10n {
   }
 
   @override
-  String get historyHint =>
-      'Se guarda una copia antes de cada cambio. Haz un cambio en una entrada para ver la primera versión.';
-
-  @override
   String get defaultCategoriesLabel => 'Categorías por defecto';
 
   @override
   String get customCategoriesLabel => 'Tus categorías';
+
+  @override
+  String get vaultCorruptedMessage =>
+      'No se pudo leer la bóveda. Puede estar dañada. Importa un respaldo para recuperar tus datos.';
+
+  @override
+  String get reauthTitle => 'Confirma tu identidad';
+
+  @override
+  String get reauthPinLabel => 'PIN';
+
+  @override
+  String get reauthBiometricLabel => 'Usar biometría';
+
+  @override
+  String get reauthFailed => 'No se pudo confirmar.';
+
+  @override
+  String get importModeTitle => '¿Cómo quieres importar?';
+
+  @override
+  String get mergeLabel => 'Fusionar';
+
+  @override
+  String get replaceLabel => 'Reemplazar todo';
+
+  @override
+  String get importConfirm => 'Esto puede sobrescribir tus datos actuales.';
+
+  @override
+  String get titleRequired => 'Escribe un título.';
+
+  @override
+  String get fieldsRequired => 'Añade al menos un campo.';
+
+  @override
+  String get unsavedChangesTitle => '¿Descartar los cambios?';
+
+  @override
+  String get unsavedChangesMessage => 'Tienes cambios sin guardar.';
+
+  @override
+  String get discardLabel => 'Descartar';
+
+  @override
+  String get invalidBackupFile =>
+      'El archivo de respaldo no es válido o está dañado.';
+
+  @override
+  String get invalidBackupPassword =>
+      'La contraseña del respaldo no es correcta.';
+
+  @override
+  String get unsupportedBackupVersion =>
+      'El respaldo es de una versión más nueva.';
+
+  @override
+  String get exportTempError =>
+      'No se pudo preparar el archivo para compartir.';
 }

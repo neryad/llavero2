@@ -29,7 +29,10 @@ class VaultDocument {
 
   /// Lee un documento desde JSON.
   factory VaultDocument.fromJson(Map<String, Object?> json) {
-    final rawEntries = json['entries'] as List<Object?>? ?? const <Object?>[];
+    final rawEntries = json['entries'];
+    if (rawEntries is! List<Object?>) {
+      throw const FormatException('Falta la lista de entradas de la bóveda.');
+    }
     return VaultDocument(
       version: (json['version'] as int?) ?? currentVersion,
       entries: rawEntries

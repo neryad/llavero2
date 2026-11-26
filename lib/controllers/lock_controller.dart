@@ -8,14 +8,6 @@ import '../core/security/lockout_policy.dart';
 import '../core/security/lockout_store.dart';
 
 /// Estado del candado de la bóveda.
-///
-/// Se ocupa de:
-/// - saber si la bóveda está abierta o cerrada,
-/// - contar los intentos fallidos y aplicar el bloqueo escalonado,
-/// - guardar ese estado en el dispositivo para que sobreviva a reinicios.
-///
-/// Solo importa `foundation.dart` (y la capa de seguridad, que tampoco
-/// depende de la interfaz), así que se puede testear sin montar la app.
 class LockController extends ChangeNotifier {
   LockController({
     VaultKeyService? initialKeyService,
@@ -37,52 +29,28 @@ class LockController extends ChangeNotifier {
   bool _biometricsEnabled = false;
   LockoutState _lockoutState = LockoutState.initial;
   bool _initialized = false;
+  bool _vaultCorrupted = false;
 
-  /// DEK disponible mientras la bóveda está abierta.
   SecretKey? _unlockedDek;
 
-  /// La DEK de la bóveda abierta (null si está cerrada).
   SecretKey? get unlockedDek => _unlockedDek;
-
-  /// `true` cuando la bóveda está cerrada.
   bool get isLocked => _isLocked;
-
-  /// `true` cuando el usuario ya creó un PIN.
   bool get hasPin => _hasPin;
-
-  /// `true` cuando hay una copia de la clave lista para la biometría.
   bool get biometricsEnabled => _biometricsEnabled;
-
-  /// Número de PIN incorrectos seguidos.
   int get failedAttempts => _lockoutState.failedAttempts;
-
-  /// Momento (UTC) hasta el que sigue bloqueada la app.
   DateTime? get lockedUntil => _lockoutState.lockedUntil;
-
-  /// Estado actual del bloqueo.
   LockoutState get lockoutState => _lockoutState;
-
-  /// `true` si la app está bloqueada ahora mismo.
-  bool get isLockedOut => _lockoutState.isLockedOut(_clock());
-
-  /// `true` tras [initialize] haber comprobado el estado del dispositivo
-  /// (existe bóveda o no).
-  ///
-  /// Mientras sea `false` el controlador todavía no sabe si hay una bóveda,
-  /// así que la interfaz no debe decidir el flujo todavía.
   bool get initialized => _initialized;
 
-  /// Tiempo que queda de bloqueo (cero si no está bloqueada).
+  /// `true` si el archivo de la bóveda está dañado y no se pudo abrir.
+  bool get vaultCorrupted => _vaultCorrupted;
+
+  bool get isLockedOut => _lockoutState.isLockedOut(_clock());
   Duration remainingLockout() => _lockoutState.remaining(_clock());
 
-  /// Carga el estado guardado y comprueba si ya existe una bóveda.
-  ///
-  /// Se llama al arrancar la app.
   Future<void> initialize() async {
     final store = _lockoutStore;
-    if (store != null) {
-      _lockoutState = await store.load();
-    }
+    if (store != null) _lockoutState = await store.load();
     final service = _keyService;
     if (service != null) {
       _hasPin = await service.hasVault();
@@ -92,18 +60,20 @@ class LockController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Intenta abrir la bóveda con el PIN.
-  ///
-  /// Devuelve `true` si el PIN es correcto. Si es incorrecto, suma un intento
-  /// fallido y aplica el bloqueo que corresponda.
+  /// Avanza la cuenta atrás del castigo (llamado cada segundo por la UI).
+  Future<void> tickLockout() async {
+    final next = _lockoutState.tick(_clock());
+    if (next.remainingMicros == _lockoutState.remainingMicros) return;
+    _lockoutState = next;
+    await _persistLockoutState();
+    notifyListeners();
+  }
+
   Future<bool> submitPin(String pin) async {
     final service = _keyService;
     if (service == null) {
-      throw StateError('LockController necesita un VaultKeyService para validar el PIN.');
+      throw StateError('LockController necesita un VaultKeyService.');
     }
-
-    // Si ya está bloqueada, ni siquiera intentamos derivar la clave:
-    // así un atacante no puede "gastar" tiempo de la CPU del móvil.
     if (isLockedOut) {
       notifyListeners();
       return false;
@@ -117,23 +87,46 @@ class LockController extends ChangeNotifier {
       return false;
     } on MissingVaultException {
       rethrow;
+    } on TamperedDataException {
+      _vaultCorrupted = true;
+      notifyListeners();
+      return false;
     }
 
     _lockoutState = _lockoutState.registerSuccess();
     await _persistLockoutState();
     _unlockedDek = dek;
+    _vaultCorrupted = false;
     _isLocked = false;
     notifyListeners();
     return true;
   }
 
-  /// Intenta abrir la bóveda con la biometría.
-  ///
-  /// El PIN sigue siendo el plan B: si la biometría falla, el usuario
-  /// escribe el PIN.
-  Future<bool> unlockWithBiometrics({
-    required String localizedReason,
-  }) async {
+  /// Verifica un PIN sin abrir la bóveda (para re-autenticación).
+  Future<bool> verifyPin(String pin) async {
+    final service = _keyService;
+    if (service == null) return false;
+    try {
+      await service.unlockWithPin(pin);
+      return true;
+    } on InvalidPinException {
+      await _registerFailedAttempt();
+      return false;
+    } on TamperedDataException {
+      _vaultCorrupted = true;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  /// Confirma biometría sin abrir la bóveda (para re-autenticación).
+  Future<bool> authenticateBiometric() async {
+    final auth = _biometricAuth;
+    if (auth == null) return false;
+    return auth.authenticate(localizedReason: 'Confirma tu identidad');
+  }
+
+  Future<bool> unlockWithBiometrics({required String localizedReason}) async {
     final service = _keyService;
     if (service == null) return false;
     if (isLockedOut) {
@@ -141,14 +134,11 @@ class LockController extends ChangeNotifier {
       return false;
     }
 
-    // La copia de la DEK solo se lee DESPUÉS de que el sistema confirme
-    // la huella/rostro. Así el usuario ve un único aviso biométrico.
     final auth = _biometricAuth;
     if (auth != null) {
-      final authenticated = await auth.authenticate(
-        localizedReason: localizedReason,
-      );
-      if (!authenticated) return false;
+      if (!await auth.authenticate(localizedReason: localizedReason)) {
+        return false;
+      }
     }
 
     final key = await service.biometricKey();
@@ -162,36 +152,26 @@ class LockController extends ChangeNotifier {
     return true;
   }
 
-  /// Cambia el PIN de la bóveda.
-  ///
-  /// Devuelve `false` si el PIN actual es incorrecto o si la app está
-  /// bloqueada por intentos fallidos.
   Future<bool> changePin(String currentPin, String newPin) async {
     final service = _keyService;
-    if (service == null) {
-      throw StateError(
-        'LockController necesita un VaultKeyService para cambiar el PIN.',
-      );
-    }
-    if (isLockedOut) {
-      notifyListeners();
-      return false;
-    }
-
+    if (service == null) return false;
+    if (isLockedOut) return false;
     try {
       await service.changePin(currentPin, newPin);
     } on InvalidPinException {
       await _registerFailedAttempt();
       return false;
+    } on TamperedDataException {
+      _vaultCorrupted = true;
+      notifyListeners();
+      return false;
     }
-
     _lockoutState = _lockoutState.registerSuccess();
     await _persistLockoutState();
     notifyListeners();
     return true;
   }
 
-  /// Cierra la bóveda (por ejemplo al pasar a segundo plano).
   void lock() {
     if (_isLocked) return;
     _isLocked = true;
@@ -199,22 +179,12 @@ class LockController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Crea una nueva bóveda con el PIN (flujo de onboarding).
-  ///
-  /// Se llama cuando el usuario termina de escribir su PIN por primera vez.
-  /// Tras crearla, la bóveda queda **cerrada**: el estado bloqueado le pide al
-  /// usuario el PIN (plan B) antes de poder acceder a sus datos.
   Future<void> createVault(String pin) async {
     final service = _keyService;
     if (service == null) {
-      throw StateError(
-        'LockController necesita un VaultKeyService para crear la bóveda.',
-      );
+      throw StateError('LockController necesita un VaultKeyService.');
     }
-
     await service.createVault(pin);
-
-    // La bóveda existe ahora: el usuario ya tiene su PIN.
     _hasPin = true;
     _biometricsEnabled = false;
     _isLocked = true;
@@ -223,19 +193,25 @@ class LockController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Registra que el PIN ya existe (después del onboarding).
+  /// Marca el archivo de la bóveda como dañado (lo detecta el cargador).
+  void markVaultCorrupted() {
+    _vaultCorrupted = true;
+    notifyListeners();
+  }
+
   void setHasPin(bool value) {
     if (_hasPin == value) return;
     _hasPin = value;
     notifyListeners();
   }
 
-  /// Activa o desactiva la copia de la clave para biometría.
-  ///
-  /// Para activarla hace falta la DEK de la bóveda abierta; si la bóveda
-  /// está cerrada no se hace nada.
-  Future<void> setBiometricsEnabled(bool value) async {
+  /// Activar/desactivar biometría. Desactivar exige re-autenticación previa.
+  Future<void> setBiometricsEnabled(
+    bool value, {
+    bool reauthenticated = false,
+  }) async {
     if (_biometricsEnabled == value) return;
+    if (!value && !reauthenticated) return;
     final service = _keyService;
     if (service == null) return;
 
@@ -246,12 +222,10 @@ class LockController extends ChangeNotifier {
     } else {
       await service.disableBiometrics();
     }
-
     _biometricsEnabled = value;
     notifyListeners();
   }
 
-  /// Borra los intentos fallidos (por ejemplo, tras un desbloqueo correcto).
   Future<void> resetAttempts() async {
     _lockoutState = _lockoutState.registerSuccess();
     await _persistLockoutState();
@@ -267,7 +241,8 @@ class LockController extends ChangeNotifier {
   Future<void> _persistLockoutState() async {
     final store = _lockoutStore;
     if (store == null) return;
-    if (_lockoutState.failedAttempts == 0 && _lockoutState.lockedUntil == null) {
+    if (_lockoutState.failedAttempts == 0 &&
+        _lockoutState.remainingMicros == 0) {
       await store.clear();
     } else {
       await store.save(_lockoutState);

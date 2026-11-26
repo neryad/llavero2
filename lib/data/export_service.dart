@@ -5,6 +5,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:pdf/widgets.dart' as pw;
 
 import '../core/security/crypto/backup_crypto.dart';
+import '../core/security/secret_detector.dart';
 import 'models/vault_document.dart';
 
 /// Texto que sustituye a los valores secretos en exportaciones en claro.
@@ -118,7 +119,7 @@ class ExportService {
             (entry) => entry.copyWith(
               fields: entry.fields
                   .map(
-                    (field) => field.isSecret
+                    (field) => SecretDetector.isSecret(field)
                         ? field.copyWith(value: hiddenSecretPlaceholder)
                         : field,
                   )
