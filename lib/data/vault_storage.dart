@@ -65,6 +65,7 @@ class _VaultStorage implements VaultStorage {
 
   @override
   Future<void> save(VaultDocument document, SecretKey key) async {
+    final path = await _fileSystem.resolveVaultPath();
     // Antes de sobrescribir, guardamos la versión buena como histórico.
     await _history?.snapshot();
     final plainJson = utf8.encode(jsonEncode(document.toJson()));
@@ -75,12 +76,13 @@ class _VaultStorage implements VaultStorage {
       'createdAt': DateTime.now().toUtc().toIso8601String(),
       'payload': base64Encode(blob),
     };
-    await _fileSystem.writeAtomic(vaultPath, utf8.encode(jsonEncode(envelope)));
+    await _fileSystem.writeAtomic(path, utf8.encode(jsonEncode(envelope)));
   }
 
   @override
   Future<VaultDocument?> load(SecretKey key) async {
-    final bytes = await _fileSystem.read(vaultPath);
+    final path = await _fileSystem.resolveVaultPath();
+    final bytes = await _fileSystem.read(path);
     if (bytes == null) return null;
 
     final texto = utf8.decode(bytes);
@@ -124,7 +126,8 @@ class _VaultStorage implements VaultStorage {
 
   @override
   Future<bool> exists() async {
-    final bytes = await _fileSystem.read(vaultPath);
+    final path = await _fileSystem.resolveVaultPath();
+    final bytes = await _fileSystem.read(path);
     return bytes != null;
   }
 

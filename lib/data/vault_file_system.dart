@@ -7,6 +7,13 @@ abstract class VaultFileSystem {
   /// Ruta privada donde se guarda la bóveda (ruta completa al archivo).
   String get vaultPath;
 
+  /// Ruta resuelta ahora mismo.
+  ///
+  /// Por defecto es [vaultPath]; las implementaciones de plataforma pueden
+  /// volver a consultar `path_provider` por si el directorio cambió tras una
+  /// actualización del sistema operativo o de la app.
+  Future<String> resolveVaultPath() async => vaultPath;
+
   /// Guarda el contenido del archivo en la ruta privada.
   Future<void> write(String path, List<int> bytes);
 
@@ -49,8 +56,17 @@ class PlatformVaultFileSystem implements VaultFileSystem {
 
   /// Resuelve la ruta privada. Debe llamarse antes de usar [vaultPath].
   Future<void> initialize() async {
-    _baseDir ??= await getApplicationSupportDirectory();
+    _baseDir ??= await _freshDirectory();
   }
+
+  /// Vuelve a consultar `path_provider` y actualiza la ruta cacheada.
+  @override
+  Future<String> resolveVaultPath() async {
+    _baseDir = await _freshDirectory();
+    return vaultPath;
+  }
+
+  Future<Directory> _freshDirectory() => getApplicationSupportDirectory();
 
   @override
   String get vaultPath {
@@ -104,6 +120,9 @@ class MemoryVaultFileSystem implements VaultFileSystem {
 
   @override
   String get vaultPath => '/memory/vault.llavero';
+
+  @override
+  Future<String> resolveVaultPath() async => vaultPath;
 
   @override
   Future<void> write(String path, List<int> bytes) async {

@@ -6,33 +6,43 @@ import 'dart:io';
 /// puede recuperar una versión reciente aunque la papelera ya haya purgado
 /// una entrada. El historial es local y nunca sale del dispositivo.
 class VaultHistory {
-  VaultHistory({required String vaultPath, this.keep = 10})
-      : _vaultFile = File(vaultPath);
+  VaultHistory({
+    String? vaultPath,
+    this._pathProvider,
+    this.keep = 10,
+  }) : _fixedPath = vaultPath ?? 'PrivateSupportDirectory/llavero/vault.dat';
 
-  final File _vaultFile;
+  final String _fixedPath;
+  final Future<String> Function()? _pathProvider;
 
   /// Número máximo de versiones conservadas.
   final int keep;
 
-  Directory get _directory =>
-      Directory('${_vaultFile.parent.path}/history');
+  /// Ruta actual del archivo (puede cambiar tras una actualización).
+  Future<String> get path async => _pathProvider?.call() ?? _fixedPath;
 
-  String _pathFor(DateTime version) =>
-      '${_directory.path}/vault-${version.microsecondsSinceEpoch}.dat';
+  Future<Directory> _directory() async =>
+      Directory('${File(await path).parent.path}/history');
+
+  String _pathFor(Directory dir, DateTime version) =>
+      '${dir.path}/vault-${version.microsecondsSinceEpoch}.dat';
 
   /// Guarda una copia del archivo actual si existe.
   Future<void> snapshot() async {
-    if (!await _vaultFile.exists()) return;
-    await _directory.create(recursive: true);
+    final file = File(await path);
+    if (!await file.exists()) return;
+    final dir = await _directory();
+    await dir.create(recursive: true);
     final version = DateTime.now().toUtc();
-    await File(_pathFor(version)).writeAsBytes(await _vaultFile.readAsBytes());
+    await File(_pathFor(dir, version)).writeAsBytes(await file.readAsBytes());
     await prune();
   }
 
   /// Versiones disponibles, de más reciente a más antigua.
   Future<List<DateTime>> versions() async {
-    if (!await _directory.exists()) return <DateTime>[];
-    final files = _directory
+    final dir = await _directory();
+    if (!await dir.exists()) return <DateTime>[];
+    final files = dir
         .listSync()
         .whereType<File>()
         .where((f) => f.path.endsWith('.dat'))
@@ -52,7 +62,7 @@ class VaultHistory {
 
   /// Lee una versión concreta.
   Future<List<int>?> read(DateTime version) async {
-    final file = File(_pathFor(version));
+    final file = File(_pathFor(await _directory(), version));
     if (!await file.exists()) return null;
     return file.readAsBytes();
   }
@@ -61,22 +71,25 @@ class VaultHistory {
   Future<void> restore(DateTime version) async {
     final bytes = await read(version);
     if (bytes == null) return;
-    await _vaultFile.parent.create(recursive: true);
-    await _vaultFile.writeAsBytes(bytes);
+    final file = File(await path);
+    await file.parent.create(recursive: true);
+    await file.writeAsBytes(bytes);
   }
 
   /// Elimina las versiones más allá de [keep].
   Future<void> prune() async {
+    final dir = await _directory();
     final all = await versions();
     for (final version in all.skip(keep)) {
-      await File(_pathFor(version)).delete();
+      await File(_pathFor(dir, version)).delete();
     }
   }
 
   /// Borra todo el historial.
   Future<void> clear() async {
-    if (await _directory.exists()) {
-      await _directory.delete(recursive: true);
+    final dir = await _directory();
+    if (await dir.exists()) {
+      await dir.delete(recursive: true);
     }
   }
 }

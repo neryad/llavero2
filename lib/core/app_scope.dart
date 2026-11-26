@@ -59,7 +59,9 @@ class AppControllers extends ChangeNotifier {
       entries: EntriesController(
         initialStorage: VaultStorage(
           initialFileSystem: fileSystem,
-          history: VaultHistory(vaultPath: fileSystem.vaultPath),
+          history: VaultHistory(
+            pathProvider: fileSystem.resolveVaultPath,
+          ),
         ),
       ),
       initialCategories: CategoriesController(store: store),
