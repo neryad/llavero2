@@ -8,6 +8,11 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- **Mejora #17 del plan de mejoras: soporte de escritorio/web.**
+  `PlatformCapabilities` deshabilita biometría y anti-capturas fuera de móvil
+  y avisa en web del almacén no seguro; macOS exige deployment target 12.0.
+  Builds macOS debug y web release verificados. 4 tests nuevos.
+
 - **Mejora #16 del plan de mejoras: historial local de la bóveda.** Copias
   automáticas antes de cada escritura (máx. 10), pantalla para listar y
   restaurar versiones. 5 tests nuevos.

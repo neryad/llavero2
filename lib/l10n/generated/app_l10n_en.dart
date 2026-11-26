@@ -417,4 +417,16 @@ class L10nEn extends L10n {
 
   @override
   String get versionRestored => 'Version restored.';
+
+  @override
+  String get biometricsNotSupported =>
+      'Biometrics is only available on mobile.';
+
+  @override
+  String get screenshotsNotSupported =>
+      'Screenshot blocking is only available on mobile.';
+
+  @override
+  String get webStorageWarning =>
+      'On the web, data is stored in the browser rather than a system secure vault. Use the mobile app for stronger security.';
 }

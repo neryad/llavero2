@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/app_scope.dart';
 import '../../core/platform/device_integrity.dart';
+import '../../core/platform/platform_capabilities.dart';
 import '../../core/platform/screen_security.dart';
 import '../../core/routes/app_routes.dart';
 import '../../core/widgets/app_scaffold.dart';
@@ -45,8 +46,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final controllers = AppScope.of(context);
     final settings = controllers.settings;
     final lock = controllers.lock;
+    final capabilities = PlatformCapabilities.detect();
     // Solo se puede guardar la copia de la DEK si está desenvolta.
-    final canToggleBiometrics = !lock.isLocked && lock.unlockedDek != null;
+    final canToggleBiometrics = capabilities.supportsBiometrics &&
+        !lock.isLocked &&
+        lock.unlockedDek != null;
 
     return AppScaffold(
       appBar: AppBar(title: Text(l10n.settingsLabel)),
@@ -113,9 +117,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ? l10n.biometricsStatusOn
                     : l10n.biometricsStatusOff,
               ),
-              subtitle: canToggleBiometrics
-                  ? null
-                  : Text(l10n.biometricsNeedsUnlock),
+              subtitle: !capabilities.supportsBiometrics
+                  ? Text(l10n.biometricsNotSupported)
+                  : (canToggleBiometrics
+                      ? null
+                      : Text(l10n.biometricsNeedsUnlock)),
               trailing: Switch(
                 value: lock.biometricsEnabled,
                 onChanged: canToggleBiometrics
@@ -202,10 +208,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
             SwitchListTile(
               secondary: const Icon(Icons.screenshot_outlined),
               title: Text(l10n.blockScreenshotsSettingLabel),
-              subtitle: Platform.isIOS ? Text(l10n.screenshotsIosNote) : null,
-              value: settings.blockScreenshots,
-              onChanged: _setScreenshots,
+              subtitle: !capabilities.supportsScreenshotBlocking
+                  ? Text(l10n.screenshotsNotSupported)
+                  : (Platform.isIOS ? Text(l10n.screenshotsIosNote) : null),
+              value: settings.blockScreenshots && capabilities.supportsScreenshotBlocking,
+              onChanged: capabilities.supportsScreenshotBlocking
+                  ? _setScreenshots
+                  : null,
             ),
+            if (capabilities.isWeb)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  l10n.webStorageWarning,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                ),
+              ),
             ListTile(
               leading: const Icon(Icons.content_paste_off_outlined),
               title: Text(

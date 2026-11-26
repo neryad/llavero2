@@ -107,7 +107,12 @@ este archivo y se hace commit.
   (máx. 10 versiones), pantalla `/settings/history` para listar y restaurar.
   5 tests nuevos.
 
-- [ ] **17. Soporte real de escritorio/web** (hoy solo móvil).
+- [x] **17. Soporte real de escritorio/web.** ✅ Completada 2026-11-26 —
+  `PlatformCapabilities` deshabilita biometría/anti-capturas fuera de móvil y
+  avisa en web que el almacén no es seguro. Deployment target de macOS
+  actualizado a 12.0. Builds verificados: macOS debug ✅, web release ✅;
+  macOS release falla por un problema de empaquetado universal de Flutter
+  (arquitecturas), documentado. 4 tests nuevos.
 
 ---
 
@@ -131,8 +136,8 @@ este archivo y se hace commit.
 |---|---|---|
 | 1 | 4 | 4 |
 | 2 | 3 | 5 |
-| 3 | 6 | 8 |
+| 3 | 7 | 8 |
 | 4 | 0 | 3 |
-| **Total** | **15** | **20** |
+| **Total** | **16** | **20** |
 
-Última actualización: 2026-11-26 (15 completadas, 1 diferida).
+Última actualización: 2026-11-26 (16 completadas, 1 diferida).

@@ -633,5 +633,20 @@
   "versionRestored": "Version restored.",
   "@versionRestored": {
     "description": "Message shown after restoring a vault version."
+  },
+
+  "biometricsNotSupported": "Biometrics is only available on mobile.",
+  "@biometricsNotSupported": {
+    "description": "Explanation shown when biometrics is unavailable on this platform."
+  },
+
+  "screenshotsNotSupported": "Screenshot blocking is only available on mobile.",
+  "@screenshotsNotSupported": {
+    "description": "Explanation shown when screenshot blocking is unavailable on this platform."
+  },
+
+  "webStorageWarning": "On the web, data is stored in the browser rather than a system secure vault. Use the mobile app for stronger security.",
+  "@webStorageWarning": {
+    "description": "Warning shown on web about less secure local storage."
   }
 }

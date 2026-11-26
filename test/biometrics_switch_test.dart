@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:llavero2/controllers/entries_controller.dart';
 import 'package:llavero2/controllers/lock_controller.dart';
 import 'package:llavero2/core/app_scope.dart';
+import 'package:llavero2/core/platform/platform_capabilities.dart';
 import 'package:llavero2/core/security/key_vault_service.dart';
 import 'package:llavero2/core/security/lockout_store.dart';
 import 'package:llavero2/data/vault_file_system.dart';
@@ -39,7 +40,10 @@ class _FakeKeyService implements VaultKeyService {
   Future<void> eraseEverything() async {}
 }
 
-Future<AppControllers> pumpSettings(WidgetTester tester, {required bool unlocked}) async {
+Future<AppControllers> pumpSettings(
+  WidgetTester tester, {
+  required bool unlocked,
+}) async {
   final lock = unlocked
       ? LockController(
           initialKeyService: _FakeKeyService(),
@@ -73,31 +77,43 @@ Future<AppControllers> pumpSettings(WidgetTester tester, {required bool unlocked
 }
 
 void main() {
-  group('Mejora 3 — Switch de biometría honesto', () {
+  final capabilities = PlatformCapabilities.detect();
+
+  group('Mejora 3 + 17 — Switch de biometría honesto', () {
     testWidgets('con la bóveda cerrada el switch está deshabilitado y se explica',
         (tester) async {
-      final controllers = await pumpSettings(tester, unlocked: false);
-
-      expect(controllers.lock.isLocked, isTrue);
-      expect(find.text('Disponible solo con la bóveda abierta.'), findsOneWidget);
+      await pumpSettings(tester, unlocked: false);
 
       final biometricSwitch = find.byType(Switch).first;
       expect(tester.widget<Switch>(biometricSwitch).onChanged, isNull);
+
+      if (capabilities.supportsBiometrics) {
+        expect(
+          find.text('Disponible solo con la bóveda abierta.'),
+          findsOneWidget,
+        );
+      } else {
+        expect(
+          find.text('La biometría solo está disponible en móvil.'),
+          findsOneWidget,
+        );
+      }
     });
 
-    testWidgets('con la bóveda abierta el switch funciona', (tester) async {
+    testWidgets('el switch solo funciona en móvil y con la bóveda abierta',
+        (tester) async {
       final controllers = await pumpSettings(tester, unlocked: true);
 
-      expect(controllers.lock.isLocked, isFalse);
-      expect(find.text('Disponible solo con la bóveda abierta.'), findsNothing);
-
       final biometricSwitch = find.byType(Switch).first;
-      expect(tester.widget<Switch>(biometricSwitch).onChanged, isNotNull);
-
-      await tester.tap(biometricSwitch);
-      await tester.pump();
-
-      expect(controllers.lock.biometricsEnabled, isTrue);
+      if (capabilities.supportsBiometrics) {
+        expect(tester.widget<Switch>(biometricSwitch).onChanged, isNotNull);
+        await tester.tap(biometricSwitch);
+        await tester.pump();
+        expect(controllers.lock.biometricsEnabled, isTrue);
+      } else {
+        expect(tester.widget<Switch>(biometricSwitch).onChanged, isNull);
+        expect(controllers.lock.biometricsEnabled, isFalse);
+      }
     });
   });
 }

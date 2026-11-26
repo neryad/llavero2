@@ -417,4 +417,16 @@ class L10nEs extends L10n {
 
   @override
   String get versionRestored => 'Versión restaurada.';
+
+  @override
+  String get biometricsNotSupported =>
+      'La biometría solo está disponible en móvil.';
+
+  @override
+  String get screenshotsNotSupported =>
+      'El bloqueo de capturas solo está disponible en móvil.';
+
+  @override
+  String get webStorageWarning =>
+      'En la web los datos se guardan en el navegador, no en un almacén seguro del sistema. Usa la app móvil para mayor seguridad.';
 }

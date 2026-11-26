@@ -633,5 +633,20 @@
   "versionRestored": "Versión restaurada.",
   "@versionRestored": {
     "description": "Message shown after restoring a vault version."
+  },
+
+  "biometricsNotSupported": "La biometría solo está disponible en móvil.",
+  "@biometricsNotSupported": {
+    "description": "Explanation shown when biometrics is unavailable on this platform."
+  },
+
+  "screenshotsNotSupported": "El bloqueo de capturas solo está disponible en móvil.",
+  "@screenshotsNotSupported": {
+    "description": "Explanation shown when screenshot blocking is unavailable on this platform."
+  },
+
+  "webStorageWarning": "En la web los datos se guardan en el navegador, no en un almacén seguro del sistema. Usa la app móvil para mayor seguridad.",
+  "@webStorageWarning": {
+    "description": "Warning shown on web about less secure local storage."
   }
 }

@@ -5,6 +5,7 @@ import 'package:llavero2/controllers/entries_controller.dart';
 import 'package:llavero2/controllers/lock_controller.dart';
 import 'package:llavero2/controllers/settings_controller.dart';
 import 'package:llavero2/core/app_scope.dart';
+import 'package:llavero2/core/platform/platform_capabilities.dart';
 import 'package:llavero2/data/vault_file_system.dart';
 import 'package:llavero2/data/vault_storage.dart';
 import 'package:llavero2/features/settings/settings_screen.dart';
@@ -46,7 +47,7 @@ void main() {
       expect(find.text('Integridad del dispositivo'), findsOneWidget);
       expect(find.text('Categorías'), findsOneWidget);
 
-      await tester.drag(find.byType(ListView), const Offset(0, -600));
+      await tester.drag(find.byType(ListView), const Offset(0, -900));
       await tester.pumpAndSettle();
       expect(find.text('Tema'), findsOneWidget);
       expect(find.text('Idioma'), findsOneWidget);
@@ -78,17 +79,24 @@ void main() {
       expect(controllers.settings.language, AppLanguage.english);
     });
 
-    testWidgets('el bloqueo de capturas se puede cambiar', (tester) async {
+    testWidgets('el bloqueo de capturas respeta la plataforma', (tester) async {
       final controllers = await pumpSettings(tester);
       await tester.drag(find.byType(ListView), const Offset(0, -600));
       await tester.pumpAndSettle();
-      final switcher = find.byType(Switch).last;
+      final switcher = find.byType(SwitchListTile);
 
-      expect(controllers.settings.blockScreenshots, isTrue);
-      await tester.tap(switcher);
-      await tester.pumpAndSettle();
-
-      expect(controllers.settings.blockScreenshots, isFalse);
+      if (PlatformCapabilities.detect().supportsScreenshotBlocking) {
+        expect(tester.widget<SwitchListTile>(switcher).onChanged, isNotNull);
+        await tester.tap(switcher);
+        await tester.pumpAndSettle();
+        expect(controllers.settings.blockScreenshots, isFalse);
+      } else {
+        expect(tester.widget<SwitchListTile>(switcher).onChanged, isNull);
+        expect(
+          find.text('El bloqueo de capturas solo está disponible en móvil.'),
+          findsOneWidget,
+        );
+      }
     });
   });
 }

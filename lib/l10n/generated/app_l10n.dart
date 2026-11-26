@@ -888,6 +888,24 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Version restored.'**
   String get versionRestored;
+
+  /// Explanation shown when biometrics is unavailable on this platform.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometrics is only available on mobile.'**
+  String get biometricsNotSupported;
+
+  /// Explanation shown when screenshot blocking is unavailable on this platform.
+  ///
+  /// In en, this message translates to:
+  /// **'Screenshot blocking is only available on mobile.'**
+  String get screenshotsNotSupported;
+
+  /// Warning shown on web about less secure local storage.
+  ///
+  /// In en, this message translates to:
+  /// **'On the web, data is stored in the browser rather than a system secure vault. Use the mobile app for stronger security.'**
+  String get webStorageWarning;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {
