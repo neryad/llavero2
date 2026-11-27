@@ -697,4 +697,14 @@ class L10nEs extends L10n {
 
   @override
   String get exportBackupShortLabel => 'Exportar copia';
+
+  @override
+  String get legalPrivacyTitle => 'Política de privacidad';
+
+  @override
+  String get legalTermsTitle => 'Términos y condiciones';
+
+  @override
+  String get legalDocumentUnavailable =>
+      'No se pudo cargar el documento legal.';
 }

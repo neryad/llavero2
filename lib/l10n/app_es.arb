@@ -883,5 +883,17 @@
   "exportBackupShortLabel": "Exportar copia",
   "@exportBackupShortLabel": {
     "description": "exportBackupShortLabel"
+  },
+  "legalPrivacyTitle": "Política de privacidad",
+  "@legalPrivacyTitle": {
+    "description": "legalPrivacyTitle"
+  },
+  "legalTermsTitle": "Términos y condiciones",
+  "@legalTermsTitle": {
+    "description": "legalTermsTitle"
+  },
+  "legalDocumentUnavailable": "No se pudo cargar el documento legal.",
+  "@legalDocumentUnavailable": {
+    "description": "legalDocumentUnavailable"
   }
 }

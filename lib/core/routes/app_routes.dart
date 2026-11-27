@@ -8,6 +8,7 @@ import '../../features/settings/change_pin_screen.dart';
 import '../../features/export_import/export_import_screen.dart';
 import '../../features/entries/entry_detail_screen.dart';
 import '../../features/entries/entry_form_screen.dart';
+import '../../features/legal/legal_document.dart';
 import '../../features/lock/lock_screen.dart';
 import '../../features/onboarding/onboarding_screen.dart';
 import '../../features/shared/coming_soon_screen.dart';
@@ -55,6 +56,9 @@ abstract final class AppRoutes {
   /// Estado de seguridad de las contraseñas.
   static const String securityHealth = '/security-health';
 
+  /// Documentos legales (política y términos).
+  static const String legal = '/legal';
+
   /// Genera la pantalla correspondiente a cada ruta.
   static Route<dynamic> onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
@@ -92,6 +96,14 @@ abstract final class AppRoutes {
         return _build(const ChangePinScreen(), routeSettings);
       case securityHealth:
         return _build(const SecurityHealthScreen(), routeSettings);
+      case legal:
+        return _build(
+          LegalDocumentScreen(
+            kind: routeSettings.arguments as LegalDocumentKind? ??
+                LegalDocumentKind.privacy,
+          ),
+          routeSettings,
+        );
       default:
         return _build(const ComingSoonScreen(), routeSettings);
     }

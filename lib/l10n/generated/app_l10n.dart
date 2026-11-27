@@ -1398,6 +1398,24 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Export backup'**
   String get exportBackupShortLabel;
+
+  /// legalPrivacyTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy policy'**
+  String get legalPrivacyTitle;
+
+  /// legalTermsTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Terms and conditions'**
+  String get legalTermsTitle;
+
+  /// legalDocumentUnavailable
+  ///
+  /// In en, this message translates to:
+  /// **'The legal document could not be loaded.'**
+  String get legalDocumentUnavailable;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {
