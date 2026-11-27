@@ -20,6 +20,22 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
 ---
 
+## [1.0.1] — 2026-11-27
+
+### Changed
+- Bloqueo: intentos serializados, conteo persistido antes de la verificación,
+  retardo solo tras fallo confirmado y reversión en errores no-PIN.
+- Límites de parámetros KDF al leer bóvedas y respaldos; valores fuera de rango
+  se rechazan antes de derivar la clave.
+- Mensaje conjunto «Contraseña incorrecta o archivo dañado» para fallos GCM;
+  se conservan los mensajes de estructura rota y versión nueva.
+- Escritura atómica con `flush: true` antes del rename.
+- Fallo al excluir de iCloud ya no se presenta como fallo de guardado: se
+  reintenta en el siguiente guardado o al arrancar.
+- Texto bajo «Desbloqueo biométrico» y limitaciones del README actualizadas.
+
+---
+
 ## [Unreleased] — 2026-11-27
 
 ### Added

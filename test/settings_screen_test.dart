@@ -115,6 +115,45 @@ void main() {
       expect(controllers.settings.language, AppLanguage.english);
     });
 
+
+    testWidgets('el texto de biometría se muestra en español', (tester) async {
+      await pumpSettings(tester);
+      expect(
+        find.text(
+          'Cualquier huella o rostro registrado en este teléfono podrá abrir Llavero.',
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('el texto de biometría se muestra en inglés', (tester) async {
+      final controllers = AppControllers(
+        entries: EntriesController(
+          initialStorage: VaultStorage(
+            initialFileSystem: MemoryVaultFileSystem(),
+          ),
+        ),
+        settings: SettingsController(initialLanguage: AppLanguage.english),
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: L10n.localizationsDelegates,
+          supportedLocales: L10n.supportedLocales,
+          locale: const Locale('en'),
+          home: AppScope(
+            controllers: controllers,
+            child: const SettingsScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        find.text(
+          'Any fingerprint or face enrolled on this phone will be able to open Llavero.',
+        ),
+        findsOneWidget,
+      );
+    });
     testWidgets('el bloqueo de capturas respeta la plataforma', (tester) async {
       final controllers = await pumpSettings(tester);
       await scrollTo(tester, 'Bloquear capturas');

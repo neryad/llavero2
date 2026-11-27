@@ -136,28 +136,40 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   onTap: () => Navigator.of(context)
                       .pushNamed(AppRoutes.changePin),
                 ),
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  minTileHeight: AppSpacing.rowMinHeight,
-                  secondary: const Icon(Icons.fingerprint),
-                  title: Text(l10n.biometricSettingLabel, style: _labelStyle),
-                  subtitle: !capabilities.supportsBiometrics
-                      ? Text(l10n.biometricsNotSupported)
-                      : (canToggleBiometrics
-                          ? null
-                          : Text(l10n.biometricsNeedsUnlock)),
-                  value: lock.biometricsEnabled,
-                  onChanged: canToggleBiometrics
-                      ? (value) async {
-                          if (!value && !await requireReauth(context)) {
-                            return;
-                          }
-                          await lock.setBiometricsEnabled(
-                            value,
-                            reauthenticated: !value,
-                          );
-                        }
-                      : null,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      minTileHeight: AppSpacing.rowMinHeight,
+                      secondary: const Icon(Icons.fingerprint),
+                      title: Text(l10n.biometricSettingLabel, style: _labelStyle),
+                      subtitle: !capabilities.supportsBiometrics
+                          ? Text(l10n.biometricsNotSupported)
+                          : (canToggleBiometrics
+                              ? null
+                              : Text(l10n.biometricsNeedsUnlock)),
+                      value: lock.biometricsEnabled,
+                      onChanged: canToggleBiometrics
+                          ? (value) async {
+                              if (!value && !await requireReauth(context)) {
+                                return;
+                              }
+                              await lock.setBiometricsEnabled(
+                                value,
+                                reauthenticated: !value,
+                              );
+                            }
+                          : null,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: _labelIndent),
+                      child: Text(
+                        l10n.biometricHelper,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ),
+                  ],
                 ),
                 _row(
                   icon: Icons.lock_clock_outlined,

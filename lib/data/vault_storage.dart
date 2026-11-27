@@ -15,8 +15,10 @@ import '../data/vault_file_system.dart';
 /// - El contenido cifrado en base64.
 abstract class VaultStorage {
   /// Crea un nuevo almacenamiento de bóveda.
-  factory VaultStorage({required VaultFileSystem initialFileSystem}) =
-      _VaultStorage;
+  factory VaultStorage({
+    required VaultFileSystem initialFileSystem,
+    Future<void> Function(String path)? testExclude,
+  }) = _VaultStorage;
 
   /// El sistema de archivos usado (permite inyectar uno en memoria para tests).
   VaultFileSystem get fileSystem;
@@ -46,10 +48,15 @@ abstract class VaultStorage {
 
 /// Implementación real sobre [VaultFileSystem].
 class _VaultStorage implements VaultStorage {
-  _VaultStorage({required VaultFileSystem initialFileSystem})
-      : _fileSystem = initialFileSystem;
+  _VaultStorage({
+    required VaultFileSystem initialFileSystem,
+    testExclude,
+  })  : _fileSystem = initialFileSystem,
+        _testExclude = testExclude;
 
   final VaultFileSystem _fileSystem;
+  final Future<void> Function(String path)? _testExclude;
+  String? _pendingExclusionPath;
 
   @override
   VaultFileSystem get fileSystem => _fileSystem;
@@ -71,9 +78,36 @@ class _VaultStorage implements VaultStorage {
       'payload': base64Encode(blob),
     };
     final bytes = utf8.encode(jsonEncode(envelope));
+    // Si una exclusión anterior falló, se reintenta antes de seguir.
+    await _retryPendingExclusion();
     await _fileSystem.writeAtomic(path, bytes);
-    // iOS: excluir de iCloud siempre tras crear/sobrescribir/restaurar.
+    // El archivo ya está guardado: un fallo aquí no debe parecer un fallo de
+    // guardado. Se reintenta en el próximo save o al arrancar.
+    try {
+      await _exclude(path);
+    } on Object {
+      _pendingExclusionPath = path;
+    }
+  }
+
+  Future<void> _exclude(String path) async {
+    final override = _testExclude;
+    if (override != null) {
+      await override(path);
+      return;
+    }
     await BackupExclusion.excludeFromBackup(path);
+  }
+
+  Future<void> _retryPendingExclusion() async {
+    final pending = _pendingExclusionPath;
+    if (pending == null) return;
+    try {
+      await _exclude(pending);
+      _pendingExclusionPath = null;
+    } on Object {
+      // Sin log: la ruta es información sensible.
+    }
   }
 
   @override
@@ -196,6 +230,6 @@ class _VaultStorage implements VaultStorage {
 
   @override
   Future<void> excludeFromBackup() async {
-    await BackupExclusion.excludeFromBackup(await _fileSystem.resolveVaultPath());
+    await _retryPendingExclusion();
   }
 }

@@ -747,4 +747,11 @@ class L10nEn extends L10n {
 
   @override
   String get onboardingLegalSuffix => '.';
+
+  @override
+  String get invalidBackupPasswordOrFile => 'Wrong password or damaged file';
+
+  @override
+  String get biometricHelper =>
+      'Any fingerprint or face enrolled on this phone will be able to open Llavero.';
 }

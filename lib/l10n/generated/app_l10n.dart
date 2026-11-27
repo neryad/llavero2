@@ -1494,6 +1494,18 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'.'**
   String get onboardingLegalSuffix;
+
+  /// invalidBackupPasswordOrFile
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong password or damaged file'**
+  String get invalidBackupPasswordOrFile;
+
+  /// biometricHelper
+  ///
+  /// In en, this message translates to:
+  /// **'Any fingerprint or face enrolled on this phone will be able to open Llavero.'**
+  String get biometricHelper;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

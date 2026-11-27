@@ -104,7 +104,7 @@ class PlatformVaultFileSystem implements VaultFileSystem {
     // Crear el directorio padre antes de abrir el .tmp.
     await File(path).parent.create(recursive: true);
     final tmpFile = File('$path.tmp');
-    await tmpFile.writeAsBytes(bytes);
+    await tmpFile.writeAsBytes(bytes, flush: true);
     // Renombrar de .tmp al nombre final (operación atómica del SO).
     await tmpFile.rename(path);
   }

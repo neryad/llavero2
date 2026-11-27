@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cryptography/cryptography.dart';
 import 'package:flutter/foundation.dart';
 
@@ -33,6 +35,9 @@ class LockController extends ChangeNotifier {
   VaultProblem? _vaultProblem;
 
   SecretKey? _unlockedDek;
+
+  /// Serializa los intentos para que dos llamadas simultáneas no se pierdan.
+  Future<void> _attemptQueue = Future<void>.value();
 
   SecretKey? get unlockedDek => _unlockedDek;
   bool get isLocked => _isLocked;
@@ -73,7 +78,22 @@ class LockController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> submitPin(String pin) async {
+  Future<bool> submitPin(String pin) => _serialized(() => _submitPin(pin));
+
+  /// Cola con liberación garantizada incluso si el intento lanza excepción.
+  Future<T> _serialized<T>(Future<T> Function() action) async {
+    final previous = _attemptQueue;
+    final completer = Completer<void>();
+    _attemptQueue = completer.future;
+    try {
+      await previous.catchError((Object _) {});
+      return await action();
+    } finally {
+      if (!completer.isCompleted) completer.complete();
+    }
+  }
+
+  Future<bool> _submitPin(String pin) async {
     final service = _keyService;
     if (service == null) {
       throw StateError('LockController necesita un VaultKeyService.');
@@ -83,29 +103,52 @@ class LockController extends ChangeNotifier {
       return false;
     }
 
-    final SecretKey dek;
+    final before = _lockoutState;
+    final attempts = before.failedAttempts + 1;
+    // Conteo provisional: todavía no se aplica el castigo. Así un PIN
+    // correcto nunca muestra bloqueo, aunque mate la app durante la KDF.
+    _lockoutState = LockoutState(failedAttempts: attempts);
+    await _persistLockoutState();
+    notifyListeners();
+
     try {
-      dek = await service.unlockWithPin(pin);
-    } on UnsupportedVaultVersionException {
-      markVaultProblem(VaultProblem.newerFormat);
-      return false;
+      final dek = await service.unlockWithPin(pin);
+      _lockoutState = LockoutState.initial;
+      await _persistLockoutState();
+      clearVaultProblem();
+      _unlockedDek = dek;
+      _isLocked = false;
+      notifyListeners();
+      return true;
     } on InvalidPinException {
-      await _registerFailedAttempt();
+      // Único fallo confirmado como PIN equivocado: aquí se aplica el retardo.
+      final duration = LockoutPolicy.lockoutFor(attempts);
+      final now = _clock();
+      _lockoutState = duration == null
+          ? LockoutState(failedAttempts: attempts)
+          : LockoutState(
+              failedAttempts: attempts,
+              remainingMicros: duration.inMicroseconds,
+              lastSeenMicros: now.microsecondsSinceEpoch,
+            );
+      await _persistLockoutState();
+      notifyListeners();
       return false;
-    } on MissingVaultException {
-      rethrow;
-    } on TamperedDataException {
-      markVaultProblem(VaultProblem.corrupted);
+    } on Object catch (error) {
+      // Otros fallos no son culpa del usuario: se deshace el conteo.
+      _lockoutState = before;
+      await _persistLockoutState();
+      final problem = switch (error) {
+        UnsupportedVaultVersionException() => VaultProblem.newerFormat,
+        MissingVaultException() => VaultProblem.missing,
+        TamperedDataException() || FormatException() => VaultProblem.corrupted,
+        _ => VaultProblem.unreadable,
+      };
+      if (error is! MissingVaultException) markVaultProblem(problem);
+      notifyListeners();
+      if (error is MissingVaultException) rethrow;
       return false;
     }
-
-    clearVaultProblem();
-    _lockoutState = _lockoutState.registerSuccess();
-    await _persistLockoutState();
-    _unlockedDek = dek;
-    _isLocked = false;
-    notifyListeners();
-    return true;
   }
 
   /// Verifica un PIN sin abrir la bóveda (para re-autenticación).
@@ -119,6 +162,9 @@ class LockController extends ChangeNotifier {
       await _registerFailedAttempt();
       return false;
     } on TamperedDataException {
+      markVaultProblem(VaultProblem.corrupted);
+      return false;
+    } on FormatException {
       markVaultProblem(VaultProblem.corrupted);
       return false;
     }
@@ -167,6 +213,9 @@ class LockController extends ChangeNotifier {
       await _registerFailedAttempt();
       return false;
     } on TamperedDataException {
+      markVaultProblem(VaultProblem.corrupted);
+      return false;
+    } on FormatException {
       markVaultProblem(VaultProblem.corrupted);
       return false;
     }

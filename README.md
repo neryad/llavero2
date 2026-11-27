@@ -199,8 +199,10 @@ Estas son carencias reales de la versión actual, no detalles menores:
 
 1. **Sin sincronización (por diseño)**: la bóveda vive en un solo dispositivo.
    Para pasarla a otro, exporta un respaldo cifrado e impórtalo allí.
-2. **La biometría solo se activa con la bóveda abierta**: hace falta la DEK
-   para guardar su copia en el almacén seguro del sistema.
+2. **La biometría depende del sistema operativo** y solo se activa con la
+   bóveda abierta: hace falta la DEK para guardar su copia en el almacén
+   seguro del sistema. Cualquier huella o rostro registrado en el teléfono
+   podrá abrir Llavero si la biometría está activada.
 3. **Reloj del dispositivo**: el bloqueo por intentos fallidos guarda el tiempo
    restante y la última marca de hora; reiniciar el móvil **no** lo reinicia,
    pero si se adelanta el reloj el castigo puede agotarse antes. Si se retrasa,
@@ -238,6 +240,9 @@ Estas son carencias reales de la versión actual, no detalles menores:
 14. **Soporte móvil principal**: hay carpetas `web/` y `macos/` del template,
     pero el flujo de seguridad (Keystore/Keychain, capturas) está pensado para
     Android e iOS; el release universal de macOS falla por empaquetado.
+15. **Fuerza offline**: si alguien copia el archivo cifrado, la única barrera
+    es el coste del KDF y la longitud del PIN. Usa de 6 a 8 dígitos y una
+    frase larga como contraseña del respaldo.
 
 ---
 

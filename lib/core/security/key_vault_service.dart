@@ -68,6 +68,17 @@ class SecureStoreVaultKeyService implements VaultKeyService {
     return wrapped != null && params != null;
   }
 
+  /// Parámetros corruptos o fuera de rango se tratan como datos dañados.
+  KdfParameters _readParams(String raw) {
+    try {
+      return KdfParameters.fromJson(
+        (jsonDecode(raw) as Map<String, Object?>).cast<String, Object?>(),
+      );
+    } on FormatException {
+      throw const TamperedDataException();
+    }
+  }
+
   @override
   Future<void> createVault(String pin) async {
     if (await hasVault()) {
@@ -126,9 +137,7 @@ class SecureStoreVaultKeyService implements VaultKeyService {
       throw const MissingVaultException();
     }
 
-    final params = KdfParameters.fromJson(
-      (jsonDecode(paramsBase64) as Map<String, Object?>).cast<String, Object?>(),
-    );
+    final params = _readParams(paramsBase64);
     final kek = await params.deriveKey(pin);
     final wrappedDek = base64Decode(wrappedBase64);
     return _crypto.unwrapDek(wrappedDek, kek);
@@ -143,9 +152,7 @@ class SecureStoreVaultKeyService implements VaultKeyService {
     }
 
     // 1. Desenvolver la DEK con la KEK derivada del PIN actual.
-    final oldParams = KdfParameters.fromJson(
-      (jsonDecode(paramsJson) as Map<String, Object?>).cast<String, Object?>(),
-    );
+    final oldParams = _readParams(paramsJson);
     final oldKek = await oldParams.deriveKey(currentPin);
     final dek = await _crypto.unwrapDek(base64Decode(wrappedBase64), oldKek);
 

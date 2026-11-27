@@ -957,5 +957,13 @@
   "onboardingLegalSuffix": ".",
   "@onboardingLegalSuffix": {
     "description": "onboardingLegalSuffix"
+  },
+  "invalidBackupPasswordOrFile": "Contraseña incorrecta o archivo dañado",
+  "@invalidBackupPasswordOrFile": {
+    "description": "invalidBackupPasswordOrFile"
+  },
+  "biometricHelper": "Cualquier huella o rostro registrado en este teléfono podrá abrir Llavero.",
+  "@biometricHelper": {
+    "description": "biometricHelper"
   }
 }

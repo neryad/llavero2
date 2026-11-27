@@ -40,6 +40,25 @@ enum KdfType {
 const int kDefaultArgon2MemoryKiB =
     int.fromEnvironment('LLAVERO_KDF_MEMORY_KIB', defaultValue: 64 * 1024);
 
+/// Límites aceptados al leer parámetros de un archivo externo.
+///
+/// Cubren con holgura todos los valores que esta app ha creado o usado:
+/// Argon2id 16–64 MiB y 3 pasadas, PBKDF2 1000–600000 iteraciones.
+abstract final class KdfBounds {
+  static const int minSaltBytes = 16;
+  static const int maxSaltBytes = 64;
+  static const int minArgon2MemoryKiB = 8 * 1024;
+  static const int maxArgon2MemoryKiB = 128 * 1024;
+  static const int minArgon2Iterations = 1;
+  static const int maxArgon2Iterations = 6;
+  static const int minPbkdf2Iterations = 1000;
+  static const int maxPbkdf2Iterations = 1200000;
+  static const int minParallelism = 1;
+  static const int maxParallelism = 4;
+  static const int minKeyBits = 128;
+  static const int maxKeyBits = 512;
+}
+
 /// Parámetros del KDF: qué algoritmo se usó, con qué sal y con qué coste.
 ///
 /// Estos parámetros se guardan (sin cifrar, no son secretos) junto a los
@@ -163,13 +182,49 @@ class KdfParameters {
 
   /// Lee los parámetros desde JSON.
   factory KdfParameters.fromJson(Map<String, Object?> json) {
-    return KdfParameters(
-      type: KdfType.fromName(json['type'] as String),
-      salt: base64Decode(json['salt'] as String),
-      memoryKiB: (json['memoryKiB'] as int?) ?? 0,
-      iterations: json['iterations'] as int,
-      parallelism: (json['parallelism'] as int?) ?? 1,
-      keyBits: (json['keyBits'] as int?) ?? 256,
-    );
+    try {
+      final type = KdfType.fromName(json['type'] as String);
+      final salt = base64Decode(json['salt'] as String);
+      final memoryKiB = (json['memoryKiB'] as int?) ?? 0;
+      final iterations = json['iterations'] as int;
+      final parallelism = (json['parallelism'] as int?) ?? 1;
+      final keyBits = (json['keyBits'] as int?) ?? 256;
+
+      if (salt.length < KdfBounds.minSaltBytes ||
+          salt.length > KdfBounds.maxSaltBytes ||
+          parallelism < KdfBounds.minParallelism ||
+          parallelism > KdfBounds.maxParallelism ||
+          keyBits < KdfBounds.minKeyBits ||
+          keyBits > KdfBounds.maxKeyBits) {
+        throw const FormatException('Parámetros de KDF no válidos.');
+      }
+      switch (type) {
+        case KdfType.argon2id:
+          if (memoryKiB < KdfBounds.minArgon2MemoryKiB ||
+              memoryKiB > KdfBounds.maxArgon2MemoryKiB ||
+              iterations < KdfBounds.minArgon2Iterations ||
+              iterations > KdfBounds.maxArgon2Iterations) {
+            throw const FormatException('Parámetros de KDF no válidos.');
+          }
+        case KdfType.pbkdf2:
+          if (iterations < KdfBounds.minPbkdf2Iterations ||
+              iterations > KdfBounds.maxPbkdf2Iterations) {
+            throw const FormatException('Parámetros de KDF no válidos.');
+          }
+      }
+
+      return KdfParameters(
+        type: type,
+        salt: salt,
+        memoryKiB: memoryKiB,
+        iterations: iterations,
+        parallelism: parallelism,
+        keyBits: keyBits,
+      );
+    } on FormatException {
+      rethrow;
+    } on Object {
+      throw const FormatException('Parámetros de KDF no válidos.');
+    }
   }
 }

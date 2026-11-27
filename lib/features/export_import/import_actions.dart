@@ -27,7 +27,7 @@ ImportErrorKind importErrorKind(Object error) {
 String importMessage(ImportErrorKind kind, L10n l10n) {
   switch (kind) {
     case ImportErrorKind.wrongPassword:
-      return l10n.invalidBackupPassword;
+      return l10n.invalidBackupPasswordOrFile;
     case ImportErrorKind.invalidFile:
       return l10n.invalidBackupFile;
     case ImportErrorKind.newerVersion:

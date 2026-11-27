@@ -750,4 +750,12 @@ class L10nEs extends L10n {
 
   @override
   String get onboardingLegalSuffix => '.';
+
+  @override
+  String get invalidBackupPasswordOrFile =>
+      'Contraseña incorrecta o archivo dañado';
+
+  @override
+  String get biometricHelper =>
+      'Cualquier huella o rostro registrado en este teléfono podrá abrir Llavero.';
 }

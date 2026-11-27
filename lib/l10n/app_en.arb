@@ -957,5 +957,13 @@
   "onboardingLegalSuffix": ".",
   "@onboardingLegalSuffix": {
     "description": "onboardingLegalSuffix"
+  },
+  "invalidBackupPasswordOrFile": "Wrong password or damaged file",
+  "@invalidBackupPasswordOrFile": {
+    "description": "invalidBackupPasswordOrFile"
+  },
+  "biometricHelper": "Any fingerprint or face enrolled on this phone will be able to open Llavero.",
+  "@biometricHelper": {
+    "description": "biometricHelper"
   }
 }
