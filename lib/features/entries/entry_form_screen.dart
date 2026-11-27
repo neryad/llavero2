@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-
-import 'package:llavero2/core/theme/app_spacing.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../app.dart';
 import '../../core/app_scope.dart';
 import '../../controllers/categories_controller.dart';
-import '../../core/security/password_generator.dart';
 import '../../core/routes/app_routes.dart';
+import '../../core/security/password_generator.dart';
+import '../../core/theme/app_spacing.dart';
 import '../../core/theme/category_colors.dart';
 import '../../core/widgets/app_scaffold.dart';
 import '../../core/widgets/category_icon_badge.dart';
@@ -39,14 +38,26 @@ class _FieldEditor {
     required this.value,
     required this.type,
     required this.isSecret,
+    this.keyStable,
+    this.fixedLabel = false,
   });
 
   final TextEditingController label;
   final TextEditingController value;
   EntryFieldType type;
   bool isSecret;
+  String? keyStable;
+  bool fixedLabel;
+  bool revealed = false;
+
+  bool get passwordLike =>
+      isSecret ||
+      type == EntryFieldType.secret ||
+      keyStable == FieldKeys.password ||
+      keyStable == FieldKeys.cvv;
 
   EntryField build() => EntryField(
+        key: keyStable,
         label: label.text.trim(),
         value: value.text,
         type: type,
@@ -57,6 +68,25 @@ class _FieldEditor {
     label.dispose();
     value.dispose();
   }
+}
+
+class _PinnedHeader extends SliverPersistentHeaderDelegate {
+  const _PinnedHeader({required this.height, required this.child});
+  final double height;
+  final Widget child;
+
+  @override
+  double get minExtent => height;
+  @override
+  double get maxExtent => height;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) =>
+      Material(color: Theme.of(context).scaffoldBackgroundColor, child: child);
+
+  @override
+  bool shouldRebuild(covariant _PinnedHeader oldDelegate) =>
+      oldDelegate.height != height || oldDelegate.child != child;
 }
 
 class _EntryFormScreenState extends State<EntryFormScreen> {
@@ -81,6 +111,35 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
     _load();
   }
 
+  EntryTemplate? _templateFor(String id) {
+    switch (id) {
+      case CategoryIds.wifi:
+        return EntryTemplates.wifi;
+      case CategoryIds.email:
+        return EntryTemplates.website;
+      case CategoryIds.pinCode:
+        return EntryTemplates.pin;
+      default:
+        return null;
+    }
+  }
+
+  void _loadTemplateFields(String id) {
+    final template = _templateFor(id);
+    _fields
+      ..clear()
+      ..addAll((template?.fields ?? const <EntryField>[]).map(
+        (field) => _FieldEditor(
+          label: TextEditingController(text: field.label),
+          value: TextEditingController(text: field.value),
+          type: field.type,
+          isSecret: field.isSecret,
+          keyStable: field.key,
+          fixedLabel: true,
+        ),
+      ));
+  }
+
   Future<void> _load() async {
     final entries = AppScope.of(context).entries;
     VaultEntry? original;
@@ -102,16 +161,19 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
     _person.text = original?.person ?? '';
     _notes.text = original?.notes ?? '';
 
-    final source = original?.fields ?? template?.fields ?? const <EntryField>[];
-    for (final field in source) {
-      _fields.add(
-        _FieldEditor(
+    if (original != null) {
+      for (final field in original.fields) {
+        _fields.add(_FieldEditor(
           label: TextEditingController(text: field.label),
           value: TextEditingController(text: field.value),
           type: field.type,
           isSecret: field.isSecret,
-        ),
-      );
+          keyStable: field.key,
+          fixedLabel: field.key != null,
+        ));
+      }
+    } else if (template != null) {
+      _loadTemplateFields(_categoryId);
     }
     setState(() => _loading = false);
   }
@@ -127,16 +189,36 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
     super.dispose();
   }
 
-  void _addField() {
-    setState(() {
-      _fields.add(
-        _FieldEditor(
-          label: TextEditingController(),
-          value: TextEditingController(),
-          type: EntryFieldType.text,
-          isSecret: false,
+  Future<void> _changeCategory(String id) async {
+    if (id == _categoryId) return;
+    final hasData = _fields.any(
+      (field) =>
+          field.value.text.isNotEmpty || field.label.text.isNotEmpty,
+    );
+    if (hasData) {
+      final l10n = L10n.of(context);
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(l10n.replaceFieldsTitle),
+          content: Text(l10n.replaceFieldsBody),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(l10n.cancelLabel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(l10n.okLabel),
+            ),
+          ],
         ),
       );
+      if (confirmed != true) return;
+    }
+    setState(() {
+      _categoryId = id;
+      _loadTemplateFields(id);
       _dirty = true;
     });
   }
@@ -151,20 +233,113 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
     });
   }
 
-  void _applyStreamingTemplate(String title) {
+  Future<void> _deleteField(int index) async {
+    final field = _fields[index];
+    if (field.value.text.isNotEmpty) {
+      final l10n = L10n.of(context);
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(l10n.deleteFieldConfirmTitle),
+          content: Text(l10n.deleteFieldConfirmBody),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(l10n.cancelLabel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(l10n.deleteForeverLabel),
+            ),
+          ],
+        ),
+      );
+      if (confirmed != true) return;
+    }
     setState(() {
-      _title.text = title;
-      _categoryId = CategoryIds.streaming;
-      _fields
-        ..clear()
-        ..add(
-          _FieldEditor(
-            label: TextEditingController(text: 'Contraseña'),
-            value: TextEditingController(),
-            type: EntryFieldType.secret,
-            isSecret: true,
+      _fields.removeAt(index).dispose();
+      _dirty = true;
+    });
+  }
+
+  String _typeLabel(L10n l10n, EntryFieldType type) {
+    switch (type) {
+      case EntryFieldType.text:
+        return l10n.fieldTypeText;
+      case EntryFieldType.secret:
+        return l10n.fieldTypeSecret;
+      case EntryFieldType.pin:
+        return l10n.fieldTypePin;
+      case EntryFieldType.email:
+        return l10n.fieldTypeEmail;
+      case EntryFieldType.url:
+        return l10n.fieldTypeUrl;
+      case EntryFieldType.phone:
+        return l10n.fieldTypePhone;
+    }
+  }
+
+  Future<void> _showAddFieldSheet() async {
+    final l10n = L10n.of(context);
+    final name = TextEditingController();
+    var type = EntryFieldType.text;
+    final editor = await showModalBottomSheet<_FieldEditor>(
+      context: context,
+      isScrollControlled: true,
+      builder: (sheetContext) => StatefulBuilder(
+        builder: (context, setSheet) => Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.viewInsetsOf(context).bottom,
+            left: AppSpacing.lg,
+            right: AppSpacing.lg,
+            top: AppSpacing.lg,
           ),
-        );
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Text(l10n.addFieldSheetTitle,
+                  style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: AppSpacing.md),
+              TextField(
+                controller: name,
+                decoration: InputDecoration(
+                  labelText: l10n.fieldNameLabel,
+                  filled: true,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Wrap(
+                spacing: AppSpacing.sm,
+                children: <Widget>[
+                  for (final option in EntryFieldType.values)
+                    ChoiceChip(
+                      label: Text(_typeLabel(l10n, option)),
+                      selected: type == option,
+                      onSelected: (_) => setSheet(() => type = option),
+                    ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.md),
+              FilledButton(
+                onPressed: () => Navigator.of(sheetContext).pop(
+                  _FieldEditor(
+                    label: TextEditingController(text: name.text.trim()),
+                    value: TextEditingController(),
+                    type: type,
+                    isSecret: type.hidesValueByDefault,
+                  ),
+                ),
+                child: Text(l10n.addFieldLabel),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (editor == null) return;
+    setState(() {
+      _fields.add(editor);
       _dirty = true;
     });
   }
@@ -244,113 +419,159 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
     return discard ?? false;
   }
 
-  List<Widget> _fieldWidgets(L10n l10n) {
-    final widgets = <Widget>[];
-    for (final item in _fields.asMap().entries) {
-      final index = item.key;
-      final field = item.value;
-      widgets.add(
-        TextField(
-          controller: field.label,
-          decoration: InputDecoration(
-            labelText: l10n.labelFieldLabel,
-            filled: true,
-          ),
-          onChanged: (_) => setState(() => _dirty = true),
-        ),
-      );
-      widgets.add(const SizedBox(height: AppSpacing.sm));
-      widgets.add(
-        Row(
+  Widget _fieldCard(int index, L10n l10n) {
+    final field = _fields[index];
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.cardPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Expanded(
-              child: TextField(
-                controller: field.value,
-                obscureText: field.isSecret,
-                decoration: InputDecoration(
-                  labelText: l10n.valueFieldLabel,
-                  filled: true,
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: field.fixedLabel
+                      ? Text(field.label.text,
+                          style: Theme.of(context).textTheme.labelLarge)
+                      : TextField(
+                          controller: field.label,
+                          onChanged: (_) => setState(() => _dirty = true),
+                          decoration: InputDecoration(
+                            labelText: l10n.labelFieldLabel,
+                            filled: true,
+                          ),
+                        ),
                 ),
-                onChanged: (_) => setState(() => _dirty = true),
-              ),
+                PopupMenuButton<String>(
+                  tooltip: l10n.fieldMenuLabel,
+                  icon: const Icon(Icons.more_vert),
+                  onSelected: (action) {
+                    switch (action) {
+                      case 'up':
+                        _moveField(index, -1);
+                      case 'down':
+                        _moveField(index, 1);
+                      case 'delete':
+                        _deleteField(index);
+                    }
+                  },
+                  itemBuilder: (context) => <PopupMenuEntry<String>>[
+                    PopupMenuItem<String>(
+                      child: StatefulBuilder(
+                        builder: (context, setMenu) => SwitchListTile(
+                          value: field.isSecret,
+                          title: Text(l10n.markAsSecret),
+                          onChanged: (value) {
+                            setMenu(() => field.isSecret = value);
+                            setState(() => _dirty = true);
+                          },
+                        ),
+                      ),
+                    ),
+                    PopupMenuItem<String>(
+                      value: 'up',
+                      enabled: index > 0,
+                      child: Text(l10n.moveUp),
+                    ),
+                    PopupMenuItem<String>(
+                      value: 'down',
+                      enabled: index < _fields.length - 1,
+                      child: Text(l10n.moveDown),
+                    ),
+                    PopupMenuItem<String>(
+                      value: 'delete',
+                      child: Text(l10n.deleteForeverLabel),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            Semantics(
-              button: true,
-              label: l10n.generateLabel,
-              child: IconButton(
-                icon: const Icon(Icons.casino),
-                tooltip: l10n.generateLabel,
-                onPressed: () => _generate(field),
-              ),
+            const SizedBox(height: AppSpacing.sm),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: TextField(
+                    controller: field.value,
+                    obscureText: field.isSecret && !field.revealed,
+                    onChanged: (_) => setState(() => _dirty = true),
+                    decoration: InputDecoration(
+                      labelText: l10n.valueFieldLabel,
+                      filled: true,
+                    ),
+                  ),
+                ),
+                if (field.isSecret || field.passwordLike)
+                  IconButton(
+                    icon: Icon(field.revealed
+                        ? Icons.visibility_off_outlined
+                        : Icons.visibility_outlined),
+                    tooltip: field.revealed ? l10n.hideLabel : l10n.revealLabel,
+                    onPressed: () =>
+                        setState(() => field.revealed = !field.revealed),
+                  ),
+                if (field.passwordLike)
+                  Semantics(
+                    button: true,
+                    label: l10n.generateLabel,
+                    child: IconButton(
+                      icon: const Icon(Icons.casino_outlined),
+                      tooltip: l10n.generateLabel,
+                      onPressed: () => _generate(field),
+                    ),
+                  ),
+              ],
             ),
           ],
         ),
-      );
-      widgets.add(
-        Row(
-          children: <Widget>[
-            Expanded(
-              child: SwitchListTile(
-                value: field.isSecret,
-                title: Text(l10n.secretFieldLabel),
-                onChanged: (value) {
-                  setState(() {
-                    field.isSecret = value;
-                    _dirty = true;
-                  });
-                },
-              ),
-            ),
-            IconButton(
-              icon: const Icon(Icons.arrow_upward),
-              tooltip: l10n.moveUp,
-              onPressed: () => _moveField(index, -1),
-            ),
-            IconButton(
-              icon: const Icon(Icons.arrow_downward),
-              tooltip: l10n.moveDown,
-              onPressed: () => _moveField(index, 1),
-            ),
-          ],
-        ),
-      );
-      widgets.add(const Divider());
-    }
-    return widgets;
+      ),
+    );
   }
 
   Widget _categoryGrid(L10n l10n) {
+    final colors = Theme.of(context).colorScheme;
+    final style = SegmentedButtonTheme.of(context).style;
+    const states = <WidgetState>{WidgetState.selected};
+    final selectedBg =
+        style?.backgroundColor?.resolve(states) ?? colors.primaryContainer;
+    final selectedFg =
+        style?.foregroundColor?.resolve(states) ?? colors.onPrimaryContainer;
+
     final custom = AppScope.of(context).categories.custom;
-    final ids = <String>[...CategoriesController.defaultIds, ...custom.map((c) => c.id)];
+    final ids = <String>[
+      ...CategoriesController.defaultIds,
+      ...custom.map((c) => c.id),
+    ];
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        mainAxisSpacing: 8,
-        crossAxisSpacing: 8,
-        childAspectRatio: 3.4,
+        mainAxisSpacing: AppSpacing.sm,
+        crossAxisSpacing: AppSpacing.sm,
+        childAspectRatio: 2.2,
       ),
       itemCount: ids.length,
       itemBuilder: (context, index) {
         final id = ids[index];
-        final isCustom = index >= CategoriesController.defaultIds.length;
-        final category = isCustom ? custom[index - CategoriesController.defaultIds.length] : null;
+        final category =
+            index >= CategoriesController.defaultIds.length
+                ? custom[index - CategoriesController.defaultIds.length]
+                : null;
         final selected = id == _categoryId;
         return InkWell(
-          onTap: () => setState(() {
-            _categoryId = id;
-            _dirty = true;
-          }),
-          child: Container(
-            padding: const EdgeInsets.all(AppSpacing.sm),
+          onTap: () => _changeCategory(id),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.sm,
+              vertical: AppSpacing.xs,
+            ),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: selected
-                    ? Theme.of(context).colorScheme.primary
-                    : Theme.of(context).colorScheme.outline,
-              ),
+              color: selected ? selectedBg : Colors.transparent,
+              borderRadius: BorderRadius.circular(AppSpacing.sm + 4),
+              border: selected
+                  ? null
+                  : Border.all(color: colors.outline),
             ),
             child: Row(
               children: <Widget>[
@@ -359,12 +580,19 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
                   customIconName: category?.iconName,
                   size: 32,
                 ),
-                const SizedBox(width: AppSpacing.sm),
+                const SizedBox(width: AppSpacing.xs),
                 Expanded(
                   child: Text(
                     category?.name ??
-                        categoryDisplayName(id, l10n, AppScope.of(context).categories),
-                    overflow: TextOverflow.ellipsis,
+                        categoryDisplayName(
+                          id,
+                          l10n,
+                          AppScope.of(context).categories,
+                        ),
+                    maxLines: 2,
+                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                          color: selected ? selectedFg : colors.onSurface,
+                        ),
                   ),
                 ),
               ],
@@ -379,6 +607,8 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
   Widget build(BuildContext context) {
     final l10n = L10n.of(context);
     final isNew = widget.args.entryId == null;
+    final scale = MediaQuery.textScalerOf(context).scale(16) / 16;
+    final headerHeight = 232 * scale;
 
     return PopScope(
       canPop: false,
@@ -398,100 +628,160 @@ class _EntryFormScreenState extends State<EntryFormScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   Expanded(
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          TextField(
-                            controller: _title,
-                            onChanged: (_) => setState(() => _dirty = true),
-                            decoration: InputDecoration(
-                              labelText: l10n.titleFieldLabel,
-                              filled: true,
+                    child: CustomScrollView(
+                      slivers: <Widget>[
+                        SliverToBoxAdapter(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: <Widget>[
+                              Text(
+                                l10n.categoryFieldLabel,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                              const SizedBox(height: AppSpacing.sm),
+                              _categoryGrid(l10n),
+                              if (_categoryId == CategoryIds.streaming) ...[
+                                const SizedBox(height: AppSpacing.sm),
+                                Wrap(
+                                  spacing: AppSpacing.sm,
+                                  children: <Widget>[
+                                    for (final title in <String>[
+                                      l10n.templateNetflix,
+                                      l10n.templateDisney,
+                                      l10n.templateSpotify,
+                                      l10n.templateHbo,
+                                    ])
+                                      ActionChip(
+                                        label: Text(title),
+                                        onPressed: () => setState(() {
+                                          _title.text = title;
+                                          _loadTemplateFields(_categoryId);
+                                          _dirty = true;
+                                        }),
+                                      ),
+                                  ],
+                                ),
+                              ],
+                              const SizedBox(height: AppSpacing.md),
+                            ],
+                          ),
+                        ),
+                        SliverPersistentHeader(
+                          pinned: true,
+                          delegate: _PinnedHeader(
+                            height: headerHeight,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: AppSpacing.xs,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: <Widget>[
+                                  TextField(
+                                    controller: _title,
+                                    onChanged: (_) =>
+                                        setState(() => _dirty = true),
+                                    decoration: InputDecoration(
+                                      labelText: l10n.titleFieldLabel,
+                                      filled: true,
+                                    ),
+                                  ),
+                                  if (_fields.isNotEmpty) ...[
+                                    const SizedBox(height: AppSpacing.xs),
+                                    _fieldCard(0, l10n),
+                                  ],
+                                ],
+                              ),
                             ),
                           ),
-                          const SizedBox(height: AppSpacing.md),
-                          TextField(
-                            controller: _person,
-                            onChanged: (_) => setState(() => _dirty = true),
-                            decoration: InputDecoration(
-                              labelText: l10n.personFieldLabel,
-                              filled: true,
+                        ),
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              bottom: AppSpacing.listBottom,
                             ),
-                          ),
-                          const SizedBox(height: AppSpacing.md),
-                          Text(
-                            l10n.categoryFieldLabel,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                          const SizedBox(height: AppSpacing.sm),
-                          _categoryGrid(l10n),
-                          if (_categoryId == CategoryIds.streaming) ...[
-                            const SizedBox(height: AppSpacing.md),
-                            Wrap(
-                              spacing: 8,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: <Widget>[
-                                for (final t in <String>[
-                                  l10n.templateNetflix,
-                                  l10n.templateDisney,
-                                  l10n.templateSpotify,
-                                  l10n.templateHbo,
-                                ])
-                                  ActionChip(
-                                    label: Text(t),
-                                    onPressed: () => _applyStreamingTemplate(t),
+                                if (_fields.isEmpty &&
+                                    _categoryId == CategoryIds.other)
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      top: AppSpacing.md,
+                                    ),
+                                    child: Text(
+                                      l10n.otherCategoryHint,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall,
+                                    ),
+                                  ),
+                                const SizedBox(height: AppSpacing.md),
+                                TextField(
+                                  controller: _person,
+                                  onChanged: (_) =>
+                                      setState(() => _dirty = true),
+                                  decoration: InputDecoration(
+                                    labelText: l10n.personFieldLabel,
+                                    filled: true,
+                                  ),
+                                ),
+                                const SizedBox(height: AppSpacing.md),
+                                Text(
+                                  l10n.fieldsLabel,
+                                  style: Theme.of(context).textTheme.titleMedium,
+                                ),
+                                const SizedBox(height: AppSpacing.sm),
+                                for (var i = 1; i < _fields.length; i++) ...[
+                                  _fieldCard(i, l10n),
+                                  const SizedBox(height: AppSpacing.sm),
+                                ],
+                                TextButton.icon(
+                                  onPressed: _showAddFieldSheet,
+                                  icon: const Icon(Icons.add),
+                                  label: Text(l10n.addFieldLabel),
+                                ),
+                                const SizedBox(height: AppSpacing.sm),
+                                TextField(
+                                  controller: _notes,
+                                  maxLines: 3,
+                                  onChanged: (_) =>
+                                      setState(() => _dirty = true),
+                                  decoration: InputDecoration(
+                                    labelText: l10n.notesFieldLabel,
+                                    filled: true,
+                                  ),
+                                ),
+                                SwitchListTile(
+                                  value: _isFavorite,
+                                  title: Text(l10n.favoriteLabel),
+                                  onChanged: (value) => setState(() {
+                                    _isFavorite = value;
+                                    _dirty = true;
+                                  }),
+                                ),
+                                if (_saveError != null)
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      bottom: AppSpacing.sm,
+                                    ),
+                                    child: Text(
+                                      _saveError!,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .error,
+                                          ),
+                                    ),
                                   ),
                               ],
                             ),
-                          ],
-                          const SizedBox(height: AppSpacing.md),
-                          Text(
-                            l10n.fieldsLabel,
-                            style: Theme.of(context).textTheme.titleMedium,
                           ),
-                          const SizedBox(height: AppSpacing.sm),
-                          ..._fieldWidgets(l10n),
-                          TextButton.icon(
-                            onPressed: _addField,
-                            icon: const Icon(Icons.add),
-                            label: Text(l10n.addFieldLabel),
-                          ),
-                          const SizedBox(height: AppSpacing.md),
-                          TextField(
-                            controller: _notes,
-                            maxLines: 3,
-                            onChanged: (_) => setState(() => _dirty = true),
-                            decoration: InputDecoration(
-                              labelText: l10n.notesFieldLabel,
-                              filled: true,
-                            ),
-                          ),
-                          SwitchListTile(
-                            value: _isFavorite,
-                            title: Text(l10n.favoriteLabel),
-                            onChanged: (value) {
-                              setState(() {
-                                _isFavorite = value;
-                                _dirty = true;
-                              });
-                            },
-                          ),
-                          if (_saveError != null)
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                              child: Text(
-                                _saveError!,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.copyWith(
-                                      color: Theme.of(context).colorScheme.error,
-                                    ),
-                              ),
-                            ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                   Padding(

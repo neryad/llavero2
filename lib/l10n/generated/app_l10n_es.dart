@@ -368,8 +368,8 @@ class L10nEs extends L10n {
   String get securityHealthLabel => 'Salud de contraseñas';
 
   @override
-  String healthSummary(Object count) {
-    return 'Contraseñas revisadas: $count';
+  String healthSummary(int entries, int problems) {
+    return '$entries entradas revisadas, $problems problemas';
   }
 
   @override
@@ -575,4 +575,57 @@ class L10nEs extends L10n {
 
   @override
   String get filterByPerson => 'Por persona';
+
+  @override
+  String get wifiMissingSsid => 'Falta el nombre de red';
+
+  @override
+  String get otherCategoryHint =>
+      'Añade los datos que necesites, como usuario, contraseña o código.';
+
+  @override
+  String get shortPins => 'PIN cortos';
+
+  @override
+  String get addFieldSheetTitle => 'Añadir campo';
+
+  @override
+  String get fieldNameLabel => 'Nombre del campo';
+
+  @override
+  String get fieldTypeText => 'Texto';
+
+  @override
+  String get fieldTypeSecret => 'Secreto';
+
+  @override
+  String get fieldTypePin => 'PIN';
+
+  @override
+  String get fieldTypeEmail => 'Correo';
+
+  @override
+  String get fieldTypeUrl => 'URL';
+
+  @override
+  String get fieldTypePhone => 'Teléfono';
+
+  @override
+  String get markAsSecret => 'Marcar como secreto';
+
+  @override
+  String get deleteFieldConfirmTitle => '¿Eliminar este campo?';
+
+  @override
+  String get deleteFieldConfirmBody => 'El valor de este campo se perderá.';
+
+  @override
+  String get replaceFieldsTitle => '¿Reemplazar los campos?';
+
+  @override
+  String get replaceFieldsBody =>
+      'Los campos actuales se sustituirán por los de la nueva categoría.';
+
+  @override
+  String get fieldMenuLabel => 'Opciones del campo';
 }

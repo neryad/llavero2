@@ -1,3 +1,4 @@
+import '../../data/models/entry_field.dart';
 import '../../data/models/vault_entry.dart';
 
 /// Genera el payload estándar de QR para Wi-Fi:
@@ -24,36 +25,37 @@ abstract final class WifiQr {
     return 'WIFI:T:$normalized;S:${_escape(ssid)};P:${_escape(password)};;';
   }
 
-  static String _normalize(String label) {
-    const accents = 'áéíóúñüÁÉÍÓÚÑÜ';
-    const plain = 'aeiounuAEIOUNU';
-    var result = label.trim().toLowerCase();
-    for (var i = 0; i < accents.length; i++) {
-      result = result.replaceAll(accents[i], plain[i]);
-    }
-    return result;
-  }
-
   /// Extrae los campos de una entrada Wi-Fi. Devuelve `null` si no hay red
   /// o no hay campo de contraseña (no se inventa un secreto).
+  static String? ssidOf(VaultEntry entry) {
+    for (final field in entry.fields) {
+      final key = field.key ?? FieldKeys.fromLabel(field.label);
+      if (key == FieldKeys.ssid && field.value.isNotEmpty) return field.value;
+    }
+    return null;
+  }
+
   static String? payloadFor(VaultEntry entry) {
-    String? ssid;
     String? password;
     var security = 'WPA';
 
     for (final field in entry.fields) {
-      final label = _normalize(field.label);
-      if (<String>{'red', 'ssid', 'network', 'nombre de red'}.contains(label)) {
-        ssid = field.value;
-      } else if (<String>{'contrasena', 'password', 'clave', 'pass'}
-          .contains(label)) {
+      // La clave estable manda; la etiqueta es solo fallback para entradas
+      // creadas en memoria antes de la migración.
+      final key = field.key ?? FieldKeys.fromLabel(field.label);
+      if (key == FieldKeys.password) {
         password = field.value;
-      } else if (<String>{'seguridad', 'security', 'tipo de seguridad'}
-          .contains(label)) {
+      } else if (key == FieldKeys.security) {
         security = field.value;
       }
     }
-    if (ssid == null || ssid.isEmpty || password == null) return null;
-    return payload(security: security, ssid: ssid, password: password);
+    final ssid = ssidOf(entry);
+    if (ssid == null) return null;
+    // Sin contraseña, el estándar usa T:nopass.
+    return payload(
+      security: password == null || password.isEmpty ? 'nopass' : security,
+      ssid: ssid,
+      password: password ?? '',
+    );
   }
 }

@@ -6,7 +6,9 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:llavero2/controllers/entries_controller.dart';
 import 'package:llavero2/core/app_scope.dart';
 import 'package:llavero2/core/security/wifi_qr.dart';
+import 'package:llavero2/data/entry_templates.dart';
 import 'package:llavero2/data/models/entry_field.dart';
+import 'package:llavero2/data/models/vault_document.dart';
 import 'package:llavero2/data/models/vault_entry.dart';
 import 'package:llavero2/data/vault_file_system.dart';
 import 'package:llavero2/data/vault_storage.dart';
@@ -85,7 +87,7 @@ void main() {
       expect(WifiQr.payloadFor(entry), 'WIFI:T:WPA;S:Red;P:clave;;');
     });
 
-    test('devuelve null si falta la red o la contrasena', () {
+    test('devuelve null si falta la red; sin contrasena usa nopass', () {
       expect(
         WifiQr.payloadFor(_wifi(<EntryField>[
           EntryField(label: 'Contraseña', value: 'x'),
@@ -96,7 +98,72 @@ void main() {
         WifiQr.payloadFor(_wifi(<EntryField>[
           EntryField(label: 'Red', value: 'x'),
         ])),
-        isNull,
+        'WIFI:T:nopass;S:x;P:;;',
+      );
+    });
+  });
+
+  group('WifiQr — claves estables y migración', () {
+    test('las plantillas asignan claves independientes del idioma', () {
+      expect(EntryTemplates.wifi.fields.first.key, 'ssid');
+      expect(EntryTemplates.wifi.fields.last.key, 'password');
+      expect(EntryTemplates.pin.fields.first.key, 'pin');
+    });
+
+    test('entrada en español con claves produce el payload', () {
+      final entry = _wifi(<EntryField>[
+        const EntryField(key: 'ssid', label: 'Red', value: 'MiRed'),
+        EntryField(
+          key: 'password',
+          label: 'Contraseña',
+          value: 'secreto',
+          type: EntryFieldType.secret,
+        ),
+      ]);
+      expect(WifiQr.payloadFor(entry), 'WIFI:T:WPA;S:MiRed;P:secreto;;');
+    });
+
+    test('entrada antigua en español sin claves migra al cargar', () {
+      final entry = _wifi(<EntryField>[
+        const EntryField(label: 'Red', value: 'MiRed'),
+        EntryField(
+          label: 'Contraseña',
+          value: 'secreto',
+          type: EntryFieldType.secret,
+        ),
+      ]);
+      final document = VaultDocument.fromJson(<String, Object?>{
+        'version': 1,
+        'entries': <Object?>[entry.toJson()],
+      });
+      final migrated = document.entries.first;
+      expect(migrated.fields.first.key, 'ssid');
+      expect(migrated.fields.last.key, 'password');
+      expect(WifiQr.payloadFor(migrated), 'WIFI:T:WPA;S:MiRed;P:secreto;;');
+    });
+
+    test('entrada antigua en inglés sin claves migra al cargar', () {
+      final entry = _wifi(<EntryField>[
+        const EntryField(label: 'Network', value: 'MiRed'),
+        const EntryField(label: 'Password', value: 'secreto'),
+      ]);
+      final document = VaultDocument.fromJson(<String, Object?>{
+        'version': 1,
+        'entries': <Object?>[entry.toJson()],
+      });
+      final migrated = document.entries.first;
+      expect(migrated.fields.first.key, 'ssid');
+      expect(migrated.fields.last.key, 'password');
+      expect(WifiQr.payloadFor(migrated), 'WIFI:T:WPA;S:MiRed;P:secreto;;');
+    });
+
+    test('con contraseña vacía usa T:nopass', () {
+      expect(
+        WifiQr.payloadFor(_wifi(<EntryField>[
+          const EntryField(key: 'ssid', label: 'Red', value: 'Abierta'),
+          const EntryField(key: 'password', label: 'Contraseña', value: ''),
+        ])),
+        'WIFI:T:nopass;S:Abierta;P:;;',
       );
     });
   });

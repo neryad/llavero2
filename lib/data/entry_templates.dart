@@ -51,8 +51,8 @@ abstract final class EntryTemplates {
     title: 'Wi-Fi',
     categoryId: 'wifi',
     fields: <EntryField>[
-      EntryField(label: 'Red', value: ''),
-      EntryField(label: 'Contraseña', value: '', type: EntryFieldType.secret),
+      EntryField(key: FieldKeys.ssid, label: 'Red', value: ''),
+      EntryField(key: FieldKeys.password, label: 'Contraseña', value: '', type: EntryFieldType.secret),
     ],
   );
 
@@ -61,9 +61,9 @@ abstract final class EntryTemplates {
     title: 'Cuenta web',
     categoryId: 'email',
     fields: <EntryField>[
-      EntryField(label: 'Usuario', value: ''),
-      EntryField(label: 'Contraseña', value: '', type: EntryFieldType.secret),
-      EntryField(label: 'Web', value: '', type: EntryFieldType.url),
+      EntryField(key: FieldKeys.username, label: 'Usuario', value: ''),
+      EntryField(key: FieldKeys.password, label: 'Contraseña', value: '', type: EntryFieldType.secret),
+      EntryField(key: FieldKeys.url, label: 'Web', value: '', type: EntryFieldType.url),
     ],
   );
 
@@ -72,7 +72,7 @@ abstract final class EntryTemplates {
     title: 'PIN',
     categoryId: 'other',
     fields: <EntryField>[
-      EntryField(label: 'PIN', value: '', type: EntryFieldType.pin),
+      EntryField(key: FieldKeys.pin, label: 'PIN', value: '', type: EntryFieldType.pin),
     ],
   );
 
@@ -81,9 +81,9 @@ abstract final class EntryTemplates {
     title: 'Tarjeta',
     categoryId: 'other',
     fields: <EntryField>[
-      EntryField(label: 'Número', value: ''),
-      EntryField(label: 'Caducidad', value: ''),
-      EntryField(label: 'CVV', value: '', type: EntryFieldType.secret),
+      EntryField(key: FieldKeys.number, label: 'Número', value: ''),
+      EntryField(key: FieldKeys.expiry, label: 'Caducidad', value: ''),
+      EntryField(key: FieldKeys.cvv, label: 'CVV', value: '', type: EntryFieldType.secret),
     ],
   );
 

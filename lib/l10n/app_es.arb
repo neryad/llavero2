@@ -464,9 +464,19 @@
   "@securityHealthLabel": {
     "description": "Title of the password health screen."
   },
-  "healthSummary": "Contraseñas revisadas: {count}",
+  "healthSummary": "{entries} entradas revisadas, {problems} problemas",
   "@healthSummary": {
-    "description": "Summary of how many passwords were analyzed."
+    "description": "Resumen de la salud de contraseñas",
+    "placeholders": {
+      "entries": {
+        "type": "int",
+        "description": "Entradas revisadas"
+      },
+      "problems": {
+        "type": "int",
+        "description": "Problemas encontrados"
+      }
+    }
   },
   "weakPasswords": "Contraseñas débiles",
   "@weakPasswords": {
@@ -719,5 +729,73 @@
   "filterByPerson": "Por persona",
   "@filterByPerson": {
     "description": "filterByPerson"
+  },
+  "wifiMissingSsid": "Falta el nombre de red",
+  "@wifiMissingSsid": {
+    "description": "wifiMissingSsid"
+  },
+  "otherCategoryHint": "Añade los datos que necesites, como usuario, contraseña o código.",
+  "@otherCategoryHint": {
+    "description": "otherCategoryHint"
+  },
+  "shortPins": "PIN cortos",
+  "@shortPins": {
+    "description": "shortPins"
+  },
+  "addFieldSheetTitle": "Añadir campo",
+  "@addFieldSheetTitle": {
+    "description": "addFieldSheetTitle"
+  },
+  "fieldNameLabel": "Nombre del campo",
+  "@fieldNameLabel": {
+    "description": "fieldNameLabel"
+  },
+  "fieldTypeText": "Texto",
+  "@fieldTypeText": {
+    "description": "fieldTypeText"
+  },
+  "fieldTypeSecret": "Secreto",
+  "@fieldTypeSecret": {
+    "description": "fieldTypeSecret"
+  },
+  "fieldTypePin": "PIN",
+  "@fieldTypePin": {
+    "description": "fieldTypePin"
+  },
+  "fieldTypeEmail": "Correo",
+  "@fieldTypeEmail": {
+    "description": "fieldTypeEmail"
+  },
+  "fieldTypeUrl": "URL",
+  "@fieldTypeUrl": {
+    "description": "fieldTypeUrl"
+  },
+  "fieldTypePhone": "Teléfono",
+  "@fieldTypePhone": {
+    "description": "fieldTypePhone"
+  },
+  "markAsSecret": "Marcar como secreto",
+  "@markAsSecret": {
+    "description": "markAsSecret"
+  },
+  "deleteFieldConfirmTitle": "¿Eliminar este campo?",
+  "@deleteFieldConfirmTitle": {
+    "description": "deleteFieldConfirmTitle"
+  },
+  "deleteFieldConfirmBody": "El valor de este campo se perderá.",
+  "@deleteFieldConfirmBody": {
+    "description": "deleteFieldConfirmBody"
+  },
+  "replaceFieldsTitle": "¿Reemplazar los campos?",
+  "@replaceFieldsTitle": {
+    "description": "replaceFieldsTitle"
+  },
+  "replaceFieldsBody": "Los campos actuales se sustituirán por los de la nueva categoría.",
+  "@replaceFieldsBody": {
+    "description": "replaceFieldsBody"
+  },
+  "fieldMenuLabel": "Opciones del campo",
+  "@fieldMenuLabel": {
+    "description": "fieldMenuLabel"
   }
 }

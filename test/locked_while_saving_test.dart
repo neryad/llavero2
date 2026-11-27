@@ -86,7 +86,7 @@ void main() {
       expect(lock.isLocked, isTrue);
 
       await tester.drag(
-        find.byType(SingleChildScrollView),
+        find.byType(CustomScrollView),
         const Offset(0, -600),
       );
       await tester.pump();

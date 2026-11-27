@@ -2,26 +2,13 @@
 ///
 /// Define cómo se muestra el valor y qué tipo de teclado conviene usar.
 enum EntryFieldType {
-  /// Texto normal.
   text,
-
-  /// Secreto (contraseña, PIN): se muestra oculto hasta que el usuario
-  /// decide verlo.
   secret,
-
-  /// Dirección web.
   url,
-
-  /// Código numérico (PIN de la puerta, del router...).
   pin,
-
-  /// Correo electrónico.
   email,
-
-  /// Teléfono.
   phone;
 
-  /// Nombre estable (se guarda en el archivo cifrado).
   String get name {
     switch (this) {
       case EntryFieldType.text:
@@ -39,10 +26,6 @@ enum EntryFieldType {
     }
   }
 
-  /// Lee el tipo a partir de su nombre.
-  ///
-  /// Si el archivo contiene un tipo que esta versión no conoce, se trata
-  /// como texto normal en lugar de romper la app.
   static EntryFieldType fromName(String? name) {
     for (final type in EntryFieldType.values) {
       if (type.name == name) return type;
@@ -50,50 +33,96 @@ enum EntryFieldType {
     return EntryFieldType.text;
   }
 
-  /// `true` si el valor debe ocultarse por defecto.
   bool get hidesValueByDefault =>
       this == EntryFieldType.secret || this == EntryFieldType.pin;
 }
 
+/// Claves estables de los campos de las plantillas. No dependen del idioma.
+abstract final class FieldKeys {
+  static const String ssid = 'ssid';
+  static const String password = 'password';
+  static const String security = 'security';
+  static const String pin = 'pin';
+  static const String username = 'username';
+  static const String url = 'url';
+  static const String number = 'number';
+  static const String expiry = 'expiry';
+  static const String cvv = 'cvv';
+
+  /// Etiquetas históricas (ES/EN) mapeadas a su clave para migrar entradas
+  /// antiguas que no guardaban `key`.
+  static const Map<String, String> legacyLabels = <String, String>{
+    'red': ssid,
+    'ssid': ssid,
+    'network': ssid,
+    'nombre de red': ssid,
+    'wifi name': ssid,
+    'contraseña': password,
+    'contrasena': password,
+    'password': password,
+    'clave': password,
+    'pass': password,
+    'pwd': password,
+    'seguridad': security,
+    'security': security,
+    'pin': pin,
+    'codigo': pin,
+    'usuario': username,
+    'username': username,
+    'user': username,
+    'web': url,
+    'url': url,
+    'sitio': url,
+    'numero': number,
+    'number': number,
+    'caducidad': expiry,
+    'expiry': expiry,
+    'cvv': cvv,
+  };
+
+  static String? fromLabel(String label) {
+    var value = label.trim().toLowerCase();
+    const accents = 'áéíóúñüÁÉÍÓÚÑÜ';
+    const plain = 'aeiounuAEIOUNU';
+    for (var i = 0; i < accents.length; i++) {
+      value = value.replaceAll(accents[i], plain[i]);
+    }
+    return legacyLabels[value];
+  }
+}
+
 /// Un campo (etiqueta + valor) dentro de una entrada.
-///
-/// Ejemplos: «Red» = «Casa», «Contraseña» = «••••••» (secreto).
 class EntryField {
   const EntryField({
     required this.label,
     required this.value,
     this.type = EntryFieldType.text,
     this.isSecret = false,
+    this.key,
   });
 
-  /// Texto que explica de qué es el campo («Contraseña», «Usuario»...).
+  /// Clave estable e independiente del idioma (`ssid`, `password`, ...).
+  /// `null` en campos creados a mano antes de la migración.
+  final String? key;
+
   final String label;
-
-  /// El valor en claro. Solo existe en memoria mientras la app está abierta
-  /// y desbloqueada.
   final String value;
-
-  /// Tipo de dato, para decidir cómo mostrarlo.
   final EntryFieldType type;
-
-  /// Si el valor debe ocultarse hasta que el usuario lo revele.
   final bool isSecret;
 
-  /// Copia del campo con los cambios indicados.
-  ///
-  /// Para los campos que admiten `null` (label, value, isSecret) se usan
-  /// indicadores aparte (`clearLabel`, `clearValue`, `clearSecret`) porque
-  /// si no no se podría distinguir "no cambiar" de "dejar en blanco".
   EntryField copyWith({
+    String? key,
     String? label,
     String? value,
     EntryFieldType? type,
     bool? isSecret,
+    bool clearKey = false,
     bool clearLabel = false,
     bool clearValue = false,
     bool clearSecret = false,
   }) {
     return EntryField(
+      key: clearKey ? null : (key ?? this.key),
       label: clearLabel ? '' : (label ?? this.label),
       value: clearValue ? '' : (value ?? this.value),
       type: type ?? this.type,
@@ -101,9 +130,9 @@ class EntryField {
     );
   }
 
-  /// Convierte el campo a JSON.
   Map<String, Object?> toJson() {
     return <String, Object?>{
+      'key': key,
       'label': label,
       'value': value,
       'type': type.name,
@@ -111,16 +140,19 @@ class EntryField {
     };
   }
 
-  /// Lee un campo desde JSON.
   factory EntryField.fromJson(Map<String, Object?> json) {
     final typeName = json['type'] as String?;
     final type = EntryFieldType.fromName(typeName);
+    final label = json['label'] as String? ?? '';
+    final storedKey = json['key'] as String?;
     return EntryField(
-      label: json['label'] as String? ?? '',
+      // Migración de archivos antiguos: deducimos la clave de la etiqueta.
+      key: (storedKey != null && storedKey.isNotEmpty)
+          ? storedKey
+          : FieldKeys.fromLabel(label),
+      label: label,
       value: json['value'] as String? ?? '',
       type: type,
-      // Si el tipo ya es secreto (PIN), también lo ocultamos aunque el
-      // archivo no lo diga.
       isSecret: (json['isSecret'] as bool?) ?? type.hidesValueByDefault,
     );
   }
@@ -128,6 +160,7 @@ class EntryField {
   @override
   bool operator ==(Object other) {
     return other is EntryField &&
+        other.key == key &&
         other.label == label &&
         other.value == value &&
         other.type == type &&
@@ -135,5 +168,5 @@ class EntryField {
   }
 
   @override
-  int get hashCode => Object.hash(label, value, type, isSecret);
+  int get hashCode => Object.hash(key, label, value, type, isSecret);
 }

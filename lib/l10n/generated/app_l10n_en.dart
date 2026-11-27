@@ -368,8 +368,8 @@ class L10nEn extends L10n {
   String get securityHealthLabel => 'Password health';
 
   @override
-  String healthSummary(Object count) {
-    return 'Passwords checked: $count';
+  String healthSummary(int entries, int problems) {
+    return '$entries entries reviewed, $problems problems';
   }
 
   @override
@@ -572,4 +572,57 @@ class L10nEn extends L10n {
 
   @override
   String get filterByPerson => 'By person';
+
+  @override
+  String get wifiMissingSsid => 'Network name is missing';
+
+  @override
+  String get otherCategoryHint =>
+      'Add the data you need, such as username, password or code.';
+
+  @override
+  String get shortPins => 'Short PINs';
+
+  @override
+  String get addFieldSheetTitle => 'Add field';
+
+  @override
+  String get fieldNameLabel => 'Field name';
+
+  @override
+  String get fieldTypeText => 'Text';
+
+  @override
+  String get fieldTypeSecret => 'Secret';
+
+  @override
+  String get fieldTypePin => 'PIN';
+
+  @override
+  String get fieldTypeEmail => 'Email';
+
+  @override
+  String get fieldTypeUrl => 'URL';
+
+  @override
+  String get fieldTypePhone => 'Phone';
+
+  @override
+  String get markAsSecret => 'Mark as secret';
+
+  @override
+  String get deleteFieldConfirmTitle => 'Delete this field?';
+
+  @override
+  String get deleteFieldConfirmBody => 'The value of this field will be lost.';
+
+  @override
+  String get replaceFieldsTitle => 'Replace fields?';
+
+  @override
+  String get replaceFieldsBody =>
+      'Current fields will be replaced by the new category ones.';
+
+  @override
+  String get fieldMenuLabel => 'Field options';
 }

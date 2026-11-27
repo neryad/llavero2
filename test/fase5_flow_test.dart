@@ -93,14 +93,17 @@ Future<void> main() async {
       expect(find.text('Nueva entrada'), findsOneWidget);
 
       await tester.enterText(_field('Título'), 'Wi-Fi de casa');
+      await tester.drag(find.byType(CustomScrollView), const Offset(0, -500));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Añadir campo'));
       await tester.pumpAndSettle();
-      await tester.enterText(_field('Etiqueta'), 'Contraseña');
-      await tester.enterText(_field('Valor'), 'secreto-unicornio');
+      await tester.enterText(_field('Nombre del campo'), 'Contraseña');
       await tester.tap(find.text('Secreto'));
+      await tester.tap(find.text('Añadir campo').last);
       await tester.pumpAndSettle();
+      await tester.enterText(_field('Valor'), 'secreto-unicornio');
       await tester.drag(
-        find.byType(SingleChildScrollView),
+        find.byType(CustomScrollView),
         const Offset(0, -800),
       );
       await tester.pumpAndSettle();

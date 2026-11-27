@@ -22,6 +22,10 @@ abstract final class SecretDetector {
   static bool isSecret(EntryField field) {
     if (field.isSecret) return true;
     if (field.type.hidesValueByDefault) return true;
+    if (field.key == FieldKeys.password || field.key == FieldKeys.pin ||
+        field.key == FieldKeys.cvv) {
+      return true;
+    }
     final label = field.label.toLowerCase().trim();
     if (labelHints.any(label.contains)) return true;
     // Los PIN suelen estar en campos numéricos con etiqueta genérica.

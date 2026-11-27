@@ -235,6 +235,8 @@ void main() {
       await tester.tap(save);
       await tester.pumpAndSettle();
 
+      await tester.drag(find.byType(CustomScrollView), const Offset(0, -800));
+      await tester.pumpAndSettle();
       expect(find.text('Escribe un título.'), findsOneWidget);
     });
   });

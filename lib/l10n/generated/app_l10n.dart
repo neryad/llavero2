@@ -793,11 +793,11 @@ abstract class L10n {
   /// **'Password health'**
   String get securityHealthLabel;
 
-  /// Summary of how many passwords were analyzed.
+  /// Resumen de la salud de contraseñas
   ///
   /// In en, this message translates to:
-  /// **'Passwords checked: {count}'**
-  String healthSummary(Object count);
+  /// **'{entries} entries reviewed, {problems} problems'**
+  String healthSummary(int entries, int problems);
 
   /// Section title for entries with weak passwords.
   ///
@@ -1176,6 +1176,108 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'By person'**
   String get filterByPerson;
+
+  /// wifiMissingSsid
+  ///
+  /// In en, this message translates to:
+  /// **'Network name is missing'**
+  String get wifiMissingSsid;
+
+  /// otherCategoryHint
+  ///
+  /// In en, this message translates to:
+  /// **'Add the data you need, such as username, password or code.'**
+  String get otherCategoryHint;
+
+  /// shortPins
+  ///
+  /// In en, this message translates to:
+  /// **'Short PINs'**
+  String get shortPins;
+
+  /// addFieldSheetTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Add field'**
+  String get addFieldSheetTitle;
+
+  /// fieldNameLabel
+  ///
+  /// In en, this message translates to:
+  /// **'Field name'**
+  String get fieldNameLabel;
+
+  /// fieldTypeText
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get fieldTypeText;
+
+  /// fieldTypeSecret
+  ///
+  /// In en, this message translates to:
+  /// **'Secret'**
+  String get fieldTypeSecret;
+
+  /// fieldTypePin
+  ///
+  /// In en, this message translates to:
+  /// **'PIN'**
+  String get fieldTypePin;
+
+  /// fieldTypeEmail
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get fieldTypeEmail;
+
+  /// fieldTypeUrl
+  ///
+  /// In en, this message translates to:
+  /// **'URL'**
+  String get fieldTypeUrl;
+
+  /// fieldTypePhone
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get fieldTypePhone;
+
+  /// markAsSecret
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as secret'**
+  String get markAsSecret;
+
+  /// deleteFieldConfirmTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this field?'**
+  String get deleteFieldConfirmTitle;
+
+  /// deleteFieldConfirmBody
+  ///
+  /// In en, this message translates to:
+  /// **'The value of this field will be lost.'**
+  String get deleteFieldConfirmBody;
+
+  /// replaceFieldsTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Replace fields?'**
+  String get replaceFieldsTitle;
+
+  /// replaceFieldsBody
+  ///
+  /// In en, this message translates to:
+  /// **'Current fields will be replaced by the new category ones.'**
+  String get replaceFieldsBody;
+
+  /// fieldMenuLabel
+  ///
+  /// In en, this message translates to:
+  /// **'Field options'**
+  String get fieldMenuLabel;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

@@ -8,7 +8,7 @@ class VaultDocument {
   const VaultDocument({required this.entries, this.version = currentVersion});
 
   /// Versión del formato del documento.
-  static const int currentVersion = 1;
+  static const int currentVersion = 2;
 
   /// Todas las entradas, incluidas las que están en la papelera.
   final List<VaultEntry> entries;

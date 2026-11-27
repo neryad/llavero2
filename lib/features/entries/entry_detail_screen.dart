@@ -143,6 +143,7 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
         }
 
         final isWifi = entry.categoryId == CategoryIds.wifi;
+        final ssid = isWifi ? WifiQr.ssidOf(entry) : null;
         final payload = isWifi ? WifiQr.payloadFor(entry) : null;
 
         return AppScaffold(
@@ -182,16 +183,15 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
               ),
               if (isWifi) ...[
                 const SizedBox(height: AppSpacing.cardGap),
-                _wifiQrSection(context, l10n, payload),
-                if (payload == null && !_qrVisible) ...[
-                  const SizedBox(height: AppSpacing.xs),
+                if (ssid == null)
                   Text(
-                    l10n.wifiQrUnavailable,
+                    l10n.wifiMissingSsid,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: Theme.of(context).colorScheme.error,
                         ),
-                  ),
-                ],
+                  )
+                else
+                  _wifiQrSection(context, l10n, payload),
               ],
               const SizedBox(height: AppSpacing.headerToItem),
               Text(
