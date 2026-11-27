@@ -10,6 +10,8 @@ import 'package:llavero2/l10n/generated/app_l10n.dart';
 
 const warning =
     'Los secretos se guardarán sin cifrar. Cualquiera que lea el archivo podrá verlos.';
+const plainWarning =
+    'Estos archivos muestran tus datos sin protección. Bórralos después de usarlos.';
 
 Future<AppControllers> pumpExport(WidgetTester tester) async {
   final controllers = AppControllers(
@@ -36,14 +38,15 @@ Future<AppControllers> pumpExport(WidgetTester tester) async {
 
 void main() {
   group('Exportaciones en claro', () {
-    testWidgets('aviso rojo visible al activar «Incluir secretos en claro»',
+    testWidgets('aviso rojo visible al activar «Incluir secretos en texto plano»',
         (tester) async {
       await pumpExport(tester);
 
-      await tester.tap(find.text('Incluir secretos en claro'));
+      await tester.tap(find.text('Incluir secretos en texto plano'));
       await tester.pumpAndSettle();
 
-      final text = tester.widget<Text>(find.text(warning));
+      await tester.ensureVisible(find.text(plainWarning));
+      final text = tester.widget<Text>(find.text(plainWarning));
       expect(
         text.style?.color,
         Theme.of(tester.element(find.byType(ExportImportScreen)))
@@ -56,6 +59,8 @@ void main() {
         (tester) async {
       await pumpExport(tester);
 
+      await tester.ensureVisible(find.text('Exportar JSON'));
+      await tester.pump();
       await tester.tap(find.text('Exportar JSON'));
       await tester.pumpAndSettle();
 
@@ -68,9 +73,11 @@ void main() {
     testWidgets('exportar CSV con secretos confirma dos veces y luego reautentica',
         (tester) async {
       await pumpExport(tester);
-      await tester.tap(find.text('Incluir secretos en claro'));
+      await tester.tap(find.text('Incluir secretos en texto plano'));
       await tester.pumpAndSettle();
 
+      await tester.ensureVisible(find.text('Exportar CSV'));
+      await tester.pump();
       await tester.tap(find.text('Exportar CSV'));
       await tester.pumpAndSettle();
       expect(find.text(warning), findsWidgets);

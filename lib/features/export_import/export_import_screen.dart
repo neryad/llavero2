@@ -13,8 +13,8 @@ import '../../core/widgets/reauth_dialog.dart';
 import '../../data/export_service.dart';
 import '../../data/export_temp_file.dart';
 import '../../data/models/vault_document.dart';
-import '../../core/security/crypto/crypto_errors.dart';
 import '../../l10n/generated/app_l10n.dart';
+import 'import_actions.dart';
 
 /// Pantalla para exportar e importar la bóveda.
 class ExportImportScreen extends StatefulWidget {
@@ -26,17 +26,32 @@ class ExportImportScreen extends StatefulWidget {
 
 class _ExportImportScreenState extends State<ExportImportScreen> {
   final TextEditingController _password = TextEditingController();
+  final TextEditingController _confirm = TextEditingController();
   final ExportService _service = ExportService();
   String? _message;
+  bool _obscure = true;
+  bool _confirmObscure = true;
+  bool _includeSecrets = false;
 
   @override
   void dispose() {
     _password.dispose();
+    _confirm.dispose();
     super.dispose();
   }
 
   VaultDocument _document() {
     return VaultDocument(entries: AppScope.of(context).entries.allEntries);
+  }
+
+  bool get _canExportBackup =>
+      _password.text.length >= 8 && _password.text == _confirm.text;
+
+  String _strength(L10n l10n) {
+    final length = _password.text.length;
+    if (length >= 12) return l10n.passwordStrengthStrong;
+    if (length >= 8) return l10n.passwordStrengthOk;
+    return l10n.passwordStrengthWeak;
   }
 
   /// Todas las exportaciones exigen re-autenticación.
@@ -46,22 +61,42 @@ class _ExportImportScreenState extends State<ExportImportScreen> {
   }
 
   Future<void> _exportBackup() async {
+    if (!_canExportBackup) return;
+    final ctx = context;
+    final document = _document();
+    final settings = AppScope.of(ctx).settings;
+    final tip = L10n.of(ctx).backupTip;
     await _withReauth(() async {
       final map = await _service.createEncryptedBackup(
-        _document(),
+        document,
         _password.text,
       );
-      await ExportTempFile.use(utf8.encode(jsonEncode(map)), 'llavero', (file) async {
-        await SharePlus.instance.share(
-          ShareParams(files: <XFile>[XFile(file.path)]),
-        );
-      });
+      await ExportTempFile.use(
+        utf8.encode(jsonEncode(map)),
+        'llavero',
+        (file) async {
+          await SharePlus.instance.share(
+            ShareParams(files: <XFile>[XFile(file.path)]),
+          );
+          final name = file.path.split(RegExp(r'[\\/]')).last;
+          // Solo se guarda la fecha: nunca la contraseña del respaldo.
+          await settings.setLastBackupAt(DateTime.now());
+          if (!ctx.mounted) return;
+          ScaffoldMessenger.of(ctx).showSnackBar(
+            SnackBar(content: Text('$name · $tip')),
+          );
+        },
+      );
+      _password.clear();
+      _confirm.clear();
+      if (mounted) setState(() {});
     });
   }
 
   Future<void> _importBackup() async {
-    final l10n = L10n.of(context);
-    final entries = AppScope.of(context).entries;
+    final ctx = context;
+    final l10n = L10n.of(ctx);
+    final entries = AppScope.of(ctx).entries;
     final picked = await FilePicker.pickFiles(
       type: FileType.custom,
       allowedExtensions: <String>['llavero'],
@@ -75,71 +110,59 @@ class _ExportImportScreenState extends State<ExportImportScreen> {
         backup,
         _password.text,
       );
-      if (!mounted || !context.mounted) return;
+      if (! mounted) return;
+      if (!ctx.mounted) return;
       final merge = await showDialog<bool>(
-        context: context,
+        context: ctx,
         builder: (context) => AlertDialog(
           title: Text(l10n.importModeTitle),
-          content: Text(l10n.importConfirm),
+          content: Text(l10n.importEntriesFound(document.entries.length)),
           actions: <Widget>[
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => Navigator.of(ctx).pop(),
               child: Text(l10n.cancelLabel),
             ),
             TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
+              onPressed: () => Navigator.of(ctx).pop(true),
               child: Text(l10n.mergeLabel),
             ),
             FilledButton(
-              onPressed: () => Navigator.of(context).pop(false),
+              onPressed: () => Navigator.of(ctx).pop(false),
               child: Text(l10n.replaceLabel),
             ),
           ],
         ),
       );
-      if (!context.mounted || merge == null) return;
-      if (merge) {
-        await entries.merge(document);
-      } else {
-        if (!mounted || !context.mounted) return;
-        final confirm = await showDialog<bool>(
-          context: context,
+      if (!ctx.mounted) return;
+      if (merge == null) return;
+      if (!merge) {
+        final confirmed = await showDialog<bool>(
+          context: ctx,
           builder: (context) => AlertDialog(
             title: Text(l10n.replaceLabel),
-            content: Text(l10n.importConfirm),
+            content: Text(l10n.replaceConfirmBody),
             actions: <Widget>[
               TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
+                onPressed: () => Navigator.of(ctx).pop(false),
                 child: Text(l10n.cancelLabel),
               ),
               FilledButton(
-                onPressed: () => Navigator.of(context).pop(true),
+                onPressed: () => Navigator.of(ctx).pop(true),
                 child: Text(l10n.okLabel),
               ),
             ],
           ),
         );
-        if (confirm != true) return;
-        await entries.replaceAll(document);
+        if (confirmed != true || !ctx.mounted) return;
       }
+      await applyImport(entries, document, merge: merge);
       if (!mounted) return;
       setState(() => _message = l10n.importSuccess);
-    } on InvalidBackupFileException {
+    } on Object catch (error) {
       if (!mounted) return;
-      setState(() => _message = l10n.invalidBackupFile);
-    } on InvalidBackupPasswordException {
-      if (!mounted) return;
-      setState(() => _message = l10n.invalidBackupPassword);
-    } on UnsupportedBackupVersionException {
-      if (!mounted) return;
-      setState(() => _message = l10n.unsupportedBackupVersion);
-    } catch (_) {
-      if (!mounted) return;
-      setState(() => _message = l10n.importError);
+      setState(() => _message = importMessage(importErrorKind(error), l10n));
     }
   }
-
-  bool _includeSecrets = false;
 
   Future<bool> _confirmSecretsExport() async {
     final l10n = L10n.of(context);
@@ -182,8 +205,6 @@ class _ExportImportScreenState extends State<ExportImportScreen> {
     return second == true;
   }
 
-  /// Ejecuta una exportación, pidiendo doble confirmación si se van a
-  /// incluir secretos en claro.
   Future<void> _guarded(Future<void> Function() action) async {
     if (_includeSecrets) {
       final confirmed = await _confirmSecretsExport();
@@ -200,7 +221,9 @@ class _ExportImportScreenState extends State<ExportImportScreen> {
           includeSecrets: _includeSecrets,
         );
         await ExportTempFile.use(bytes, 'pdf', (file) async {
-          await Printing.layoutPdf(onLayout: (_) async => await file.readAsBytes());
+          await Printing.layoutPdf(
+            onLayout: (_) async => await file.readAsBytes(),
+          );
         });
       });
     });
@@ -216,95 +239,139 @@ class _ExportImportScreenState extends State<ExportImportScreen> {
     });
   }
 
+  Widget _section(BuildContext context, String title, List<Widget> children) =>
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Text(title, style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: AppSpacing.sm),
+          ...children,
+          const SizedBox(height: AppSpacing.lg),
+        ],
+      );
+
+  Widget _passwordField({
+    required TextEditingController controller,
+    required String label,
+    required bool obscure,
+    required VoidCallback onToggle,
+  }) {
+    return TextField(
+      controller: controller,
+      obscureText: obscure,
+      onChanged: (_) => setState(() {}),
+      decoration: InputDecoration(
+        labelText: label,
+        filled: true,
+        suffixIcon: IconButton(
+          icon: Icon(obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined),
+          tooltip: obscure ? L10n.of(context).revealLabel : L10n.of(context).hideLabel,
+          onPressed: onToggle,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = L10n.of(context);
+    final color = Theme.of(context).colorScheme;
 
     return AppScaffold(
       appBar: AppBar(title: Text(l10n.exportImportTitle)),
       body: ListView(
         padding: const EdgeInsets.all(AppSpacing.md),
         children: <Widget>[
-          TextField(
-            controller: _password,
-            obscureText: true,
-            decoration: InputDecoration(
-              labelText: l10n.backupPasswordLabel,
-              filled: true,
+          _section(context, l10n.encryptedBackupSection, <Widget>[
+            _passwordField(
+              controller: _password,
+              label: l10n.backupPasswordLabel,
+              obscure: _obscure,
+              onToggle: () => setState(() => _obscure = !_obscure),
             ),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(l10n.backupWarning, style: Theme.of(context).textTheme.bodySmall),
-          const SizedBox(height: AppSpacing.sm),
-          SwitchListTile(
-            title: Text(l10n.includeSecretsLabel),
-            value: _includeSecrets,
-            onChanged: (value) => setState(() => _includeSecrets = value),
-          ),
-          if (_includeSecrets) ...[
-            const SizedBox(height: AppSpacing.xs),
+            const SizedBox(height: AppSpacing.sm),
+            _passwordField(
+              controller: _confirm,
+              label: l10n.confirmPasswordLabel,
+              obscure: _confirmObscure,
+              onToggle: () => setState(() => _confirmObscure = !_confirmObscure),
+            ),
+            if (_password.text.isNotEmpty) ...[
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                '${l10n.backupPasswordLabel}: ${_strength(l10n)}',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ],
+            const SizedBox(height: AppSpacing.sm),
+            Text(l10n.backupWarning, style: Theme.of(context).textTheme.bodySmall),
+            const SizedBox(height: AppSpacing.md),
+            FilledButton.icon(
+              onPressed: _canExportBackup ? _exportBackup : null,
+              icon: const Icon(Icons.backup_outlined),
+              label: Text(l10n.exportBackupShortLabel),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            OutlinedButton.icon(
+              onPressed: _importBackup,
+              icon: const Icon(Icons.file_upload_outlined),
+              label: Text(l10n.importBackupLabel),
+            ),
+          ]),
+          _section(context, l10n.plainExportSection, <Widget>[
             Text(
-              l10n.secretsExportWarning,
+              l10n.plainExportWarning,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.error,
+                    color: color.error,
                   ),
             ),
-          ],
-          const SizedBox(height: AppSpacing.md),
-          FilledButton.icon(
-            onPressed: _exportBackup,
-            icon: const Icon(Icons.backup_outlined),
-            label: Text(l10n.exportBackupLabel),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          OutlinedButton.icon(
-            onPressed: _importBackup,
-            icon: const Icon(Icons.file_upload_outlined),
-            label: Text(l10n.importBackupLabel),
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          OutlinedButton.icon(
-            onPressed: _exportPdf,
-            icon: const Icon(Icons.picture_as_pdf_outlined),
-            label: Text(l10n.exportPdfLabel),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          OutlinedButton.icon(
-            onPressed: () => _guarded(
-              () => _exportText(
-                'json',
-                _service.toJson(
-                  _document(),
-                  includeSecrets: _includeSecrets,
+            const SizedBox(height: AppSpacing.sm),
+            SwitchListTile(
+              title: Text(l10n.includeSecretsLabel),
+              value: _includeSecrets,
+              onChanged: (value) => setState(() => _includeSecrets = value),
+            ),
+            OutlinedButton.icon(
+              onPressed: _exportPdf,
+              icon: const Icon(Icons.picture_as_pdf_outlined),
+              label: Text(l10n.exportPdfLabel),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            OutlinedButton.icon(
+              onPressed: () => _guarded(
+                () => _exportText(
+                  'json',
+                  _service.toJson(
+                    _document(),
+                    includeSecrets: _includeSecrets,
+                  ),
                 ),
               ),
+              icon: const Icon(Icons.code_outlined),
+              label: Text(l10n.exportJsonLabel),
             ),
-            icon: const Icon(Icons.code_outlined),
-            label: Text(l10n.exportJsonLabel),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          OutlinedButton.icon(
-            onPressed: () => _guarded(
-              () => _exportText(
-                'csv',
-                _service.toCsv(
-                  _document(),
-                  includeSecrets: _includeSecrets,
+            const SizedBox(height: AppSpacing.sm),
+            OutlinedButton.icon(
+              onPressed: () => _guarded(
+                () => _exportText(
+                  'csv',
+                  _service.toCsv(
+                    _document(),
+                    includeSecrets: _includeSecrets,
+                  ),
                 ),
               ),
+              icon: const Icon(Icons.table_chart_outlined),
+              label: Text(l10n.exportCsvLabel),
             ),
-            icon: const Icon(Icons.table_chart_outlined),
-            label: Text(l10n.exportCsvLabel),
-          ),
-          if (_message != null) ...[
-            const SizedBox(height: AppSpacing.lg),
+          ]),
+          if (_message != null)
             Text(
               _message!,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
+                    color: color.primary,
                   ),
             ),
-          ],
         ],
       ),
     );

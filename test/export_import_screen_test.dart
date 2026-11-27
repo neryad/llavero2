@@ -34,7 +34,7 @@ void main() {
 
     expect(find.text('Exportar / importar'), findsOneWidget);
     expect(find.text('Contraseña del respaldo'), findsOneWidget);
-    expect(find.text('Exportar respaldo (.llavero)'), findsOneWidget);
+    expect(find.text('Exportar copia'), findsOneWidget);
     expect(find.text('Importar respaldo'), findsOneWidget);
     expect(find.text('Exportar PDF'), findsOneWidget);
     expect(find.text('Exportar JSON'), findsOneWidget);

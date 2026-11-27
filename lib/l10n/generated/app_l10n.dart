@@ -763,7 +763,7 @@ abstract class L10n {
   /// **'You haven\'t created any categories yet.'**
   String get noCustomCategories;
 
-  /// Switch that enables exporting secret values without hiding them.
+  /// includeSecretsLabel
   ///
   /// In en, this message translates to:
   /// **'Include secrets in plain text'**
@@ -904,7 +904,7 @@ abstract class L10n {
   /// replaceLabel
   ///
   /// In en, this message translates to:
-  /// **'Replace everything'**
+  /// **'Replace'**
   String get replaceLabel;
 
   /// importConfirm
@@ -1332,6 +1332,72 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Type ERASE to continue.'**
   String get startFreshConfirmHint;
+
+  /// encryptedBackupSection
+  ///
+  /// In en, this message translates to:
+  /// **'Encrypted backup'**
+  String get encryptedBackupSection;
+
+  /// plainExportSection
+  ///
+  /// In en, this message translates to:
+  /// **'Unencrypted export'**
+  String get plainExportSection;
+
+  /// plainExportWarning
+  ///
+  /// In en, this message translates to:
+  /// **'These files show your data without protection. Delete them after use.'**
+  String get plainExportWarning;
+
+  /// confirmPasswordLabel
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get confirmPasswordLabel;
+
+  /// passwordStrengthWeak
+  ///
+  /// In en, this message translates to:
+  /// **'Weak'**
+  String get passwordStrengthWeak;
+
+  /// passwordStrengthOk
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get passwordStrengthOk;
+
+  /// passwordStrengthStrong
+  ///
+  /// In en, this message translates to:
+  /// **'Strong'**
+  String get passwordStrengthStrong;
+
+  /// backupTip
+  ///
+  /// In en, this message translates to:
+  /// **'Keep it off the phone (for example in your email or in the cloud).'**
+  String get backupTip;
+
+  /// Entradas del respaldo
+  ///
+  /// In en, this message translates to:
+  /// **'{count} entries in the backup'**
+  String importEntriesFound(int count);
+
+  /// replaceConfirmBody
+  ///
+  /// In en, this message translates to:
+  /// **'Current entries will be replaced by the backup ones.'**
+  String get replaceConfirmBody;
+
+  /// exportBackupShortLabel
+  ///
+  /// In en, this message translates to:
+  /// **'Export backup'**
+  String get exportBackupShortLabel;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

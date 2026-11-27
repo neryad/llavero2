@@ -431,7 +431,7 @@ class L10nEn extends L10n {
   String get mergeLabel => 'Merge';
 
   @override
-  String get replaceLabel => 'Replace everything';
+  String get replaceLabel => 'Replace';
 
   @override
   String get importConfirm => 'This may overwrite your current data.';
@@ -656,4 +656,42 @@ class L10nEn extends L10n {
 
   @override
   String get startFreshConfirmHint => 'Type ERASE to continue.';
+
+  @override
+  String get encryptedBackupSection => 'Encrypted backup';
+
+  @override
+  String get plainExportSection => 'Unencrypted export';
+
+  @override
+  String get plainExportWarning =>
+      'These files show your data without protection. Delete them after use.';
+
+  @override
+  String get confirmPasswordLabel => 'Confirm password';
+
+  @override
+  String get passwordStrengthWeak => 'Weak';
+
+  @override
+  String get passwordStrengthOk => 'OK';
+
+  @override
+  String get passwordStrengthStrong => 'Strong';
+
+  @override
+  String get backupTip =>
+      'Keep it off the phone (for example in your email or in the cloud).';
+
+  @override
+  String importEntriesFound(int count) {
+    return '$count entries in the backup';
+  }
+
+  @override
+  String get replaceConfirmBody =>
+      'Current entries will be replaced by the backup ones.';
+
+  @override
+  String get exportBackupShortLabel => 'Export backup';
 }

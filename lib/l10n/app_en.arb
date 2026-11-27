@@ -446,7 +446,7 @@
   },
   "includeSecretsLabel": "Include secrets in plain text",
   "@includeSecretsLabel": {
-    "description": "Switch that enables exporting secret values without hiding them."
+    "description": "includeSecretsLabel"
   },
   "secretsExportWarning": "Secrets will be saved unencrypted. Anyone reading the file will see them.",
   "@secretsExportWarning": {
@@ -546,7 +546,7 @@
   "@mergeLabel": {
     "description": "mergeLabel"
   },
-  "replaceLabel": "Replace everything",
+  "replaceLabel": "Replace",
   "@replaceLabel": {
     "description": "replaceLabel"
   },
@@ -833,5 +833,55 @@
   "startFreshConfirmHint": "Type ERASE to continue.",
   "@startFreshConfirmHint": {
     "description": "startFreshConfirmHint"
+  },
+  "encryptedBackupSection": "Encrypted backup",
+  "@encryptedBackupSection": {
+    "description": "encryptedBackupSection"
+  },
+  "plainExportSection": "Unencrypted export",
+  "@plainExportSection": {
+    "description": "plainExportSection"
+  },
+  "plainExportWarning": "These files show your data without protection. Delete them after use.",
+  "@plainExportWarning": {
+    "description": "plainExportWarning"
+  },
+  "confirmPasswordLabel": "Confirm password",
+  "@confirmPasswordLabel": {
+    "description": "confirmPasswordLabel"
+  },
+  "passwordStrengthWeak": "Weak",
+  "@passwordStrengthWeak": {
+    "description": "passwordStrengthWeak"
+  },
+  "passwordStrengthOk": "OK",
+  "@passwordStrengthOk": {
+    "description": "passwordStrengthOk"
+  },
+  "passwordStrengthStrong": "Strong",
+  "@passwordStrengthStrong": {
+    "description": "passwordStrengthStrong"
+  },
+  "backupTip": "Keep it off the phone (for example in your email or in the cloud).",
+  "@backupTip": {
+    "description": "backupTip"
+  },
+  "importEntriesFound": "{count} entries in the backup",
+  "@importEntriesFound": {
+    "description": "Entradas del respaldo",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Número de entradas"
+      }
+    }
+  },
+  "replaceConfirmBody": "Current entries will be replaced by the backup ones.",
+  "@replaceConfirmBody": {
+    "description": "replaceConfirmBody"
+  },
+  "exportBackupShortLabel": "Export backup",
+  "@exportBackupShortLabel": {
+    "description": "exportBackupShortLabel"
   }
 }

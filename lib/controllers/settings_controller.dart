@@ -86,6 +86,7 @@ class SettingsController extends ChangeNotifier {
   bool _blockScreenshots;
   int _clipboardTimeoutSeconds;
   int _pinLength;
+  DateTime? _lastBackupAt;
 
   /// Tema elegido por el usuario.
   AppThemeMode get themeMode => _themeMode;
@@ -105,6 +106,9 @@ class SettingsController extends ChangeNotifier {
   /// Número de dígitos del PIN (4 a 8).
   int get pinLength => _pinLength;
 
+  /// Fecha del último respaldo cifrado correcto (solo la fecha, nunca la clave).
+  DateTime? get lastBackupAt => _lastBackupAt;
+
   /// Carga los ajustes guardados (llamado al arrancar).
   Future<void> initialize() async {
     final values = await _store?.load();
@@ -120,6 +124,9 @@ class SettingsController extends ChangeNotifier {
     _clipboardTimeoutSeconds =
         values['clipboardTimeoutSeconds'] as int? ?? _clipboardTimeoutSeconds;
     _pinLength = values['pinLength'] as int? ?? _pinLength;
+    final savedBackup = values['lastBackupAt'] as String?;
+    _lastBackupAt =
+        savedBackup == null ? null : DateTime.tryParse(savedBackup)?.toUtc();
     notifyListeners();
   }
 
@@ -137,6 +144,7 @@ class SettingsController extends ChangeNotifier {
       'blockScreenshots': _blockScreenshots,
       'clipboardTimeoutSeconds': _clipboardTimeoutSeconds,
       'pinLength': _pinLength,
+      'lastBackupAt': _lastBackupAt?.toUtc().toIso8601String(),
     });
   }
 
@@ -179,6 +187,13 @@ class SettingsController extends ChangeNotifier {
     if (_pinLength == value) return;
     _pinLength = value;
     _persist();
+    notifyListeners();
+  }
+
+  /// Guarda solo cuándo se hizo el último respaldo, nunca su contraseña.
+  Future<void> setLastBackupAt(DateTime value) async {
+    _lastBackupAt = value.toUtc();
+    await _persist();
     notifyListeners();
   }
 }

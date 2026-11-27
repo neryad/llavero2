@@ -444,9 +444,9 @@
   "@noCustomCategories": {
     "description": "Message shown when there are no custom categories."
   },
-  "includeSecretsLabel": "Incluir secretos en claro",
+  "includeSecretsLabel": "Incluir secretos en texto plano",
   "@includeSecretsLabel": {
-    "description": "Switch that enables exporting secret values without hiding them."
+    "description": "includeSecretsLabel"
   },
   "secretsExportWarning": "Los secretos se guardarán sin cifrar. Cualquiera que lea el archivo podrá verlos.",
   "@secretsExportWarning": {
@@ -542,11 +542,11 @@
   "@importModeTitle": {
     "description": "importModeTitle"
   },
-  "mergeLabel": "Fusionar",
+  "mergeLabel": "Combinar",
   "@mergeLabel": {
     "description": "mergeLabel"
   },
-  "replaceLabel": "Reemplazar todo",
+  "replaceLabel": "Reemplazar",
   "@replaceLabel": {
     "description": "replaceLabel"
   },
@@ -833,5 +833,55 @@
   "startFreshConfirmHint": "Escribe BORRAR para continuar.",
   "@startFreshConfirmHint": {
     "description": "startFreshConfirmHint"
+  },
+  "encryptedBackupSection": "Copia de seguridad cifrada",
+  "@encryptedBackupSection": {
+    "description": "encryptedBackupSection"
+  },
+  "plainExportSection": "Exportar sin cifrar",
+  "@plainExportSection": {
+    "description": "plainExportSection"
+  },
+  "plainExportWarning": "Estos archivos muestran tus datos sin protección. Bórralos después de usarlos.",
+  "@plainExportWarning": {
+    "description": "plainExportWarning"
+  },
+  "confirmPasswordLabel": "Confirmar contraseña",
+  "@confirmPasswordLabel": {
+    "description": "confirmPasswordLabel"
+  },
+  "passwordStrengthWeak": "Débil",
+  "@passwordStrengthWeak": {
+    "description": "passwordStrengthWeak"
+  },
+  "passwordStrengthOk": "Aceptable",
+  "@passwordStrengthOk": {
+    "description": "passwordStrengthOk"
+  },
+  "passwordStrengthStrong": "Fuerte",
+  "@passwordStrengthStrong": {
+    "description": "passwordStrengthStrong"
+  },
+  "backupTip": "Guárdala fuera del teléfono (por ejemplo en tu correo o en la nube).",
+  "@backupTip": {
+    "description": "backupTip"
+  },
+  "importEntriesFound": "{count} entradas en el respaldo",
+  "@importEntriesFound": {
+    "description": "Entradas del respaldo",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "Número de entradas"
+      }
+    }
+  },
+  "replaceConfirmBody": "Las entradas actuales serán reemplazadas por las del respaldo.",
+  "@replaceConfirmBody": {
+    "description": "replaceConfirmBody"
+  },
+  "exportBackupShortLabel": "Exportar copia",
+  "@exportBackupShortLabel": {
+    "description": "exportBackupShortLabel"
   }
 }

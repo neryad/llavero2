@@ -351,7 +351,7 @@ class L10nEs extends L10n {
   String get noCustomCategories => 'Todavía no has creado categorías.';
 
   @override
-  String get includeSecretsLabel => 'Incluir secretos en claro';
+  String get includeSecretsLabel => 'Incluir secretos en texto plano';
 
   @override
   String get secretsExportWarning =>
@@ -428,10 +428,10 @@ class L10nEs extends L10n {
   String get importModeTitle => '¿Cómo quieres importar?';
 
   @override
-  String get mergeLabel => 'Fusionar';
+  String get mergeLabel => 'Combinar';
 
   @override
-  String get replaceLabel => 'Reemplazar todo';
+  String get replaceLabel => 'Reemplazar';
 
   @override
   String get importConfirm => 'Esto puede sobrescribir tus datos actuales.';
@@ -659,4 +659,42 @@ class L10nEs extends L10n {
 
   @override
   String get startFreshConfirmHint => 'Escribe BORRAR para continuar.';
+
+  @override
+  String get encryptedBackupSection => 'Copia de seguridad cifrada';
+
+  @override
+  String get plainExportSection => 'Exportar sin cifrar';
+
+  @override
+  String get plainExportWarning =>
+      'Estos archivos muestran tus datos sin protección. Bórralos después de usarlos.';
+
+  @override
+  String get confirmPasswordLabel => 'Confirmar contraseña';
+
+  @override
+  String get passwordStrengthWeak => 'Débil';
+
+  @override
+  String get passwordStrengthOk => 'Aceptable';
+
+  @override
+  String get passwordStrengthStrong => 'Fuerte';
+
+  @override
+  String get backupTip =>
+      'Guárdala fuera del teléfono (por ejemplo en tu correo o en la nube).';
+
+  @override
+  String importEntriesFound(int count) {
+    return '$count entradas en el respaldo';
+  }
+
+  @override
+  String get replaceConfirmBody =>
+      'Las entradas actuales serán reemplazadas por las del respaldo.';
+
+  @override
+  String get exportBackupShortLabel => 'Exportar copia';
 }
