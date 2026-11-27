@@ -625,4 +625,35 @@ class L10nEn extends L10n {
 
   @override
   String get fieldMenuLabel => 'Field options';
+
+  @override
+  String get recoveryNewerFormat =>
+      'This vault was created with a newer version of Llavero. Update the app to open it.';
+
+  @override
+  String get recoveryCorrupted =>
+      'Could not read the vault. It may be damaged.';
+
+  @override
+  String get recoveryUnreadable =>
+      'Could not access the vault file. Try again.';
+
+  @override
+  String get recoveryMissing => 'The vault was not found on this device.';
+
+  @override
+  String get retryLabel => 'Retry';
+
+  @override
+  String get startFreshLabel => 'Start from scratch';
+
+  @override
+  String get startFreshConfirmTitle => 'Start from scratch?';
+
+  @override
+  String get startFreshConfirmBody =>
+      'The entries will no longer be accessible from the app. You will need a backup to recover them.';
+
+  @override
+  String get startFreshConfirmHint => 'Type ERASE to continue.';
 }

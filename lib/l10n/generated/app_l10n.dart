@@ -1278,6 +1278,60 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Field options'**
   String get fieldMenuLabel;
+
+  /// recoveryNewerFormat
+  ///
+  /// In en, this message translates to:
+  /// **'This vault was created with a newer version of Llavero. Update the app to open it.'**
+  String get recoveryNewerFormat;
+
+  /// recoveryCorrupted
+  ///
+  /// In en, this message translates to:
+  /// **'Could not read the vault. It may be damaged.'**
+  String get recoveryCorrupted;
+
+  /// recoveryUnreadable
+  ///
+  /// In en, this message translates to:
+  /// **'Could not access the vault file. Try again.'**
+  String get recoveryUnreadable;
+
+  /// recoveryMissing
+  ///
+  /// In en, this message translates to:
+  /// **'The vault was not found on this device.'**
+  String get recoveryMissing;
+
+  /// retryLabel
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retryLabel;
+
+  /// startFreshLabel
+  ///
+  /// In en, this message translates to:
+  /// **'Start from scratch'**
+  String get startFreshLabel;
+
+  /// startFreshConfirmTitle
+  ///
+  /// In en, this message translates to:
+  /// **'Start from scratch?'**
+  String get startFreshConfirmTitle;
+
+  /// startFreshConfirmBody
+  ///
+  /// In en, this message translates to:
+  /// **'The entries will no longer be accessible from the app. You will need a backup to recover them.'**
+  String get startFreshConfirmBody;
+
+  /// startFreshConfirmHint
+  ///
+  /// In en, this message translates to:
+  /// **'Type ERASE to continue.'**
+  String get startFreshConfirmHint;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

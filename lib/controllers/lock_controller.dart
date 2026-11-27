@@ -5,6 +5,7 @@ import '../core/security/biometric_auth.dart';
 import '../core/security/crypto/crypto_errors.dart';
 import '../core/security/key_vault_service.dart';
 import '../core/security/lockout_policy.dart';
+import '../core/security/vault_problem.dart';
 import '../core/security/lockout_store.dart';
 
 /// Estado del candado de la bóveda.
@@ -29,7 +30,7 @@ class LockController extends ChangeNotifier {
   bool _biometricsEnabled = false;
   LockoutState _lockoutState = LockoutState.initial;
   bool _initialized = false;
-  bool _vaultCorrupted = false;
+  VaultProblem? _vaultProblem;
 
   SecretKey? _unlockedDek;
 
@@ -42,8 +43,11 @@ class LockController extends ChangeNotifier {
   LockoutState get lockoutState => _lockoutState;
   bool get initialized => _initialized;
 
-  /// `true` si el archivo de la bóveda está dañado y no se pudo abrir.
-  bool get vaultCorrupted => _vaultCorrupted;
+  /// `true` si la bóveda no se pudo abrir (por cualquier motivo concreto).
+  bool get vaultCorrupted => _vaultProblem != null;
+
+  /// Motivo concreto por el que no se pudo abrir la bóveda.
+  VaultProblem? get vaultProblem => _vaultProblem;
 
   bool get isLockedOut => _lockoutState.isLockedOut(_clock());
   Duration remainingLockout() => _lockoutState.remaining(_clock());
@@ -82,21 +86,23 @@ class LockController extends ChangeNotifier {
     final SecretKey dek;
     try {
       dek = await service.unlockWithPin(pin);
+    } on UnsupportedVaultVersionException {
+      markVaultProblem(VaultProblem.newerFormat);
+      return false;
     } on InvalidPinException {
       await _registerFailedAttempt();
       return false;
     } on MissingVaultException {
       rethrow;
     } on TamperedDataException {
-      _vaultCorrupted = true;
-      notifyListeners();
+      markVaultProblem(VaultProblem.corrupted);
       return false;
     }
 
+    clearVaultProblem();
     _lockoutState = _lockoutState.registerSuccess();
     await _persistLockoutState();
     _unlockedDek = dek;
-    _vaultCorrupted = false;
     _isLocked = false;
     notifyListeners();
     return true;
@@ -113,8 +119,7 @@ class LockController extends ChangeNotifier {
       await _registerFailedAttempt();
       return false;
     } on TamperedDataException {
-      _vaultCorrupted = true;
-      notifyListeners();
+      markVaultProblem(VaultProblem.corrupted);
       return false;
     }
   }
@@ -162,8 +167,7 @@ class LockController extends ChangeNotifier {
       await _registerFailedAttempt();
       return false;
     } on TamperedDataException {
-      _vaultCorrupted = true;
-      notifyListeners();
+      markVaultProblem(VaultProblem.corrupted);
       return false;
     }
     _lockoutState = _lockoutState.registerSuccess();
@@ -194,8 +198,29 @@ class LockController extends ChangeNotifier {
   }
 
   /// Marca el archivo de la bóveda como dañado (lo detecta el cargador).
-  void markVaultCorrupted() {
-    _vaultCorrupted = true;
+  void markVaultCorrupted() => markVaultProblem(VaultProblem.corrupted);
+
+  /// Guarda el motivo concreto sin exponer mensajes internos.
+  void markVaultProblem(VaultProblem problem) {
+    _vaultProblem = problem;
+    notifyListeners();
+  }
+
+  void clearVaultProblem() {
+    if (_vaultProblem == null) return;
+    _vaultProblem = null;
+    notifyListeners();
+  }
+
+  /// Borra el material de claves para poder crear un PIN nuevo.
+  Future<void> eraseKeyMaterial() async {
+    final service = _keyService;
+    if (service != null) await service.eraseEverything();
+    _hasPin = false;
+    _biometricsEnabled = false;
+    _unlockedDek = null;
+    _isLocked = true;
+    clearVaultProblem();
     notifyListeners();
   }
 

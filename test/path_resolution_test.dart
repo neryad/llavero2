@@ -20,6 +20,9 @@ class _ChangingPathFileSystem implements VaultFileSystem {
   Future<String> resolveVaultPath() async => _path();
 
   @override
+  Future<void> rename(String from, String to) => _inner.rename(from, to);
+
+  @override
   Future<void> write(String path, List<int> bytes) => _inner.write(path, bytes);
 
   @override

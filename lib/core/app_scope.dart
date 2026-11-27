@@ -8,6 +8,7 @@ import '../controllers/lock_controller.dart';
 import '../controllers/settings_controller.dart';
 import '../controllers/settings_store.dart';
 import '../core/security/biometric_auth.dart';
+import '../core/security/vault_problem.dart';
 import '../core/security/key_vault_service.dart';
 import '../core/security/lockout_store.dart';
 import '../core/security/secure_store.dart';
@@ -95,33 +96,47 @@ class AppControllers extends ChangeNotifier {
   /// aparezca vacía mientras se descifra el archivo.
   Future<void>? get pendingUnlock => _pendingUnlock;
 
+  /// Espera a la carga y clasifica el error sin exponerlo a la interfaz.
+  Future<bool> _finishUnlock() async {
+    try {
+      await _pendingUnlock;
+      lock.clearVaultProblem();
+      return true;
+    } on Object catch (error) {
+      lock.markVaultProblem(problemFor(error));
+      return false;
+    }
+  }
+
   /// Desbloquea con PIN y espera a que las entradas estén cargadas.
   Future<bool> unlockWithPin(String pin) async {
     final ok = await lock.submitPin(pin);
-    if (ok) {
-      try {
-        await _pendingUnlock;
-      } on Object {
-        lock.markVaultCorrupted();
-        return false;
-      }
-    }
-    return ok;
+    return ok ? await _finishUnlock() : false;
   }
 
   Future<bool> unlockWithBiometrics({required String localizedReason}) async {
     final ok = await lock.unlockWithBiometrics(
       localizedReason: localizedReason,
     );
-    if (ok) {
-      try {
-        await _pendingUnlock;
-      } on Object {
-        lock.markVaultCorrupted();
-        return false;
-      }
-    }
-    return ok;
+    return ok ? await _finishUnlock() : false;
+  }
+
+  /// Vuelve a cargar con la DEK ya desenvuelta, sin pedir el PIN otra vez.
+  Future<bool> retryVaultLoad() async {
+    final dek = lock.unlockedDek;
+    if (dek == null) return false;
+    lock.clearVaultProblem();
+    _pendingUnlock = entries.open(dek);
+    return _finishUnlock();
+  }
+
+  /// Conserva el archivo dañado, borra las claves y deja la app lista para
+  /// crear un PIN nuevo desde el onboarding.
+  Future<void> startFromScratch() async {
+    await entries.renameVaultAsDamaged();
+    await lock.eraseKeyMaterial();
+    entries.lock();
+    notifyListeners();
   }
 
   bool get vaultCorrupted => lock.vaultCorrupted;

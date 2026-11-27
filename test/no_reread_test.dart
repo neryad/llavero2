@@ -42,6 +42,9 @@ class _CountingStorage implements VaultStorage {
   Future<bool> exists() => _inner.exists();
 
   @override
+  Future<void> renameVaultAsDamaged() => _inner.renameVaultAsDamaged();
+
+  @override
   Future<void> delete() => _inner.delete();
 }
 

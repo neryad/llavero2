@@ -628,4 +628,35 @@ class L10nEs extends L10n {
 
   @override
   String get fieldMenuLabel => 'Opciones del campo';
+
+  @override
+  String get recoveryNewerFormat =>
+      'Esta bóveda se creó con una versión más nueva de Llavero. Actualiza la app para abrirla.';
+
+  @override
+  String get recoveryCorrupted =>
+      'No se pudo leer la bóveda. Puede estar dañada.';
+
+  @override
+  String get recoveryUnreadable =>
+      'No se pudo acceder al archivo de la bóveda. Inténtalo de nuevo.';
+
+  @override
+  String get recoveryMissing => 'No se encontró la bóveda en este dispositivo.';
+
+  @override
+  String get retryLabel => 'Reintentar';
+
+  @override
+  String get startFreshLabel => 'Empezar de cero';
+
+  @override
+  String get startFreshConfirmTitle => '¿Empezar de cero?';
+
+  @override
+  String get startFreshConfirmBody =>
+      'Las entradas dejarán de ser accesibles desde la app. Necesitarás una copia de seguridad para recuperarlas.';
+
+  @override
+  String get startFreshConfirmHint => 'Escribe BORRAR para continuar.';
 }

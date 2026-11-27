@@ -797,5 +797,41 @@
   "fieldMenuLabel": "Opciones del campo",
   "@fieldMenuLabel": {
     "description": "fieldMenuLabel"
+  },
+  "recoveryNewerFormat": "Esta bóveda se creó con una versión más nueva de Llavero. Actualiza la app para abrirla.",
+  "@recoveryNewerFormat": {
+    "description": "recoveryNewerFormat"
+  },
+  "recoveryCorrupted": "No se pudo leer la bóveda. Puede estar dañada.",
+  "@recoveryCorrupted": {
+    "description": "recoveryCorrupted"
+  },
+  "recoveryUnreadable": "No se pudo acceder al archivo de la bóveda. Inténtalo de nuevo.",
+  "@recoveryUnreadable": {
+    "description": "recoveryUnreadable"
+  },
+  "recoveryMissing": "No se encontró la bóveda en este dispositivo.",
+  "@recoveryMissing": {
+    "description": "recoveryMissing"
+  },
+  "retryLabel": "Reintentar",
+  "@retryLabel": {
+    "description": "retryLabel"
+  },
+  "startFreshLabel": "Empezar de cero",
+  "@startFreshLabel": {
+    "description": "startFreshLabel"
+  },
+  "startFreshConfirmTitle": "¿Empezar de cero?",
+  "@startFreshConfirmTitle": {
+    "description": "startFreshConfirmTitle"
+  },
+  "startFreshConfirmBody": "Las entradas dejarán de ser accesibles desde la app. Necesitarás una copia de seguridad para recuperarlas.",
+  "@startFreshConfirmBody": {
+    "description": "startFreshConfirmBody"
+  },
+  "startFreshConfirmHint": "Escribe BORRAR para continuar.",
+  "@startFreshConfirmHint": {
+    "description": "startFreshConfirmHint"
   }
 }

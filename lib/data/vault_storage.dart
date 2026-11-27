@@ -33,6 +33,10 @@ abstract class VaultStorage {
   /// Verifica si existe un archivo de bóveda.
   Future<bool> exists();
 
+  /// Mueve el archivo actual a `vault.damaged-<fecha>` sin borrarlo.
+  Future<void> renameVaultAsDamaged() =>
+      throw UnsupportedError('renameVaultAsDamaged no disponible');
+
   /// Borra el archivo de la bóveda.
   Future<void> delete();
 
@@ -163,6 +167,19 @@ class _VaultStorage implements VaultStorage {
         // Best effort: el usuario entra igual con los datos en memoria.
       }
     }
+  }
+
+  @override
+  Future<void> renameVaultAsDamaged() async {
+    final path = await _fileSystem.resolveVaultPath();
+    final slash = path.lastIndexOf('/');
+    final dir = slash >= 0 ? path.substring(0, slash) : '';
+    final now = DateTime.now();
+    String two(int value) => value.toString().padLeft(2, '0');
+    final stamp = '${now.year}${two(now.month)}${two(now.day)}-'
+        '${two(now.hour)}${two(now.minute)}${two(now.second)}';
+    final prefix = dir.isEmpty ? '' : '$dir/';
+    await _fileSystem.rename(path, '${prefix}vault.damaged-$stamp');
   }
 
   @override

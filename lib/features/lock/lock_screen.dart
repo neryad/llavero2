@@ -8,6 +8,7 @@ import '../../../core/app_scope.dart';
 import '../../../core/routes/app_routes.dart';
 import '../../../core/widgets/app_scaffold.dart';
 import '../../../core/widgets/pin_code_input.dart';
+import 'recovery_screen.dart';
 import '../../../l10n/generated/app_l10n.dart';
 
 /// Pantalla que pide el PIN (o biometría) para abrir la bóveda.
@@ -74,29 +75,8 @@ class _LockScreenState extends State<LockScreen> {
     final lockedOut = lock.isLockedOut;
     final length = controllers.settings.pinLength;
 
-    if (lock.vaultCorrupted) {
-      return AppScaffold(
-        appBar: AppBar(title: Text(l10n.appTitle)),
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                const Icon(Icons.warning_amber_rounded, size: 48),
-                const SizedBox(height: AppSpacing.md),
-                Text(l10n.vaultCorruptedMessage, textAlign: TextAlign.center),
-                const SizedBox(height: AppSpacing.lg),
-                FilledButton(
-                  onPressed: () => Navigator.of(context)
-                      .pushNamed(AppRoutes.exportImport),
-                  child: Text(l10n.importBackupLabel),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
+    if (lock.vaultProblem case final problem?) {
+      return RecoveryScreen(problem: problem, onOpenVault: _openVault);
     }
 
     return AppScaffold(

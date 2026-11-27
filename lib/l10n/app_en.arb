@@ -797,5 +797,41 @@
   "fieldMenuLabel": "Field options",
   "@fieldMenuLabel": {
     "description": "fieldMenuLabel"
+  },
+  "recoveryNewerFormat": "This vault was created with a newer version of Llavero. Update the app to open it.",
+  "@recoveryNewerFormat": {
+    "description": "recoveryNewerFormat"
+  },
+  "recoveryCorrupted": "Could not read the vault. It may be damaged.",
+  "@recoveryCorrupted": {
+    "description": "recoveryCorrupted"
+  },
+  "recoveryUnreadable": "Could not access the vault file. Try again.",
+  "@recoveryUnreadable": {
+    "description": "recoveryUnreadable"
+  },
+  "recoveryMissing": "The vault was not found on this device.",
+  "@recoveryMissing": {
+    "description": "recoveryMissing"
+  },
+  "retryLabel": "Retry",
+  "@retryLabel": {
+    "description": "retryLabel"
+  },
+  "startFreshLabel": "Start from scratch",
+  "@startFreshLabel": {
+    "description": "startFreshLabel"
+  },
+  "startFreshConfirmTitle": "Start from scratch?",
+  "@startFreshConfirmTitle": {
+    "description": "startFreshConfirmTitle"
+  },
+  "startFreshConfirmBody": "The entries will no longer be accessible from the app. You will need a backup to recover them.",
+  "@startFreshConfirmBody": {
+    "description": "startFreshConfirmBody"
+  },
+  "startFreshConfirmHint": "Type ERASE to continue.",
+  "@startFreshConfirmHint": {
+    "description": "startFreshConfirmHint"
   }
 }

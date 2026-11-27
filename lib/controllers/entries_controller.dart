@@ -57,6 +57,9 @@ class EntriesController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Conserva el archivo actual como `vault.damaged-<fecha>` para recuperarlo.
+  Future<void> renameVaultAsDamaged() => _storage.renameVaultAsDamaged();
+
   /// Abre la bóveda, carga las entradas y purga la papelera caducada.
   ///
   /// Es el入口 que usa `AppControllers` al desbloquear: así la papelera se

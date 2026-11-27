@@ -14,6 +14,10 @@ abstract class VaultFileSystem {
   /// actualización del sistema operativo o de la app.
   Future<String> resolveVaultPath() async => vaultPath;
 
+  /// Mueve un archivo sin borrarlo (se usa para conservar el dañado).
+  Future<void> rename(String from, String to) =>
+      throw UnsupportedError('rename no disponible en este sistema de archivos');
+
   /// Guarda el contenido del archivo en la ruta privada.
   Future<void> write(String path, List<int> bytes);
 
@@ -112,11 +116,28 @@ class PlatformVaultFileSystem implements VaultFileSystem {
   Future<bool> vaultExists() async => (await read(vaultPath)) != null;
 
   @override
+  Future<void> rename(String from, String to) async {
+    final source = File(from);
+    if (!await source.exists()) return;
+    await File(to).parent.create(recursive: true);
+    await source.rename(to);
+  }
+
+  @override
   Future<void> deleteVault() async {
     final file = File(vaultPath);
     if (await file.exists()) await file.delete();
     final backup = File('$vaultPath.v1.bak');
     if (await backup.exists()) await backup.delete();
+    final dir = File(vaultPath).parent;
+    if (await dir.exists()) {
+      await for (final entity in dir.list()) {
+        final name = entity.uri.pathSegments.last;
+        if (entity is File && name.startsWith('vault.damaged-')) {
+          await entity.delete();
+        }
+      }
+    }
   }
 
   @override
@@ -142,6 +163,12 @@ class MemoryVaultFileSystem implements VaultFileSystem {
   Future<List<int>?> read(String path) async => _files[path];
 
   @override
+  Future<void> rename(String from, String to) async {
+    final bytes = _files.remove(from);
+    if (bytes != null) _files[to] = bytes;
+  }
+
+  @override
   Future<void> writeAtomic(String path, List<int> bytes) async {
     await write(path, bytes);
   }
@@ -156,7 +183,13 @@ class MemoryVaultFileSystem implements VaultFileSystem {
   Future<void> deleteVault() async {
     _files.remove(vaultPath);
     _files.remove('$vaultPath.v1.bak');
+    for (final path in paths.where((p) => p.contains('vault.damaged-')).toList()) {
+      _files.remove(path);
+    }
   }
+
+  /// Rutas conocidas (solo para tests).
+  Iterable<String> get paths => _files.keys;
 
   @override
   List<int>? bytesAt(String path) => _files[path];
