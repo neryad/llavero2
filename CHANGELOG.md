@@ -5,6 +5,21 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
 ---
 
+## [1.0.0] — 2026-11-27
+
+### Added
+- Bóveda 100 % offline y cifrada (Argon2id + AES-256-GCM) con PIN de 4/6/8
+  dígitos, bloqueo escalonado, biometría opcional y cambio de PIN seguro.
+- Entradas con categorías, plantillas, generador de contraseñas, favoritos,
+  búsqueda, papelera y salud de contraseñas.
+- Respaldo cifrado `.llavero` e importación con combinación o reemplazo;
+  exportación PDF/JSON/CSV. QR de Wi‑Fi bajo demanda.
+- Español e inglés, tema claro/oscuro, diseño adaptable y espaciado unificado.
+- Migración segura de bóvedas v1, pantalla de recuperación con opciones claras,
+  documentos legales y pantalla «Acerca de».
+
+---
+
 ## [Unreleased] — 2026-11-27
 
 ### Added
