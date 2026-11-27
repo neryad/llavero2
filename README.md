@@ -23,6 +23,9 @@ permisos de Internet en la versión de producción.
 - **Plantillas y generador**: plantillas para Wi-Fi, cuentas web, PINs,
   tarjetas y notas; generador de contraseñas y PINs aleatorios.
 - **Exportar/importar**: respaldo cifrado `.llavero`, JSON, CSV y PDF.
+- **Compatibilidad y recuperación**: las bóvedas v1 se migran a v2 con copia
+  `vault.v1.bak`; si la bóveda no abre, se explica el motivo y se ofrecen
+  reintentar, importar o empezar de cero conservando el archivo dañado.
 - **QR de Wi-Fi**: para entradas Wi-Fi, código QR estándar `WIFI:T:...` que se
   muestra solo al pedirlo y se oculta al bloquear o a los 30 s.
 - **Bloqueo automático** al pasar a segundo plano y **bloqueo de capturas**
@@ -151,7 +154,7 @@ Para comprobar que todo sigue bien:
 
 ```bash
 flutter analyze             # debe decir "No issues found!"
-flutter test                # 228 pruebas
+flutter test                # 252 pruebas
 ```
 
 Para generar las traducciones después de tocar los `.arb`:
@@ -183,8 +186,8 @@ Un test verifica que ambos tienen exactamente las mismas claves.
 2. Añade entradas desde el botón **+**. Puedes usar plantillas y el generador.
 3. Busca por título, persona o etiqueta; filtra por categoría, persona y
    favoritas desde la Home.
-4. Ajusta tema, idioma, longitud del PIN, bloqueo automático y capturas desde
-   **Ajustes**. Para cambiar el PIN real usa **Cambiar PIN**.
+4. Ajusta tema, idioma, bloqueo automático y capturas desde **Ajustes**. Para
+   cambiar el PIN real o su longitud (4/6/8) usa **Cambiar PIN**.
 5. Exporta un respaldo cifrado desde **Exportar / importar** y guarda la
    contraseña del respaldo en un lugar seguro: **no se puede recuperar**.
 
@@ -213,7 +216,7 @@ Estas son carencias reales de la versión actual, no detalles menores:
    `NSURLIsExcludedFromBackupKey`, pero no se ha comprobado en un iPhone/iPad
    con iCloud activo; solo está verificado que compila.
 7. **JSON, CSV y PDF omiten secretos por defecto** (`[oculto]`). Existe una
-   opción «Incluir secretos en claro» con dos confirmaciones; el respaldo
+   opción «Incluir secretos en texto plano» con dos confirmaciones; el respaldo
    `.llavero` sigue siempre cifrado con la contraseña del respaldo.
 8. **La búsqueda incluye títulos, personas, etiquetas y notas**, pero nunca
    valores secretos.
@@ -241,7 +244,8 @@ Estas son carencias reales de la versión actual, no detalles menores:
 ## Estado del proyecto
 
 Todas las fases planificadas están completadas (1–9), con la auditoría (A/B),
-las mejoras de diseño (C) y la limpieza final (D) cerradas. El historial de
+las mejoras de diseño (C), la limpieza final (D) y los cuatro pasos de cierre
+(contraste, migración v1, recuperación y exportar/importar) terminados. El historial de
 cambios por fase está en [CHANGELOG.md](CHANGELOG.md), el detalle de decisiones
 en [PROGRESS.md](PROGRESS.md) y la checklist manual en
 [docs/PRUEBAS_DISPOSITIVO.md](docs/PRUEBAS_DISPOSITIVO.md).

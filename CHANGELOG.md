@@ -5,6 +5,33 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
 ---
 
+## [Unreleased] — 2026-11-27
+
+### Added
+- **QR de Wi-Fi** con payload estándar y claves estables de campo; entradas
+  antiguas se migran desde etiquetas ES/EN, respaldos y archivos v1 siguen
+  importándose.
+- **Pantalla de recuperación** con estados concretos (versión nueva, dañada,
+  ilegible, ausente), reintento sin volver a escribir el PIN y «Empezar de cero»
+  que renombra el archivo a `vault.damaged-<fecha>` y crea una bóveda nueva.
+- **Exportar/importar** dividido en copia cifrada y exportación sin cifrar,
+  con confirmación de contraseña, ojo, fuerza de contraseña, fecha del último
+  respaldo y diálogo de combinación/reemplazo con recuento de entradas.
+
+### Fixed
+- Contraste de `SegmentedButton` y chips en tema oscuro, centralizado en
+  `AppTheme` con `WidgetState`.
+- Carga de bóvedas v1: se aceptan versiones 1..2, se migran en memoria, se
+  copia `vault.v1.bak` y se reescribe en v2 de forma atómica y verificada.
+- Salud de contraseñas: analiza secretos por tipo/clave, agrupados por problema y
+  resumen con entradas revisadas; longitud del PIN movida a «Cambiar PIN».
+- Diseño y espaciado del formulario, Home y listas con `AppSpacing` único.
+
+### Verificación
+`flutter analyze` limpio, **252 pruebas**, builds release de Android e iOS.
+
+---
+
 ## [FASE C] — 2026-11-26
 
 ### Added
@@ -33,7 +60,7 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
 ---
 
-## [Unreleased]
+## [Mejoras previas]
 
 ### Added
 - **Plan de mejoras cerrado.** Se descartó la sincronización entre

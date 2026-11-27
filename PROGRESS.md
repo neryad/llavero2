@@ -515,7 +515,7 @@ Base verificada: `flutter analyze` → sin problemas; `flutter test` → **191
 pruebas, todas correctas**. La maqueta `design/llavero-maqueta.html` no existe
 en el repositorio.
 
-Siguiente: FASE B (corregir Critical + Bug).
+Siguiente (en su momento): FASE B, C y D, todas completadas más abajo.
 
 ---
 
@@ -546,7 +546,7 @@ dark (1.52 → 15.05), los puntos vacíos del PIN, `onPrimaryContainer`/
 ### Verificación ejecutada (evidencia fresca)
 
 - `flutter analyze` → **No issues found!**
-- `flutter test` → **213 pruebas, todas correctas**.
+- `flutter test` → **213 pruebas, todas correctas** (recuento de esa fase; el final es 252).
 - `flutter build apk --release` → `app-release.apk` (55,4 MB), exit 0.
 - `flutter build ios --release --no-codesign` → `Runner.app` (20,0 MB), exit 0.
 
@@ -574,14 +574,13 @@ INTERNET**), y `aapt dump xmltree` muestra `allowBackup=0x0` y
 - **iCloud no verificado en dispositivo real**: exclusión implementada con
   `NSURLIsExcludedFromBackupKey`, pero no probada en iPhone/iPad con iCloud.
 
-### Pendiente de decisión del usuario (no se ha tocado nada)
+### Decisiones ya tomadas (resueltas)
 
-- Opción «Incluir secretos en claro» en JSON/CSV/PDF (`includeSecrets`),
-  añadida como mejora 14 del plan pero **no solicitada** por el usuario.
-- Dependencia `qr_flutter` declarada en `pubspec.yaml` y sin uso en `lib/`.
-- Cambiar la longitud del PIN en Ajustes pide el PIN actual pero solo ajusta
-  el teclado: no reescribe el PIN. Propuesta: navegar a «Cambiar PIN» con la
-  longitud elegida para que el PIN y el teclado vuelvan a coincidir.
+- La opción «Incluir secretos en texto plano» (`includeSecrets`) se conservó,
+  con dos confirmaciones y re-autenticación antes de generar el archivo.
+- `qr_flutter` se usa en el QR de Wi‑Fi del detalle de entrada.
+- La longitud del PIN se elige dentro de «Cambiar PIN» (4/6/8), previa
+  verificación del PIN actual y reenvuelve la DEK de forma atómica.
 
 ---
 
@@ -592,8 +591,8 @@ INTERNET**), y `aapt dump xmltree` muestra `allowBackup=0x0` y
   Se extrae de los campos Red/SSID, Contraseña y Seguridad (WPA por defecto).
   En el detalle aparece solo tras pulsar «Mostrar QR», avisa de que quien lo
   escanea obtiene la contraseña y se oculta a los 30 s o al bloquear la app.
-- **Exportaciones en claro**: aviso rojo visible al activar «Incluir secretos
-  en claro», dos confirmaciones y re-autenticación antes de crear el archivo
+- **Exportaciones en claro**: aviso rojo visible en la sección «Exportar sin cifrar» con «Incluir secretos
+  en texto plano», dos confirmaciones y re-autenticación antes de crear el archivo
   JSON/CSV/PDF. Se ha conservado la opción.
 - **Cambio de longitud del PIN**: se eliminó el selector de Ajustes; ahora se
   elige 4/6/8 dentro de «Cambiar PIN», tras verificar el PIN actual. La DEK se
@@ -606,8 +605,31 @@ INTERNET**), y `aapt dump xmltree` muestra `allowBackup=0x0` y
 - Comprobado en claro/oscuro, fuente 200 % y 320dp mediante tests de layout;
   se corrigió un desborde real en Home al convertir su columna en lista.
 
-Verificación: `flutter analyze` limpio, **228 pruebas**, release de Android e
-iOS compilando.
+Verificación en ese momento: `flutter analyze` limpio, **228 pruebas**, release de Android e iOS compilando. El recuento final es 252.
+
+---
+
+## CIERRE FINAL — pasos 1 a 4 ✅
+
+1. **Contraste**: `segmentedButtonTheme` único en `AppTheme` con `WidgetState`;
+   corregidos además chips, SnackBar oscuro y `onPrimaryContainer`. Tests de
+   ratio en claro y oscuro.
+2. **Migración v1 → v2**: `VaultStorage.load` acepta versiones 1..current,
+   rechaza versiones nuevas con `UnsupportedVaultVersionException`, migra en
+   memoria (claves de campo derivadas de etiquetas ES/EN), copia `vault.v1.bak`
+   sin sobrescribir, reescribe en v2 de forma atómica y verifica el recuento.
+   Si falla la copia, restaura el original y deja entrar con los datos leídos.
+3. **Recuperación**: `VaultProblem` con cuatro estados y `RecoveryScreen` ES/EN;
+   «Reintentar» recarga con la DEK, «Importar respaldo» y «Empezar de cero» con
+   confirmación BORRAR/ERASE, renombrando a `vault.damaged-<fecha>` sin borrar.
+   «Erase everything» borra también los `vault.damaged-*`.
+4. **Exportar/importar**: dos secciones, confirmación de contraseña con ojo y
+   fuerza, botón desactivado hasta 8 caracteres e igualdad, fecha del último
+   respaldo (nunca la contraseña) y snackbar con nombre del archivo y consejo.
+   Importación con recuento, combinación/reemplazo y errores diferenciados.
+
+Verificación final: `flutter analyze` limpio, **252 pruebas**, builds release
+de Android e iOS correctos. Todo commiteado y pusheado en `master`.
 
 ---
 
