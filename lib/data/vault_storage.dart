@@ -98,7 +98,10 @@ class _VaultStorage implements VaultStorage {
     } catch (_) {
       throw const TamperedDataException();
     }
-    if (version != VaultDocument.currentVersion) {
+    if (version > VaultDocument.currentVersion) {
+      throw const UnsupportedVaultVersionException();
+    }
+    if (version < 1) {
       throw const TamperedDataException();
     }
     final payload = envelope['payload'] as String?;
@@ -114,7 +117,52 @@ class _VaultStorage implements VaultStorage {
     }
     final plainJson = await _crypto.decryptVault(blob, key);
     final docJson = jsonDecode(utf8.decode(plainJson)) as Map<String, Object?>;
-    return VaultDocument.fromJson(docJson);
+    final document = VaultDocument.fromJson(docJson);
+    if (version < VaultDocument.currentVersion) {
+      await _migrateInMemoryToCurrent(
+        document: document,
+        key: key,
+        path: path,
+        originalBytes: bytes,
+        backupPath: '$path.v1.bak',
+      );
+    }
+    return document;
+  }
+
+  /// Copia el archivo v1 a `vault.v1.bak` (sin sobrescribir), reescribe en v2
+  /// de forma atómica y verifica la lectura. Si algo falla, restaura los bytes
+  /// originales y se sigue adelante con los datos ya parseados en memoria.
+  Future<void> _migrateInMemoryToCurrent({
+    required VaultDocument document,
+    required SecretKey key,
+    required String path,
+    required List<int> originalBytes,
+    required String backupPath,
+  }) async {
+    try {
+      if (await _fileSystem.read(backupPath) == null) {
+        await _fileSystem.writeAtomic(backupPath, originalBytes);
+      }
+      await save(
+        VaultDocument(
+          entries: document.entries,
+          version: VaultDocument.currentVersion,
+        ),
+        key,
+      );
+      final verified = await load(key);
+      if (verified == null || verified.entries.length != document.entries.length) {
+        throw const TamperedDataException();
+      }
+    } on Object {
+      // Último recurso: dejar el archivo original como estaba.
+      try {
+        await _fileSystem.writeAtomic(path, originalBytes);
+      } on Object {
+        // Best effort: el usuario entra igual con los datos en memoria.
+      }
+    }
   }
 
   @override

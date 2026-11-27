@@ -30,6 +30,17 @@ class TamperedDataException extends CryptoFailure {
   ]);
 }
 
+/// El archivo de la bóveda es de una versión más nueva que esta app.
+///
+/// Hereda de [TamperedDataException] para que los flujos existentes sigan
+/// tratándolo como un error de lectura, pero se distingue por su tipo.
+class UnsupportedVaultVersionException extends TamperedDataException {
+  const UnsupportedVaultVersionException([
+    super.message =
+        'El archivo de la bóveda es de una versión más nueva que esta app.',
+  ]);
+}
+
 /// Todavía no existe una bóveda en este dispositivo.
 class MissingVaultException extends CryptoFailure {
   const MissingVaultException([

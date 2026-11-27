@@ -115,6 +115,8 @@ class PlatformVaultFileSystem implements VaultFileSystem {
   Future<void> deleteVault() async {
     final file = File(vaultPath);
     if (await file.exists()) await file.delete();
+    final backup = File('$vaultPath.v1.bak');
+    if (await backup.exists()) await backup.delete();
   }
 
   @override
@@ -151,7 +153,10 @@ class MemoryVaultFileSystem implements VaultFileSystem {
   Future<bool> vaultExists() async => (await read(vaultPath)) != null;
 
   @override
-  Future<void> deleteVault() async => _files.remove(vaultPath);
+  Future<void> deleteVault() async {
+    _files.remove(vaultPath);
+    _files.remove('$vaultPath.v1.bak');
+  }
 
   @override
   List<int>? bytesAt(String path) => _files[path];
