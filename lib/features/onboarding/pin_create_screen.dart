@@ -1,11 +1,15 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'package:llavero2/core/theme/app_spacing.dart';
 
 import '../../../core/app_scope.dart';
+import '../../../core/routes/app_routes.dart';
 import '../../../core/security/pin_validator.dart';
+import '../../../core/widgets/adaptive_segmented.dart';
 import '../../../core/widgets/app_scaffold.dart';
 import '../../../core/widgets/pin_code_input.dart';
+import '../legal/legal_document.dart';
 import '../../../l10n/generated/app_l10n.dart';
 import '../shared/pin_message.dart';
 import 'onboarding_screen.dart';
@@ -28,6 +32,28 @@ class _PinCreateScreenState extends State<PinCreateScreen> {
   bool _busy = false;
 
   bool _initialized = false;
+  late final TapGestureRecognizer _termsRecognizer = TapGestureRecognizer()
+    ..onTap = _openTerms;
+  late final TapGestureRecognizer _privacyRecognizer = TapGestureRecognizer()
+    ..onTap = _openPrivacy;
+
+  void _openTerms() {
+    if (mounted) {
+      Navigator.of(context).pushNamed(
+        AppRoutes.legal,
+        arguments: LegalDocumentKind.terms,
+      );
+    }
+  }
+
+  void _openPrivacy() {
+    if (mounted) {
+      Navigator.of(context).pushNamed(
+        AppRoutes.legal,
+        arguments: LegalDocumentKind.privacy,
+      );
+    }
+  }
 
   @override
   void didChangeDependencies() {
@@ -109,18 +135,14 @@ class _PinCreateScreenState extends State<PinCreateScreen> {
               ),
               const SizedBox(height: AppSpacing.lg),
               if (_firstPin == null)
-                SegmentedButton<int>(
-                  segments: <ButtonSegment<int>>[
-                    for (final n in <int>[4, 6, 8])
-                      ButtonSegment<int>(value: n, label: Text('$n')),
-                  ],
-                  selected: <int>{_length},
-                  onSelectionChanged: (selection) {
-                    setState(() {
-                      _length = selection.first;
-                      _error = null;
-                    });
-                  },
+                AdaptiveSegmented<int>(
+                  values: const <int>[4, 6, 8],
+                  labels: const <String>['4', '6', '8'],
+                  selected: _length,
+                  onChanged: (value) => setState(() {
+                    _length = value;
+                    _error = null;
+                  }),
                 ),
               const SizedBox(height: AppSpacing.xl),
               if (_busy)
@@ -141,7 +163,29 @@ class _PinCreateScreenState extends State<PinCreateScreen> {
                       ),
                   textAlign: TextAlign.center,
                 ),
-              const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: AppSpacing.md),
+              RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  style: Theme.of(context).textTheme.bodySmall,
+                  children: <InlineSpan>[
+                    TextSpan(text: l10n.onboardingLegalPrefix),
+                    TextSpan(
+                      text: l10n.legalTermsTitle,
+                      style: const TextStyle(decoration: TextDecoration.underline),
+                      recognizer: _termsRecognizer,
+                    ),
+                    TextSpan(text: l10n.onboardingLegalJoin),
+                    TextSpan(
+                      text: l10n.legalPrivacyTitle,
+                      style: const TextStyle(decoration: TextDecoration.underline),
+                      recognizer: _privacyRecognizer,
+                    ),
+                    TextSpan(text: l10n.onboardingLegalSuffix),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
               if (_firstPin == null)
                 PinLossWarning(message: l10n.pinLossWarning),
             ],

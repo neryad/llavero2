@@ -4,6 +4,7 @@ import 'package:llavero2/core/theme/app_spacing.dart';
 
 import '../../core/app_scope.dart';
 import '../../core/security/pin_validator.dart';
+import '../../core/widgets/adaptive_segmented.dart';
 import '../../core/widgets/app_scaffold.dart';
 import '../../core/widgets/pin_code_input.dart';
 import '../../l10n/generated/app_l10n.dart';
@@ -127,15 +128,11 @@ class _ChangePinScreenState extends State<ChangePinScreen> {
               ),
               if (_step == 1) ...[
                 const SizedBox(height: AppSpacing.md),
-                SegmentedButton<int>(
-                  segments: <ButtonSegment<int>>[
-                    for (final n in <int>[4, 6, 8])
-                      ButtonSegment<int>(value: n, label: Text('$n')),
-                  ],
-                  selected: <int>{_length},
-                  onSelectionChanged: (selection) {
-                    setState(() => _length = selection.first);
-                  },
+                AdaptiveSegmented<int>(
+                  values: const <int>[4, 6, 8],
+                  labels: const <String>['4', '6', '8'],
+                  selected: _length,
+                  onChanged: (value) => setState(() => _length = value),
                 ),
               ],
               const SizedBox(height: AppSpacing.lg),

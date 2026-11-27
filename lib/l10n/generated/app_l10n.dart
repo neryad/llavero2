@@ -1416,6 +1416,84 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'The legal document could not be loaded.'**
   String get legalDocumentUnavailable;
+
+  /// Versión de la app
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version} ({build})'**
+  String aboutVersion(String version, String build);
+
+  /// aboutTagline
+  ///
+  /// In en, this message translates to:
+  /// **'All offline, all yours'**
+  String get aboutTagline;
+
+  /// aboutParagraph
+  ///
+  /// In en, this message translates to:
+  /// **'Llavero is a family vault for passwords and codes. It keeps your encrypted secrets on your device and works without internet.'**
+  String get aboutParagraph;
+
+  /// aboutSecurityCard
+  ///
+  /// In en, this message translates to:
+  /// **'No internet. No tracking. No PIN recovery: make your encrypted backup.'**
+  String get aboutSecurityCard;
+
+  /// aboutBackupAction
+  ///
+  /// In en, this message translates to:
+  /// **'Make encrypted backup'**
+  String get aboutBackupAction;
+
+  /// aboutMadeBy
+  ///
+  /// In en, this message translates to:
+  /// **'Made by Neryad'**
+  String get aboutMadeBy;
+
+  /// aboutCopyright
+  ///
+  /// In en, this message translates to:
+  /// **'© 2026 Dayern Gomez (Neryad)'**
+  String get aboutCopyright;
+
+  /// aboutContact
+  ///
+  /// In en, this message translates to:
+  /// **'Contact'**
+  String get aboutContact;
+
+  /// copiedSnackbar
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get copiedSnackbar;
+
+  /// openSourceLicenses
+  ///
+  /// In en, this message translates to:
+  /// **'Open source licenses'**
+  String get openSourceLicenses;
+
+  /// onboardingLegalPrefix
+  ///
+  /// In en, this message translates to:
+  /// **'By continuing you accept the '**
+  String get onboardingLegalPrefix;
+
+  /// onboardingLegalJoin
+  ///
+  /// In en, this message translates to:
+  /// **' and the '**
+  String get onboardingLegalJoin;
+
+  /// onboardingLegalSuffix
+  ///
+  /// In en, this message translates to:
+  /// **'.'**
+  String get onboardingLegalSuffix;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

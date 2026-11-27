@@ -48,7 +48,14 @@ class _HomeScreenState extends State<HomeScreen> {
           children: <Widget>[
             for (final item in items.entries)
               FilterChip(
-                label: Text(item.value),
+                label: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 160),
+                  child: Text(
+                    item.value,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
                 selected: selected == item.key,
                 onSelected: (picked) => onChanged(picked ? item.key : null),
               ),

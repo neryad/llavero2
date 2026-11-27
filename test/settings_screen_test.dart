@@ -59,7 +59,7 @@ void main() {
       await scrollTo(tester, 'Apariencia');
       expect(find.text('Apariencia'), findsOneWidget);
       await scrollTo(tester, 'Acerca de');
-      expect(find.text('Acerca de'), findsOneWidget);
+      expect(find.text('Acerca de'), findsNWidgets(2));
       expect(find.text('Categorías'), findsOneWidget);
       // Volver arriba para comprobar la etiqueta biométrica.
       for (var i = 0; i < 12; i++) {

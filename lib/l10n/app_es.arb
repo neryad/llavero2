@@ -895,5 +895,67 @@
   "legalDocumentUnavailable": "No se pudo cargar el documento legal.",
   "@legalDocumentUnavailable": {
     "description": "legalDocumentUnavailable"
+  },
+  "aboutVersion": "Versión {version} ({build})",
+  "@aboutVersion": {
+    "description": "Versión de la app",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "description": "Versión"
+      },
+      "build": {
+        "type": "String",
+        "description": "Número de compilación"
+      }
+    }
+  },
+  "aboutTagline": "Todo offline, todo tuyo",
+  "@aboutTagline": {
+    "description": "aboutTagline"
+  },
+  "aboutParagraph": "Llavero es una bóveda familiar de contraseñas y códigos. Guarda tus secretos cifrados en tu dispositivo y funciona sin internet.",
+  "@aboutParagraph": {
+    "description": "aboutParagraph"
+  },
+  "aboutSecurityCard": "Sin internet. Sin rastreo. Sin recuperación del PIN: haz tu copia cifrada.",
+  "@aboutSecurityCard": {
+    "description": "aboutSecurityCard"
+  },
+  "aboutBackupAction": "Hacer copia cifrada",
+  "@aboutBackupAction": {
+    "description": "aboutBackupAction"
+  },
+  "aboutMadeBy": "Hecho por Neryad",
+  "@aboutMadeBy": {
+    "description": "aboutMadeBy"
+  },
+  "aboutCopyright": "© 2026 Dayern Gomez (Neryad)",
+  "@aboutCopyright": {
+    "description": "aboutCopyright"
+  },
+  "aboutContact": "Contacto",
+  "@aboutContact": {
+    "description": "aboutContact"
+  },
+  "copiedSnackbar": "Copiado",
+  "@copiedSnackbar": {
+    "description": "copiedSnackbar"
+  },
+  "openSourceLicenses": "Licencias de código abierto",
+  "@openSourceLicenses": {
+    "description": "openSourceLicenses"
+  },
+  "onboardingLegalPrefix": "Al continuar aceptas los ",
+  "@onboardingLegalPrefix": {
+    "description": "onboardingLegalPrefix"
+  },
+  "onboardingLegalJoin": " y la ",
+  "@onboardingLegalJoin": {
+    "description": "onboardingLegalJoin"
+  },
+  "onboardingLegalSuffix": ".",
+  "@onboardingLegalSuffix": {
+    "description": "onboardingLegalSuffix"
   }
 }

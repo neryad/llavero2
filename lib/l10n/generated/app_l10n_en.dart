@@ -704,4 +704,47 @@ class L10nEn extends L10n {
   @override
   String get legalDocumentUnavailable =>
       'The legal document could not be loaded.';
+
+  @override
+  String aboutVersion(String version, String build) {
+    return 'Version $version ($build)';
+  }
+
+  @override
+  String get aboutTagline => 'All offline, all yours';
+
+  @override
+  String get aboutParagraph =>
+      'Llavero is a family vault for passwords and codes. It keeps your encrypted secrets on your device and works without internet.';
+
+  @override
+  String get aboutSecurityCard =>
+      'No internet. No tracking. No PIN recovery: make your encrypted backup.';
+
+  @override
+  String get aboutBackupAction => 'Make encrypted backup';
+
+  @override
+  String get aboutMadeBy => 'Made by Neryad';
+
+  @override
+  String get aboutCopyright => '© 2026 Dayern Gomez (Neryad)';
+
+  @override
+  String get aboutContact => 'Contact';
+
+  @override
+  String get copiedSnackbar => 'Copied';
+
+  @override
+  String get openSourceLicenses => 'Open source licenses';
+
+  @override
+  String get onboardingLegalPrefix => 'By continuing you accept the ';
+
+  @override
+  String get onboardingLegalJoin => ' and the ';
+
+  @override
+  String get onboardingLegalSuffix => '.';
 }

@@ -4,6 +4,7 @@ import 'package:llavero2/core/theme/app_spacing.dart';
 
 import '../../../core/app_scope.dart';
 import '../../../controllers/settings_controller.dart';
+import '../../../core/widgets/adaptive_segmented.dart';
 import '../../../core/widgets/app_scaffold.dart';
 import '../../../features/onboarding/pin_create_screen.dart';
 import '../../../l10n/generated/app_l10n.dart';
@@ -65,17 +66,13 @@ class OnboardingScreen extends StatelessWidget {
             child: PinLossWarning(message: l10n.pinLossWarning),
           ),
           const SizedBox(height: AppSpacing.md),
-          SegmentedButton<AppLanguage>(
-            segments: <ButtonSegment<AppLanguage>>[
-              ButtonSegment(value: AppLanguage.spanish, label: Text(l10n.languageSpanish)),
-              ButtonSegment(value: AppLanguage.english, label: Text(l10n.languageEnglish)),
-            ],
-            selected: <AppLanguage>{
-              settings.language == AppLanguage.english
-                  ? AppLanguage.english
-                  : AppLanguage.spanish,
-            },
-            onSelectionChanged: (s) => settings.setLanguage(s.first),
+          AdaptiveSegmented<AppLanguage>(
+            values: const <AppLanguage>[AppLanguage.spanish, AppLanguage.english],
+            labels: <String>[l10n.languageSpanish, l10n.languageEnglish],
+            selected: settings.language == AppLanguage.english
+                ? AppLanguage.english
+                : AppLanguage.spanish,
+            onChanged: settings.setLanguage,
           ),
           const SizedBox(height: AppSpacing.lg),
           SizedBox(

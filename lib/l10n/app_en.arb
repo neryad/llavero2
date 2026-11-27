@@ -895,5 +895,67 @@
   "legalDocumentUnavailable": "The legal document could not be loaded.",
   "@legalDocumentUnavailable": {
     "description": "legalDocumentUnavailable"
+  },
+  "aboutVersion": "Version {version} ({build})",
+  "@aboutVersion": {
+    "description": "Versión de la app",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "description": "Versión"
+      },
+      "build": {
+        "type": "String",
+        "description": "Número de compilación"
+      }
+    }
+  },
+  "aboutTagline": "All offline, all yours",
+  "@aboutTagline": {
+    "description": "aboutTagline"
+  },
+  "aboutParagraph": "Llavero is a family vault for passwords and codes. It keeps your encrypted secrets on your device and works without internet.",
+  "@aboutParagraph": {
+    "description": "aboutParagraph"
+  },
+  "aboutSecurityCard": "No internet. No tracking. No PIN recovery: make your encrypted backup.",
+  "@aboutSecurityCard": {
+    "description": "aboutSecurityCard"
+  },
+  "aboutBackupAction": "Make encrypted backup",
+  "@aboutBackupAction": {
+    "description": "aboutBackupAction"
+  },
+  "aboutMadeBy": "Made by Neryad",
+  "@aboutMadeBy": {
+    "description": "aboutMadeBy"
+  },
+  "aboutCopyright": "© 2026 Dayern Gomez (Neryad)",
+  "@aboutCopyright": {
+    "description": "aboutCopyright"
+  },
+  "aboutContact": "Contact",
+  "@aboutContact": {
+    "description": "aboutContact"
+  },
+  "copiedSnackbar": "Copied",
+  "@copiedSnackbar": {
+    "description": "copiedSnackbar"
+  },
+  "openSourceLicenses": "Open source licenses",
+  "@openSourceLicenses": {
+    "description": "openSourceLicenses"
+  },
+  "onboardingLegalPrefix": "By continuing you accept the ",
+  "@onboardingLegalPrefix": {
+    "description": "onboardingLegalPrefix"
+  },
+  "onboardingLegalJoin": " and the ",
+  "@onboardingLegalJoin": {
+    "description": "onboardingLegalJoin"
+  },
+  "onboardingLegalSuffix": ".",
+  "@onboardingLegalSuffix": {
+    "description": "onboardingLegalSuffix"
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/app_scope.dart';
 import '../../core/theme/app_spacing.dart';
+import '../../core/widgets/adaptive_segmented.dart';
 import '../../core/platform/platform_capabilities.dart';
 import '../../core/platform/screen_security.dart';
 import '../../core/routes/app_routes.dart';
@@ -11,6 +12,7 @@ import '../../core/widgets/app_scaffold.dart';
 import '../../core/widgets/reauth_dialog.dart';
 import '../../controllers/settings_controller.dart';
 import '../../l10n/generated/app_l10n.dart';
+import '../legal/legal_document.dart';
 
 /// Ajustes agrupados: Seguridad, Herramientas, Apariencia y Acerca de.
 ///
@@ -67,14 +69,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
     required IconData icon,
     required String label,
     required Widget control,
+    bool indent = true,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         _row(icon: icon, label: label),
         Padding(
-          padding: const EdgeInsets.only(
-            left: _labelIndent,
+          padding: EdgeInsets.only(
+            left: indent ? _labelIndent : 0,
             top: AppSpacing.xs,
             bottom: AppSpacing.sm,
           ),
@@ -245,50 +248,62 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _controlRow(
                   icon: Icons.palette_outlined,
                   label: l10n.themeLabel,
-                  control: SegmentedButton<AppThemeMode>(
-                    segments: <ButtonSegment<AppThemeMode>>[
-                      ButtonSegment(
-                        value: AppThemeMode.system,
-                        label: Text(l10n.themeSystem),
-                      ),
-                      ButtonSegment(
-                        value: AppThemeMode.light,
-                        label: Text(l10n.themeLight),
-                      ),
-                      ButtonSegment(
-                        value: AppThemeMode.dark,
-                        label: Text(l10n.themeDark),
-                      ),
+                  indent: false,
+                  control: AdaptiveSegmented<AppThemeMode>(
+                    values: AppThemeMode.values,
+                    labels: <String>[
+                      l10n.themeSystem,
+                      l10n.themeLight,
+                      l10n.themeDark,
                     ],
-                    selected: <AppThemeMode>{settings.themeMode},
-                    onSelectionChanged: (s) => settings.setThemeMode(s.first),
+                    selected: settings.themeMode,
+                    onChanged: settings.setThemeMode,
                   ),
                 ),
                 _controlRow(
                   icon: Icons.language_outlined,
                   label: l10n.languageLabel,
-                  control: SegmentedButton<AppLanguage>(
-                    segments: <ButtonSegment<AppLanguage>>[
-                      ButtonSegment(
-                        value: AppLanguage.system,
-                        label: Text(l10n.languageSystem),
-                      ),
-                      ButtonSegment(
-                        value: AppLanguage.spanish,
-                        label: Text(l10n.languageSpanish),
-                      ),
-                      ButtonSegment(
-                        value: AppLanguage.english,
-                        label: Text(l10n.languageEnglish),
-                      ),
+                  indent: false,
+                  control: AdaptiveSegmented<AppLanguage>(
+                    values: AppLanguage.values,
+                    labels: <String>[
+                      l10n.languageSystem,
+                      l10n.languageSpanish,
+                      l10n.languageEnglish,
                     ],
-                    selected: <AppLanguage>{settings.language},
-                    onSelectionChanged: (s) => settings.setLanguage(s.first),
+                    selected: settings.language,
+                    onChanged: settings.setLanguage,
                   ),
                 ),
               ]),
               _group(l10n.aboutLabel, <Widget>[
-                Text(l10n.aboutText),
+                _row(
+                  icon: Icons.info_outlined,
+                  label: l10n.aboutLabel,
+                  onTap: () =>
+                      Navigator.of(context).pushNamed(AppRoutes.about),
+                ),
+                _row(
+                  icon: Icons.privacy_tip_outlined,
+                  label: l10n.legalPrivacyTitle,
+                  onTap: () => Navigator.of(context).pushNamed(
+                    AppRoutes.legal,
+                    arguments: LegalDocumentKind.privacy,
+                  ),
+                ),
+                _row(
+                  icon: Icons.description_outlined,
+                  label: l10n.legalTermsTitle,
+                  onTap: () => Navigator.of(context).pushNamed(
+                    AppRoutes.legal,
+                    arguments: LegalDocumentKind.terms,
+                  ),
+                ),
+                _row(
+                  icon: Icons.code_outlined,
+                  label: l10n.openSourceLicenses,
+                  onTap: () => showLicensePage(context: context),
+                ),
               ]),
               if (capabilities.isWeb)
                 Padding(

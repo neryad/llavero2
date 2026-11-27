@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../features/home/home_screen.dart';
 import '../../features/settings/settings_screen.dart';
+import '../../features/settings/about_screen.dart';
 import '../../features/settings/categories_screen.dart';
 import '../../features/security/security_health_screen.dart';
 import '../../features/settings/change_pin_screen.dart';
@@ -59,6 +60,9 @@ abstract final class AppRoutes {
   /// Documentos legales (política y términos).
   static const String legal = '/legal';
 
+  /// Pantalla «Acerca de».
+  static const String about = '/about';
+
   /// Genera la pantalla correspondiente a cada ruta.
   static Route<dynamic> onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
@@ -96,6 +100,8 @@ abstract final class AppRoutes {
         return _build(const ChangePinScreen(), routeSettings);
       case securityHealth:
         return _build(const SecurityHealthScreen(), routeSettings);
+      case about:
+        return _build(const AboutScreen(), routeSettings);
       case legal:
         return _build(
           LegalDocumentScreen(
