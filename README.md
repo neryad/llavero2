@@ -1,5 +1,13 @@
 # Llavero
 
+Llavero is a family password vault: fully offline, encrypted, and available for Android and iOS.
+No accounts, no servers, no analytics and no Internet permission in release builds.
+Entries stay on the device in an encrypted file protected by your PIN and, optionally, biometrics.
+Free for personal and family use, in Spanish and English.
+All details are documented in Spanish below.
+
+---
+
 Bóveda familiar de contraseñas y códigos, **100 % offline** y cifrada.
 
 Llavero guarda tus contraseñas, PINs, Wi-Fis y notas en un único archivo
@@ -18,6 +26,8 @@ permisos de Internet en la versión de producción.
   como plan B.
 - **Búsqueda segura**: por título, persona y etiqueta de campo. **Nunca** por
   el valor de un secreto.
+- **Categorías**: Wi-Fi, Email, Streaming, Banking, PIN/Code, Social, Devices,
+  Documents y Other, más categorías personalizadas con color e icono propios.
 - **Papelera**: los elementos borrados se conservan 30 días y se pueden
   restaurar.
 - **Plantillas y generador**: plantillas para Wi-Fi, cuentas web, PINs,
@@ -30,6 +40,9 @@ permisos de Internet en la versión de producción.
   muestra solo al pedirlo y se oculta al bloquear o a los 30 s.
 - **Bloqueo automático** al pasar a segundo plano y **bloqueo de capturas**
   de pantalla.
+- **Documentos legales**: política de privacidad y términos, legibles desde la app.
+- **Acerca de**: versión, autor, contacto, enlaces para copiar y licencias de código abierto.
+- **Icono de app**: icono adaptativo en Android e icono iOS, con splash claro/oscuro.
 - **Español e inglés**, tema claro/oscuro/sistema y diseño adaptable a tablets.
 
 ---
@@ -46,7 +59,7 @@ lib/
     security/
       crypto/                KDF (Argon2id/PBKDF2), VaultCrypto, BackupCrypto
       biometric_auth.dart    abstracción sobre local_auth
-      key_vault_service.dart crea/abre la bóveda,DEK envuelta
+      key_vault_service.dart crea/abre la bóveda, DEK envuelta
       pin_validator.dart     reglas del PIN
       lockout_policy.dart    castigo escalonado
       secure_store.dart      Keystore/Keychain (+ versión en memoria)
@@ -117,11 +130,14 @@ Un solo archivo privado (`llavero/vault.dat`) con un envelope JSON:
 ```json
 {
   "format": "llavero-vault",
-  "version": 1,
+  "version": 2,
   "createdAt": "...",
   "payload": "<base64 de AES-256-GCM>"
 }
 ```
+
+Los archivos v1 se siguen leyendo: al abrirlos se migran a v2 y se conserva
+una copia en `vault.v1.bak`.
 
 La escritura es **atómica**: se escribe en `.tmp` y se renombra. Si el móvil se
 apaga a mitad de escritura, el archivo bueno sigue intacto.
@@ -154,7 +170,7 @@ Para comprobar que todo sigue bien:
 
 ```bash
 flutter analyze             # debe decir "No issues found!"
-flutter test                # 252 pruebas
+flutter test
 ```
 
 Para generar las traducciones después de tocar los `.arb`:
@@ -190,6 +206,37 @@ Un test verifica que ambos tienen exactamente las mismas claves.
    cambiar el PIN real o su longitud (4/6/8) usa **Cambiar PIN**.
 5. Exporta un respaldo cifrado desde **Exportar / importar** y guarda la
    contraseña del respaldo en un lugar seguro: **no se puede recuperar**.
+
+---
+
+## Capturas
+
+Las imágenes se añadirán en `docs/screenshots/` (aún no están incluidas):
+
+- Inicio: `docs/screenshots/home.png`
+- Detalle de entrada: `docs/screenshots/entry-detail.png`
+- Pantalla de bloqueo: `docs/screenshots/lock.png`
+- Modo oscuro: `docs/screenshots/dark.png`
+
+---
+
+## Instalar
+
+Para instalar el APK en Android (sin enlace de descarga todavía):
+
+1. Descarga el APK de release.
+2. Activa «Instalar aplicaciones desconocidas» para el navegador o gestor de archivos.
+3. Abre el APK y pulsa Instalar.
+4. Si vienes de una versión anterior, exporta antes un respaldo `.llavero` desde
+   la app antigua: el identificador es `dev.neryad.llavero` y la nueva app no
+   comparte datos ni claves con la anterior.
+
+---
+
+## Firma de release
+
+TODO: el APK de release todavía se firma con la clave de debug; configurar una
+clave de release propia antes de distribuir la app.
 
 ---
 
@@ -242,10 +289,9 @@ Estas son carencias reales de la versión actual, no detalles menores:
 12. **Sin detección de root/jailbreak ni ofuscación por defecto**: los datos
     están protegidos en reposo, pero la app no se defiende de un dispositivo
     comprometido. Los comandos de release con `--obfuscate` están documentados.
-13. **Verificación en hardware pendiente**: los plugins (`local_auth`,
-    `file_picker`, `share_plus`, `printing`) se probaron con mocks y canales
-    simulados, y los builds nativos compilan, pero falta la ejecución
-    interactiva en un teléfono real. La guía está en
+13. **Verificación en hardware**: la app se probó en un teléfono Android real;
+    siguen pendientes la prueba en un iPhone/iPad real y la comprobación de
+    iCloud. La guía está en
     [docs/PRUEBAS_DISPOSITIVO.md](docs/PRUEBAS_DISPOSITIVO.md).
 14. **Soporte móvil principal**: hay carpetas `web/` y `macos/` del template,
     pero el flujo de seguridad (Keystore/Keychain, capturas) está pensado para
@@ -265,4 +311,4 @@ cambios por fase está en [CHANGELOG.md](CHANGELOG.md), el detalle de decisiones
 en [PROGRESS.md](PROGRESS.md) y la checklist manual en
 [docs/PRUEBAS_DISPOSITIVO.md](docs/PRUEBAS_DISPOSITIVO.md).
 
-Licencia: uso personal / privado. `publish_to: none` en `pubspec.yaml`.
+Licencia: pendiente de decidir.
