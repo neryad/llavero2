@@ -193,6 +193,16 @@ Un test verifica que ambos tienen exactamente las mismas claves.
 
 ---
 
+## Cambio de identificador (1.0.2)
+
+A partir de la versión 1.0.2 el identificador es `dev.neryad.llavero` (antes
+`com.example.llavero2`). La nueva app se instala como una aplicación distinta
+y **no comparte datos ni claves** con la anterior. Antes de instalarla, exporta
+un respaldo cifrado `.llavero` desde la app antigua e impórtalo en la nueva con
+su contraseña.
+
+---
+
 ## Limitaciones honestas
 
 Estas son carencias reales de la versión actual, no detalles menores:

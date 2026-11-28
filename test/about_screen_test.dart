@@ -49,7 +49,7 @@ void main() {
   setUp(() {
     PackageInfo.setMockInitialValues(
       appName: 'Llavero',
-      packageName: 'com.example.llavero2',
+      packageName: 'dev.neryad.llavero',
       version: '1.2.3',
       buildNumber: '7',
       buildSignature: '',

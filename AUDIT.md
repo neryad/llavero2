@@ -418,7 +418,7 @@ se basan en el código y en los requisitos indicados.
 
 ### Cómo verificar FLAG_SECURE (B12)
 
-`adb shell dumpsys window com.example.llavero2 | grep FLAG_SECURE` debe mostrar
+`adb shell dumpsys window dev.neryad.llavero | grep FLAG_SECURE` debe mostrar
 la flag incluso antes de que Dart termine de arrancar.
 
 ---

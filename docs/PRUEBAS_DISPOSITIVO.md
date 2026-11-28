@@ -21,8 +21,8 @@ El bug `PathNotFoundException: vault.dat.tmp` solo apareció aquí.
 4. Verificar el archivo en Android:
 
    ```bash
-   adb shell run-as com.example.llavero2 ls -la files/llavero/
-   adb shell run-as com.example.llavero2 cat files/llavero/vault.dat
+   adb shell run-as dev.neryad.llavero ls -la files/llavero/
+   adb shell run-as dev.neryad.llavero cat files/llavero/vault.dat
    ```
 
    Debe existir `vault.dat` y **no** debe contener los secretos en claro.

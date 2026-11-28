@@ -284,7 +284,7 @@ nada** y que el archivo cifrado aparece en el disco:
 
 ```bash
 # Android: ver el archivo de la bóveda
-adb shell run-as com.example.llavero2 ls files/llavero/
+adb shell run-as dev.neryad.llavero ls files/llavero/
 ```
 
 Para probar el CRUD sin tocar la interfaz:

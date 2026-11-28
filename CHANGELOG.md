@@ -20,6 +20,24 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
 ---
 
+## [1.0.2] — 2026-11-27
+
+### Added
+- Icono de app (adaptive en Android y icono iOS) y splash nativo claro/oscuro,
+  con variante Android 12.
+
+### Changed
+- Identificador de aplicación: `dev.neryad.llavero` (antes
+  `com.example.llavero2`). Se mantienen el namespace de Android y el paquete
+  Kotlin por compatibilidad.
+
+### Nota de migración
+- El nuevo id se instala como una app distinta y no comparte datos ni claves
+  con la anterior. Exporta un respaldo `.llavero` desde la app antigua antes
+  de instalar la nueva, e impórtalo allí con su contraseña.
+
+---
+
 ## [1.0.1] — 2026-11-27
 
 ### Changed
