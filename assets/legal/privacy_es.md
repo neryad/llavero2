@@ -32,7 +32,8 @@ Solo cuando tú decides exportarlos o compartirlos:
 - Un respaldo cifrado `.llavero`, con la contraseña que tú elijas.
 - Un PDF, JSON o CSV sin cifrar, si tú lo pides.
 - El código QR de una red Wi-Fi, que contiene su contraseña.
-- Una entrada compartida como texto.
+
+En los PDF, JSON y CSV sin cifrar, los valores secretos se sustituyen por `[oculto]` de forma predeterminada. Solo se incluyen si activas «Incluir secretos en texto plano» y confirmas tu identidad.
 
 Desde ese momento, tú y las apps que elijas sois responsables de esos archivos y de lo que compartáis.
 

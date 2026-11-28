@@ -288,10 +288,6 @@
   "@exportCsvLabel": {
     "description": "Button that exports the vault as CSV."
   },
-  "shareLabel": "Share",
-  "@shareLabel": {
-    "description": "Button that shares an exported file."
-  },
   "printLabel": "Print",
   "@printLabel": {
     "description": "Button that prints the PDF."

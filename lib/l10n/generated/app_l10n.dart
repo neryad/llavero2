@@ -529,12 +529,6 @@ abstract class L10n {
   /// **'Export CSV'**
   String get exportCsvLabel;
 
-  /// Button that shares an exported file.
-  ///
-  /// In en, this message translates to:
-  /// **'Share'**
-  String get shareLabel;
-
   /// Button that prints the PDF.
   ///
   /// In en, this message translates to:

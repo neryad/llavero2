@@ -232,9 +232,6 @@ class L10nEs extends L10n {
   String get exportCsvLabel => 'Exportar CSV';
 
   @override
-  String get shareLabel => 'Compartir';
-
-  @override
   String get printLabel => 'Imprimir';
 
   @override

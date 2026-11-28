@@ -32,7 +32,8 @@ Only when you choose to export or share it:
 - An encrypted `.llavero` backup, protected by a password you choose.
 - An unencrypted PDF, JSON or CSV file, if you ask for it.
 - The Wi-Fi QR code, which contains that network's password.
-- One entry shared as text.
+
+In unencrypted PDF, JSON and CSV files, secret values are replaced with `[oculto]` by default. They are only included if you turn on "Include secrets in plain text" and re-authenticate.
 
 After that, you and the apps you choose are responsible for those files and for anything you share.
 
